@@ -1,7 +1,17 @@
 /// <reference path="dispatcher.ts" />
 
-interface EventEmitter {
-    addEventListener(Callback) : void;
+interface EventHandler<T> {
+    (T): void;
+}
+
+class Publisher<T> {
+    private handlers: EventHandler<T>[];
+    addEventHandler(handler) {
+        this.handlers.push(handler);
+    }
+    dispatchEvent(t: T) {
+        this.handlers.forEach(h => h(t));
+    }
 }
 
 class Project {
@@ -11,8 +21,7 @@ class Project {
 
 class Entry {
     minutes: number;
-    constructor(public date: Date,
-                public project: Project,
+    constructor(public project: Project,
                 public task: string,
                 public start: Date,
                 public end: Date) {
@@ -20,14 +29,18 @@ class Entry {
     }
 }
 
-class Store implements EventEmitter {
+interface StoreUpdate {
+    store: Store;
+    newEntry?: Entry;
+}
+
+class Store extends Publisher<StoreUpdate> {
+
+    private entries: Entry[];
 
     addEntry(entry: Entry) {
-        throw new Error('nyet');
-    }
-
-    addEventListener(cb) {
-        throw new Error('nada');
+        this.entries.push(entry);
+        this.dispatchEvent({ store: this, newEntry: entry });
     }
 }
 

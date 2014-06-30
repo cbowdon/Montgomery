@@ -5,7 +5,7 @@ interface EventHandler<T> {
 }
 
 class Publisher<T> {
-    private handlers: EventHandler<T>[];
+    private handlers: EventHandler<T>[] = [];
     addEventHandler(handler) {
         this.handlers.push(handler);
     }
@@ -36,7 +36,7 @@ interface StoreUpdate {
 
 class Store extends Publisher<StoreUpdate> {
 
-    private entries: Entry[];
+    private entries: Entry[] = [];
 
     addEntry(entry: Entry) {
         this.entries.push(entry);

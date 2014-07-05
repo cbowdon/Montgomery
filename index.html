@@ -23,7 +23,8 @@
       <div class="date-container">
         <input id="date-0" placeholder="Date" />
         <div class="entry-container">
-          <div id="entry-0" class="row-container current-row">
+          <button id="hidden-add" class="hidden"></button>
+          <div id="entry-0" class="row-container">
             <input id="project" placeholder="Project" />
             <input id="task" placeholder="Task" />
             <input id="time" placeholder="Start time" />
@@ -37,6 +38,9 @@
 
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="dist/dispatcher.js"></script>
+    <script src="dist/actions.js"></script>
+    <script src="dist/store.js"></script>
     <script src="dist/view-controller.js"></script>
   </body>
 </html>

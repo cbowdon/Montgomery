@@ -1,31 +1,35 @@
 /// <reference path="typings/jquery/jquery.d.ts" />
+/// <reference path="store.ts" />
 
 class ViewController {
 
-    constructor() {
-        // TODO addNewEntryRow should actually be trigged by store publish
-        // and the button click should push to store
-        $('div.current-row > button#add').click(el => this.addNewEntryRow(el));
+    // The point of this is to decouple ViewController from Actions
+    private hiddenAddBtn = $('#hidden-add');
+
+    constructor(private store: Store) {
+        var lastIx  = store.entries.length,
+            lastRow = $('#entry-' + lastIx);
+
+        lastRow.find('button#add').click(_ => this.hiddenAddBtn.click());
+
+        store.addEventHandler(evt => this.addNewEntryRow(evt));
     }
 
-    addNewEntryRow(evt: Event) {
-        var $row, rowId, $clone;
+    addNewEntryRow(storeUpdate) {
+        var newIx   = storeUpdate.entries.length,
+            lastIx  = newIx - 1,
+            lastRow = $('#entry-' + lastIx),
+            newRow;
 
-        $row = $(evt.target).parent('.row-container.current-row');
-        rowId = $row.attr('id');
+        // clone old row
+        newRow = lastRow.clone().attr('id', 'entry-' + newIx);
 
-        $clone = $row.clone().attr('id', rowId + 'x');
+        // deactivate old button
+        lastRow.find('button#add').hide().off('click');
 
-        $clone.insertAfter($row);
-
-        $row.find('button#add').hide().off('click');
-        $row.removeClass('current-row');
-        $clone.find('button#add').click(el => this.addNewEntryRow(el));
-    }
-
-    updateSum() {
-        throw new Error('nein');
+        // hook up new button
+        newRow.find('button#add').click(_ => this.hiddenAddBtn.click());
     }
 }
 
-var AppViewController = new ViewController();
+var AppViewController = new ViewController(AppStore);

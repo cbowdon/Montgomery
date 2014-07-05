@@ -36,7 +36,7 @@ interface StoreUpdate {
 
 class Store extends Publisher<StoreUpdate> {
 
-    private entries: Entry[] = [];
+    entries: Entry[] = [];
 
     addEntry(entry: Entry) {
         this.entries.push(entry);

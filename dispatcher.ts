@@ -3,6 +3,7 @@ interface Callback {
 }
 
 class Dispatcher {
+
     register(Callback): number {
         throw new Error('not done');
     }
@@ -10,5 +11,3 @@ class Dispatcher {
         throw new Error('not done');
     }
 }
-
-var AppDispatcher = new Dispatcher();

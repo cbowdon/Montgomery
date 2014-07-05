@@ -28,5 +28,3 @@ class Actions {
         };
     }
 }
-
-var AppActions = new Actions(AppDispatcher);

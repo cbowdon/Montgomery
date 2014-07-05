@@ -36,6 +36,11 @@ interface StoreUpdate {
 
 class Store extends Publisher<StoreUpdate> {
 
+    constructor(private dispatcher: Dispatcher) {
+        super();
+        dispatcher.register(data => this.addEntry(data));
+    }
+
     entries: Entry[] = [];
 
     addEntry(entry: Entry) {
@@ -43,5 +48,3 @@ class Store extends Publisher<StoreUpdate> {
         this.dispatchEvent({ store: this, newEntry: entry });
     }
 }
-
-var AppStore = new Store();

@@ -31,5 +31,3 @@ class ViewController {
         newRow.find('button#add').click(_ => this.hiddenAddBtn.click());
     }
 }
-
-var AppViewController = new ViewController(AppStore);

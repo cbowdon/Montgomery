@@ -57,14 +57,16 @@ class Store extends Publisher<StoreUpdate> {
     }
 
     load() {
-        var entries = JSON.parse(localStorage.getItem('Montgomery'));
-        if (!entries || entries.length === 0) {
+        var rawEntries = JSON.parse(localStorage.getItem('Montgomery'));
+        console.log(rawEntries);
+        if (!rawEntries || rawEntries.length === 0) {
             this.dispatchEvent({ store: this });
+        } else {
+            rawEntries.forEach(e => this.addEntry(e));
         }
-        entries.forEach(e => this.addEntry(e));
     }
 
     private save() {
-        localStorage.setItem('Montgomery', JSON.stringify(this.entries));
+        localStorage.setItem('Montgomery', JSON.stringify(this.rawEntries));
     }
 }

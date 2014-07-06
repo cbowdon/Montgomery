@@ -58,7 +58,7 @@ class Store extends Publisher<StoreUpdate> {
 
     load() {
         var rawEntries = JSON.parse(localStorage.getItem('Montgomery'));
-        console.log(rawEntries);
+
         if (!rawEntries || rawEntries.length === 0) {
             this.dispatchEvent({ store: this });
         } else {

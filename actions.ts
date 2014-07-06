@@ -10,7 +10,7 @@ class Actions {
     }
 
     addEntry(evt) {
-        var el = $(evt.target).parent('.row');
+        var el = $(evt.target).parent('.entry-row');
 
         this.dispatcher.dispatch('entry', this.extractData(el));
     }

@@ -4,10 +4,22 @@ interface Callback {
 
 class Dispatcher {
 
-    register(Callback): number {
-        throw new Error('not done');
+    // TODO not super happy about this Dictionary<magic string, any action>
+    // doesn't seem to be taking advantage of static types at all
+    // (and even less happy with the giant switch statement approach in the Flux demo)
+    private events: { [name: string] : Callback[] } = {};
+
+    register(name, callback) {
+        if (!this.events[name]) {
+            this.events[name] = [callback];
+        } else {
+            this.events[name].push(callback);
+        }
     }
-    dispatch(any): void {
-        throw new Error('not done');
+
+    dispatch(name, payload): void {
+        if (this.events[name]) {
+            this.events[name].forEach(cb => cb(payload));
+        }
     }
 }

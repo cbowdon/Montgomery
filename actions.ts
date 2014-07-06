@@ -15,13 +15,13 @@ class Actions {
               .find('.row-container')
               .last();
 
-        this.dispatcher.dispatch(this.extractData(el));
+        this.dispatcher.dispatch('entry', this.extractData(el));
     }
 
     private extractData(entry) {
 
         return {
-            proj: entry.find('#project').val(),
+            project: entry.find('#project').val(),
             task: entry.find('#task').val(),
             start: entry.find('#start').val(),
             end: entry.find('#end').val(),

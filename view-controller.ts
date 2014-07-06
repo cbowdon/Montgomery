@@ -16,7 +16,7 @@ class ViewController {
     }
 
     addNewEntryRow(storeUpdate) {
-        var newIx   = storeUpdate.entries.length,
+        var newIx   = storeUpdate.store.entries.length,
             lastIx  = newIx - 1,
             lastRow = $('#entry-' + lastIx),
             newRow;
@@ -29,5 +29,7 @@ class ViewController {
 
         // hook up new button
         newRow.find('button#add').click(_ => this.hiddenAddBtn.click());
+
+        newRow.insertAfter(lastRow);
     }
 }

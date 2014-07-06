@@ -15,8 +15,7 @@ class Publisher<T> {
 }
 
 class Project {
-    constructor(public name: string) {
-    }
+    constructor(public name: string) {}
 }
 
 class Entry {
@@ -38,13 +37,26 @@ class Store extends Publisher<StoreUpdate> {
 
     constructor(private dispatcher: Dispatcher) {
         super();
-        dispatcher.register(data => this.addEntry(data));
+        this.load();
+        dispatcher.register('entry', data => this.addEntry(data));
     }
 
     entries: Entry[] = [];
 
     addEntry(entry: Entry) {
         this.entries.push(entry);
+        this.save();
         this.dispatchEvent({ store: this, newEntry: entry });
+    }
+
+    private save() {
+        localStorage.setItem('Montgomery', JSON.stringify(this.entries));
+    }
+
+    private load() {
+        var entries = localStorage.getItem('Montgomery');
+        if (entries) {
+            this.entries = JSON.parse(entries);
+        }
     }
 }

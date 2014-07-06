@@ -11,17 +11,23 @@ class ViewController {
 
         lastRow.find('button#add').click(_ => this.hiddenAdd.click());
 
-        store.addEventHandler(evt => this.addNewEntryRow(evt.store));
+        store.addEventHandler(evt => this.addNewEntryRow(evt.store.entries.length));
     }
 
-    addNewEntryRow(store) {
+    addNewEntryRow(id, values=null) {
         var entryContainer = $('#entry-container'),
             lastRow = entryContainer.last(),
             newRow  = this.templates.find('#entry').clone();
 
-        newRow.attr('id', 'entry-' + store.rawEntries.length);
+        newRow.attr('id', 'entry-' + id);
 
         newRow.find('button#add').click(_ => this.hiddenAdd.click());
+
+        if (values) {
+            newRow.find('#project').val(values['project']);
+            newRow.find('#task').val(values['task']);
+            newRow.find('#start').val(values['start']);
+        }
 
         if (lastRow) {
             lastRow.find('button#add').hide().off('click');

@@ -18,10 +18,9 @@ class Actions {
     private extractData(entry) {
 
         return {
-            proj: entry.find('#project').val(),
+            project: entry.find('#project').val(),
             task: entry.find('#task').val(),
             start: entry.find('#start').val(),
-            end: entry.find('#end').val(),
         };
     }
 }

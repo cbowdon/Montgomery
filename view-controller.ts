@@ -3,33 +3,30 @@
 
 class ViewController {
 
-    // The point of this is to decouple ViewController from Actions
-    private hiddenAddBtn = $('#hidden-add');
+    private templates = $('#templates');
+    private hiddenAdd = this.templates.find('#add');
 
     constructor(private store: Store) {
-        var lastIx  = store.entries.length,
-            lastRow = $('#entry-' + lastIx);
+        var lastRow = $('#entry-' + store.rawEntries.length);
 
-        lastRow.find('button#add').click(_ => this.hiddenAddBtn.click());
+        lastRow.find('button#add').click(_ => this.hiddenAdd.click());
 
-        store.addEventHandler(evt => this.addNewEntryRow(evt));
+        store.addEventHandler(evt => this.addNewEntryRow(evt.store));
     }
 
-    addNewEntryRow(storeUpdate) {
-        var newIx   = storeUpdate.store.entries.length,
-            lastIx  = newIx - 1,
-            lastRow = $('#entry-' + lastIx),
-            newRow;
+    addNewEntryRow(store) {
+        var entryContainer = $('#entry-container'),
+            lastRow = entryContainer.last(),
+            newRow  = this.templates.find('#entry').clone();
 
-        // clone old row
-        newRow = lastRow.clone().attr('id', 'entry-' + newIx);
+        newRow.attr('id', 'entry-' + store.rawEntries.length);
 
-        // deactivate old button
-        lastRow.find('button#add').hide().off('click');
+        newRow.find('button#add').click(_ => this.hiddenAdd.click());
 
-        // hook up new button
-        newRow.find('button#add').click(_ => this.hiddenAddBtn.click());
+        if (lastRow) {
+            lastRow.find('button#add').hide().off('click');
+        }
 
-        newRow.insertAfter(lastRow);
+        entryContainer.append(newRow);
     }
 }

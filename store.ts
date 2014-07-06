@@ -18,6 +18,12 @@ class Project {
     constructor(public name: string) {}
 }
 
+interface RawEntry {
+    project: Project;
+    task: string;
+    start: Date;
+}
+
 class Entry {
     minutes: number;
     constructor(public project: Project,
@@ -37,26 +43,28 @@ class Store extends Publisher<StoreUpdate> {
 
     constructor(private dispatcher: Dispatcher) {
         super();
-        this.load();
         dispatcher.register('entry', data => this.addEntry(data));
     }
 
+    rawEntries: RawEntry[] = [];
+
     entries: Entry[] = [];
 
-    addEntry(entry: Entry) {
-        this.entries.push(entry);
+    addEntry(rawEntry: RawEntry) {
+        this.rawEntries.push(rawEntry);
         this.save();
-        this.dispatchEvent({ store: this, newEntry: entry });
+        this.dispatchEvent({ store: this });
+    }
+
+    load() {
+        var entries = JSON.parse(localStorage.getItem('Montgomery'));
+        if (!entries || entries.length === 0) {
+            this.dispatchEvent({ store: this });
+        }
+        entries.forEach(e => this.addEntry(e));
     }
 
     private save() {
         localStorage.setItem('Montgomery', JSON.stringify(this.entries));
-    }
-
-    private load() {
-        var entries = localStorage.getItem('Montgomery');
-        if (entries) {
-            this.entries = JSON.parse(entries);
-        }
     }
 }

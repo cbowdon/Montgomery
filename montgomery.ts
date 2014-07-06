@@ -7,3 +7,5 @@ var dispatcher = new Dispatcher();
 var actions = new Actions(dispatcher);
 var store = new Store(dispatcher);
 var viewController = new ViewController(store);
+
+store.load();

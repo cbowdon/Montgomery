@@ -10,9 +10,15 @@ class Actions {
     }
 
     addEntry(evt) {
-        var el = $(evt.target).parent('.entry-row');
+        var newRowIx  = $('.entry-row').length - 2,
+            newRow    = $('#entry-' + newRowIx),
+            data      = this.extractData(newRow);
 
-        this.dispatcher.dispatch('entry', this.extractData(el));
+
+        console.log(newRow);
+        console.log(data);
+
+        this.dispatcher.dispatch('entry', data);
     }
 
     private extractData(entry) {

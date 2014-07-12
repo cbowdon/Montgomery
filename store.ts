@@ -19,9 +19,9 @@ class Project {
 }
 
 interface RawEntry {
-    project: Project;
+    project: string;
     task: string;
-    start: Date;
+    start: string;
 }
 
 class Entry {
@@ -67,6 +67,7 @@ class Store extends Publisher<StoreUpdate> {
     }
 
     private save() {
-        localStorage.setItem('Montgomery', JSON.stringify(this.rawEntries));
+        var serialized = JSON.stringify(this.rawEntries);
+        localStorage.setItem('Montgomery', serialized);
     }
 }

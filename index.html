@@ -17,6 +17,10 @@
     <![endif]-->
   </head>
   <body>
+    <div class="bg-info">
+      <a href="#" onclick="localStorage.clear()">Clear local storage</a>
+    </div>
+
     <h1>Montgomery - time tracker</h1>
 
     <div id="templates" class="hidden">
@@ -29,10 +33,7 @@
     </div>
 
     <div id="input-container">
-      <div id="date-container">
-        <input id="date-0" placeholder="Date" />
-        <div id="entry-container" />
-      </div>
+      <div id="entry-container" />
     </div>
     <div id="sum-container" />
 

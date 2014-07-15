@@ -36,10 +36,12 @@ class Entry {
 
 interface StoreUpdate {
     store: Store;
-    newEntry?: Entry;
+    latest: RawEntry;
 }
 
 class Store extends Publisher<StoreUpdate> {
+
+    private key = 'Montgomery';
 
     constructor(private dispatcher: Dispatcher) {
         super();
@@ -53,21 +55,19 @@ class Store extends Publisher<StoreUpdate> {
     addEntry(rawEntry: RawEntry) {
         this.rawEntries.push(rawEntry);
         this.save();
-        this.dispatchEvent({ store: this });
+        this.dispatchEvent({ store: this, latest: rawEntry });
     }
 
     load() {
-        var rawEntries = JSON.parse(localStorage.getItem('Montgomery'));
+        var rawEntries = JSON.parse(localStorage.getItem(this.key));
 
-        if (!rawEntries || rawEntries.length === 0) {
-            this.dispatchEvent({ store: this });
-        } else {
+        if (rawEntries) {
             rawEntries.forEach(e => this.addEntry(e));
         }
     }
 
     private save() {
         var serialized = JSON.stringify(this.rawEntries);
-        localStorage.setItem('Montgomery', serialized);
+        localStorage.setItem(this.key, serialized);
     }
 }

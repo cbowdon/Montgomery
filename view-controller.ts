@@ -11,39 +11,33 @@ class ViewController {
 
         lastRow.find('button#add').click(_ => this.hiddenAdd.click());
 
-        store.addEventHandler(evt => this.syncWithStore(evt.store));
+        this.addBlankRow(0);
+
+        store.addEventHandler(evt => this.sync(evt));
     }
 
-    syncWithStore(store: Store) {
+    private sync(evt: StoreUpdate) {
         var entriesOnPage = $('.entry-row').length - 1; // minus template
-        store.rawEntries.forEach((val, id) => {
-            if (entriesOnPage <= id) {
-                this.addRow(id, val);
-            }
-        });
-        this.addRow(store.rawEntries.length);
+
+        this.fillRow(entriesOnPage - 1, evt.latest);
+        this.addBlankRow(entriesOnPage);
     }
 
-    addRow(id, values=null) {
-        var entryContainer = $('#entry-container'),
-            lastRow = entryContainer.last(),
+    private addBlankRow(id) {
+        var entries = $('#entry-container'),
             newRow  = this.templates.find('#entry').clone();
 
-        if (lastRow) {
-            lastRow.find('button#add').hide().off('click');
-        }
-
         newRow.attr('id', 'entry-' + id);
+        newRow.find('button#add').click(_ => this.hiddenAdd.click());
+        entries.append(newRow);
+    }
 
-        if (values) {
-            newRow.find('#project').val(values['project']);
-            newRow.find('#task').val(values['task']);
-            newRow.find('#start').val(values['start']);
-            newRow.find('button#add').hide();
-        } else {
-            newRow.find('button#add').click(_ => this.hiddenAdd.click());
-        }
+    private fillRow(id, values) {
+        var row = $('#entry-' + id);
 
-        entryContainer.append(newRow);
+        row.find('#project').val(values['project']);
+        row.find('#task').val(values['task']);
+        row.find('#start').val(values['start']);
+        row.find('button#add').hide();
     }
 }

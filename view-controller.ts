@@ -7,7 +7,7 @@ class ViewController {
     private hiddenAdd = this.templates.find('#add');
 
     constructor(private store: Store) {
-        var lastRow = $('#entry-' + store.rawEntries.length);
+        var lastRow = $('#entry-container').last();
 
         lastRow.find('button#add').click(_ => this.hiddenAdd.click());
 
@@ -19,8 +19,10 @@ class ViewController {
     private sync(evt: StoreUpdate) {
         var entriesOnPage = $('.entry-row').length - 1; // minus template
 
-        this.fillRow(entriesOnPage - 1, evt.latest);
-        this.addBlankRow(entriesOnPage);
+        if (evt.newEntry.isSuccess) {
+            this.fillRow(entriesOnPage - 1, evt.newEntry.value);
+            this.addBlankRow(entriesOnPage);
+        }
     }
 
     private addBlankRow(id) {

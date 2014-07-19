@@ -63,7 +63,7 @@ class Entry {
         return Result.success(new Entry(new Project(raw.project), raw.task, start, new Date()));
     }
 
-    private validateRaw(raw: RawEntry) : Result<RawEntry> {
+    static validateRaw(raw: RawEntry) : Result<RawEntry> {
         var start, prop, errors = [];
 
         for (prop in raw) {
@@ -110,10 +110,12 @@ class Store extends Publisher<StoreUpdate> {
     }
 
     private addEntry(rawEntry: RawEntry) {
-        // TODO validate
-        this.rawEntries.push(rawEntry);
-        this.save();
-        this.dispatchEvent({ store: this, newEntry: Result.success(rawEntry) });
+        var result = Entry.validateRaw(rawEntry);
+        if (result.isSuccess) {
+            this.rawEntries.push(rawEntry);
+            this.save();
+        }
+        this.dispatchEvent({ store: this, newEntry: result });
     }
 
     private save() {

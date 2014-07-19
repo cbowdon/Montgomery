@@ -20,8 +20,11 @@ class ViewController {
         var entriesOnPage = $('.entry-row').length - 1; // minus template
 
         if (evt.newEntry.isSuccess) {
+            this.clearErrors(entriesOnPage - 1);
             this.fillRow(entriesOnPage - 1, evt.newEntry.value);
             this.addBlankRow(entriesOnPage);
+        } else {
+            this.addErrors(entriesOnPage - 1, evt.newEntry.errors);
         }
     }
 
@@ -41,5 +44,24 @@ class ViewController {
         row.find('#task').val(values['task']);
         row.find('#start').val(values['start']);
         row.find('button#add').hide();
+        row.addClass('has-success');
+    }
+
+    private addErrors(id, messages) {
+        var row = $('#entry-' + id),
+            ul  = row.find('#errors');
+
+        row.addClass('has-error');
+        ul.empty();
+
+        messages.forEach(m => ul.append('<li>' + m + '</li>'));
+    }
+
+    private clearErrors(id) {
+        var row = $('#entry-' + id),
+            ul  = row.find('#errors');
+
+        row.removeClass('has-error');
+        ul.empty();
     }
 }

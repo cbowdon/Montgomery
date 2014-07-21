@@ -9,7 +9,7 @@ class Actions {
         this.templates.find('#add').click(evt => this.addEntry(evt));
     }
 
-    addEntry(evt) {
+    addEntry(evt: Event) {
         var newRowIx  = $('.entry-row').length - 2,
             newRow    = $('#entry-' + newRowIx),
             data      = this.extractData(newRow);
@@ -21,7 +21,7 @@ class Actions {
         this.dispatcher.dispatch('entry', data);
     }
 
-    private extractData(entry) {
+    private extractData(entry: JQuery) {
 
         return {
             project: entry.find('#project').val(),

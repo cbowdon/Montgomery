@@ -16,11 +16,12 @@ module Test {
     QUnit.test('Store publishes updates', assert => {
     var dispatcher  = new Dispatcher(),
         store       = new Store(dispatcher),
+        rawEntry    = { project: 'Test', task: 'Does it?', start: '20:30' },
         didPublish = false;
 
         store.addEventHandler(evt => didPublish = !!evt.store);
 
-        store.addEntry(entry);
+        dispatcher.dispatch('entry', rawEntry);
 
         assert.ok(didPublish, 'Expected update published');
     });

@@ -1,5 +1,5 @@
 interface Callback {
-    (any): void;
+    (payload: any): void;
 }
 
 class Dispatcher {
@@ -9,7 +9,7 @@ class Dispatcher {
     // (and even less happy with the giant switch statement approach in the Flux demo)
     private events: { [name: string] : Callback[] } = {};
 
-    register(name, callback) {
+    register(name: string, callback: Callback) {
         if (!this.events[name]) {
             this.events[name] = [callback];
         } else {
@@ -17,7 +17,7 @@ class Dispatcher {
         }
     }
 
-    dispatch(name, payload): void {
+    dispatch(name: string, payload: any): void {
         if (this.events[name]) {
             this.events[name].forEach(cb => cb(payload));
         }

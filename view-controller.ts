@@ -28,7 +28,7 @@ class ViewController {
         }
     }
 
-    private addBlankRow(id) {
+    private addBlankRow(id: number) {
         var entries = $('#entry-container'),
             newRow  = this.templates.find('#entry').clone();
 
@@ -37,7 +37,7 @@ class ViewController {
         entries.append(newRow);
     }
 
-    private fillRow(id, values) {
+    private fillRow(id: number, values: RawEntry) {
         var row = $('#entry-' + id);
 
         row.find('#project').val(values['project']);
@@ -47,7 +47,7 @@ class ViewController {
         row.addClass('has-success');
     }
 
-    private addErrors(id, messages) {
+    private addErrors(id: number, messages: string[]) {
         var row = $('#entry-' + id),
             ul  = row.find('#errors');
 
@@ -57,7 +57,7 @@ class ViewController {
         messages.forEach(m => ul.append('<li>' + m + '</li>'));
     }
 
-    private clearErrors(id) {
+    private clearErrors(id: number) {
         var row = $('#entry-' + id),
             ul  = row.find('#errors');
 

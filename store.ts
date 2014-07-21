@@ -1,12 +1,12 @@
 /// <reference path="dispatcher.ts" />
 
 interface EventHandler<T> {
-    (T): void;
+    (evt: T): void;
 }
 
 class Publisher<T> {
     private handlers: EventHandler<T>[] = [];
-    addEventHandler(handler) {
+    addEventHandler(handler: EventHandler<T>) {
         this.handlers.push(handler);
     }
     dispatchEvent(t: T) {
@@ -23,11 +23,11 @@ class Result<T> {
         this.isSuccess = !!value;
     }
 
-    static success(val) {
+    static success(val: any) {
         return new Result(val, []);
     }
 
-    static fail<Y>(errs) {
+    static fail<Y>(errs: string[]) {
         return new Result<Y>(null, errs);
     }
 }
@@ -37,6 +37,7 @@ class Project {
 }
 
 interface RawEntry {
+    [id: string]: string;
     project: string;
     task: string;
     start: string;
@@ -52,7 +53,7 @@ class Entry {
     }
 
     static fromRaw(raw: RawEntry) : Result<Entry> {
-        var start;
+        var start: Date;
         if (!raw.project || !raw.task || !raw.start) {
             return Result.fail<Entry>(["Missing fields"]);
         }
@@ -64,22 +65,24 @@ class Entry {
     }
 
     static validateRaw(raw: RawEntry) : Result<RawEntry> {
-        var start, prop, errors = [];
+        var start: Date,
+            prop: string,
+            errs: string[] = [];
 
         for (prop in raw) {
             if (raw.hasOwnProperty(prop)) {
                 if (!raw[prop]) {
-                    errors.push("Invalid " + prop);
+                    errs.push("Invalid " + prop);
                 }
             }
         }
 
         start = new Date(raw.start);
         if (!start.getDate()) {
-            errors.push("Invalid date");
+            errs.push("Invalid date");
         }
 
-        return errors.length > 0 ? Result.fail<RawEntry>(errors) : Result.success(raw);
+        return errs.length > 0 ? Result.fail<RawEntry>(errs) : Result.success(raw);
     }
 }
 
@@ -102,7 +105,7 @@ class Store extends Publisher<StoreUpdate> {
     entries: Entry[] = [];
 
     load() {
-        var rawEntries = JSON.parse(localStorage.getItem(this.key));
+        var rawEntries: RawEntry[] = JSON.parse(localStorage.getItem(this.key));
 
         if (rawEntries) {
             rawEntries.forEach(e => this.addEntry(e));

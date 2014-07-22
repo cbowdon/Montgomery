@@ -77,8 +77,7 @@ class Entry {
             }
         }
 
-        start = new Date(raw.start);
-        if (!start.getDate()) {
+        if (!/\d{1,2}:?\d\d/.test(raw.start)) {
             errs.push("Invalid date");
         }
 
@@ -97,7 +96,7 @@ class Store extends Publisher<StoreUpdate> {
 
     constructor(private dispatcher: Dispatcher) {
         super();
-        dispatcher.register('entry', data => this.addEntry(data));
+        dispatcher.register('entry', data => this.addRawEntry(data));
     }
 
     private rawEntries: RawEntry[] = [];
@@ -108,17 +107,21 @@ class Store extends Publisher<StoreUpdate> {
         var rawEntries: RawEntry[] = JSON.parse(localStorage.getItem(this.key));
 
         if (rawEntries) {
-            rawEntries.forEach(e => this.addEntry(e));
+            rawEntries.forEach(e => this.addRawEntry(e));
         }
     }
 
-    private addEntry(rawEntry: RawEntry) {
+    private addRawEntry(rawEntry: RawEntry) {
         var result = Entry.validateRaw(rawEntry);
         if (result.isSuccess) {
             this.rawEntries.push(rawEntry);
             this.save();
         }
         this.dispatchEvent({ store: this, newEntry: result });
+    }
+
+    private addValidEntry(rawEntry: RawEntry) {
+    //
     }
 
     private save() {

@@ -32,57 +32,11 @@ class Result<T> {
     }
 }
 
-class Project {
-    constructor(public name: string) {}
-}
-
 interface RawEntry {
     [id: string]: string;
     project: string;
     task: string;
     start: string;
-}
-
-class Entry {
-    minutes: number;
-    constructor(public project: Project,
-                public task: string,
-                public start: Date,
-                public end: Date) {
-        this.minutes = (end.getTime() - start.getTime()) / (60 * 1000);
-    }
-
-    static fromRaw(raw: RawEntry) : Result<Entry> {
-        var start: Date;
-        if (!raw.project || !raw.task || !raw.start) {
-            return Result.fail<Entry>(["Missing fields"]);
-        }
-        start = new Date(raw.start);
-        if (!start) {
-            return Result.fail<Entry>(["Invalid date"]);
-        }
-        return Result.success(new Entry(new Project(raw.project), raw.task, start, new Date()));
-    }
-
-    static validateRaw(raw: RawEntry) : Result<RawEntry> {
-        var start: Date,
-            prop: string,
-            errs: string[] = [];
-
-        for (prop in raw) {
-            if (raw.hasOwnProperty(prop)) {
-                if (!raw[prop]) {
-                    errs.push("Invalid " + prop);
-                }
-            }
-        }
-
-        if (!/\d{1,2}:?\d\d/.test(raw.start)) {
-            errs.push("Invalid date");
-        }
-
-        return errs.length > 0 ? Result.fail<RawEntry>(errs) : Result.success(raw);
-    }
 }
 
 interface StoreUpdate {
@@ -101,8 +55,6 @@ class Store extends Publisher<StoreUpdate> {
 
     private rawEntries: RawEntry[] = [];
 
-    entries: Entry[] = [];
-
     load() {
         var rawEntries: RawEntry[] = JSON.parse(localStorage.getItem(this.key));
 
@@ -112,7 +64,7 @@ class Store extends Publisher<StoreUpdate> {
     }
 
     private addRawEntry(rawEntry: RawEntry) {
-        var result = Entry.validateRaw(rawEntry);
+        var result = this.validate(rawEntry);
         if (result.isSuccess) {
             this.rawEntries.push(rawEntry);
             this.save();
@@ -120,12 +72,28 @@ class Store extends Publisher<StoreUpdate> {
         this.dispatchEvent({ store: this, newEntry: result });
     }
 
-    private addValidEntry(rawEntry: RawEntry) {
-    //
-    }
-
     private save() {
         var serialized = JSON.stringify(this.rawEntries);
         localStorage.setItem(this.key, serialized);
+    }
+
+    private validate(raw: RawEntry) : Result<RawEntry> {
+        var start: Date,
+            prop: string,
+            errs: string[] = [];
+
+        for (prop in raw) {
+            if (raw.hasOwnProperty(prop)) {
+                if (!raw[prop]) {
+                    errs.push("Invalid " + prop);
+                }
+            }
+        }
+
+        if (!/\d{1,2}:?\d\d/.test(raw.start)) {
+            errs.push("Invalid time");
+        }
+
+        return errs.length > 0 ? Result.fail<RawEntry>(errs) : Result.success(raw);
     }
 }

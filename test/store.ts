@@ -1,16 +1,17 @@
 /// <reference path="../typings/qunit/qunit.d.ts" />
 /// <reference path="../store.ts" />
+/// <reference path="../entry.ts" />
 
 module Test {
 
     var project = new Project('Montgomery'),
         task    = 'Unit testing',
-        start   = new Date('2014-06-26T21:00'),
-        end     = new Date('2014-06-26T21:15'),
+        start   = new Date('2014-06-26T08:00'),
+        end     = new Date('2014-06-26T09:15'),
         entry   = new Entry(project, task, start, end);
 
     QUnit.test('Entry minutes calculation', function (assert) {
-        assert.ok(entry.minutes === 15, 'Expected 15 minutes');
+        assert.ok(entry.minutes() === 75, 'Expected 75 minutes but was ' + entry.minutes);
     });
 
     QUnit.test('Store publishes updates', assert => {

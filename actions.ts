@@ -6,7 +6,7 @@ class Actions {
     private templates = $('#templates');
 
     constructor(private dispatcher: Dispatcher) {
-        this.templates.find('#add').click(evt => this.addEntry(evt));
+        this.templates.find('#entry button.add').click(evt => this.addEntry(evt));
     }
 
     addEntry(evt: Event) {
@@ -24,9 +24,9 @@ class Actions {
     private extractData(entry: JQuery) {
 
         return {
-            project: entry.find('#project').val(),
-            task: entry.find('#task').val(),
-            start: entry.find('#start').val(),
+            project: entry.find('input.project').val(),
+            task: entry.find('input.task').val(),
+            start: entry.find('input.start').val(),
         };
     }
 }

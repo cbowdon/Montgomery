@@ -4,12 +4,12 @@
 class ViewController {
 
     private templates = $('#templates');
-    private hiddenAdd = this.templates.find('#add');
+    private hiddenAdd = this.templates.find('#entry button.add');
 
     constructor(private store: Store) {
         var lastRow = $('#entry-container').last();
 
-        lastRow.find('button#add').click(_ => this.hiddenAdd.click());
+        lastRow.find('button.add').click(_ => this.hiddenAdd.click());
 
         this.addBlankRow(0);
 
@@ -33,17 +33,17 @@ class ViewController {
             newRow  = this.templates.find('#entry').clone();
 
         newRow.attr('id', 'entry-' + id);
-        newRow.find('button#add').click(_ => this.hiddenAdd.click());
+        newRow.find('button.add').click(_ => this.hiddenAdd.click());
         entries.append(newRow);
     }
 
     private fillRow(id: number, values: RawEntry) {
         var row = $('#entry-' + id);
 
-        row.find('#project').val(values['project']);
-        row.find('#task').val(values['task']);
-        row.find('#start').val(values['start']);
-        row.find('button#add').hide();
+        row.find('input.project').val(values['project']);
+        row.find('input.task').val(values['task']);
+        row.find('input.start').val(values['start']);
+        row.find('button.add').hide();
         row.addClass('has-success');
     }
 

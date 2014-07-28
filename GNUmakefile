@@ -8,3 +8,7 @@ test: all test/*.ts
 	tsc test/*.ts --noImplicitAny
 	mv *.js dist
 	mv test/*.js test/dist/
+
+clean:
+	rm *.js
+	rm test/*.js

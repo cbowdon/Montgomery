@@ -10,7 +10,7 @@ module Test {
         end     = new Date('2014-06-26T09:15'),
         entry   = new Entry(project, task, start, end);
 
-    QUnit.test('Entry minutes calculation', function (assert) {
+    QUnit.test('Entry minutes calculation', assert => {
         assert.ok(entry.minutes() === 75, 'Expected 75 minutes but was ' + entry.minutes);
     });
 

@@ -34,6 +34,7 @@ class Result<T> {
 
 interface RawEntry {
     [id: string]: string;
+    date: string;
     project: string;
     task: string;
     start: string;
@@ -90,6 +91,7 @@ class Store extends Publisher<StoreUpdate> {
             }
         }
 
+        // TODO better time validation
         if (!/\d{1,2}:?\d\d/.test(raw.start)) {
             errs.push("Invalid time");
         }

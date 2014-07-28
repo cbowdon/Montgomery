@@ -1,3 +1,4 @@
+/// <reference path="result.ts" />
 /// <reference path="dispatcher.ts" />
 
 interface EventHandler<T> {
@@ -11,24 +12,6 @@ class Publisher<T> {
     }
     dispatchEvent(t: T) {
         this.handlers.forEach(h => h(t));
-    }
-}
-
-class Result<T> {
-
-    isSuccess: boolean;
-
-    constructor(public value: T,
-                public errors: string[]) {
-        this.isSuccess = !!value;
-    }
-
-    static success(val: any) {
-        return new Result(val, []);
-    }
-
-    static fail<Y>(errs: string[]) {
-        return new Result<Y>(null, errs);
     }
 }
 

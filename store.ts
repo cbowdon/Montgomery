@@ -62,21 +62,23 @@ class Store extends Publisher<StoreUpdate> {
     }
 
     private validate(raw: RawEntry) : Result<RawEntry> {
-        var start: Date,
-            prop: string,
+        var prop: string,
             errs: string[] = [];
 
         for (prop in raw) {
             if (raw.hasOwnProperty(prop)) {
                 if (!raw[prop]) {
-                    errs.push("Invalid " + prop);
+                    errs.push('Invalid ' + prop);
                 }
             }
         }
 
-        // TODO better time validation
-        if (!/\d{1,2}:?\d\d/.test(raw.start)) {
-            errs.push("Invalid time");
+        if (!Time.parse(raw.start).isSuccess) {
+            errs.push('Invalid time');
+        }
+
+        if (isNaN(Date.parse(raw.date))) {
+            errs.push('Invalid date');
         }
 
         return errs.length > 0 ? Result.fail<RawEntry>(errs) : Result.success(raw);

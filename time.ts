@@ -17,6 +17,6 @@ class Time {
     constructor(public hour: number, public minute: number) {}
 
     toString() {
-        throw new Error('not yet implemented');
+        return (this.hour < 10 ? '0' : '') + this.hour + ':' + this.minute;
     }
 }

@@ -1,3 +1,4 @@
+/// <reference path="time.ts" />
 /// <reference path="store.ts" />
 
 class Project {
@@ -50,14 +51,19 @@ class EntryCollection {
     }
 
     private extractTime(rawStart: string) {
-        var rgx = /(\d{1,2}):?(\d\d)/,
+        var timeResult = Time.parse(rawStart),
             year = this.date.getFullYear(),
             month = this.date.getMonth(),
             day = this.date.getDate(),
-            match = rgx.exec(rawStart),
-            hour = parseInt(match[1], 10),
-            minute = parseInt(match[2], 10);
-        return new Date(year, month, day, hour, minute);
+            time: Time;
+
+        if (!timeResult.isSuccess) {
+            throw new TypeError('Cannot parse time: ' + rawStart);
+        }
+
+        time = timeResult.value;
+
+        return new Date(year, month, day, time.hour, time.minute);
     }
 }
 

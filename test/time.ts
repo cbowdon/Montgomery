@@ -70,20 +70,21 @@ module Test {
     });
 
     QUnit.test('To string', assert => {
-        var timeResult = Time.parse('9:45'),
-            time: Time;
+        function checkTimeString(input: string, output: string, message?: string) {
+            var timeResult = Time.parse(input),
+                time: Time;
 
-        assert.ok(timeResult.isSuccess);
+            assert.ok(timeResult.isSuccess, message);
 
-        time = timeResult.value;
-        assert.strictEqual(time.toString(), '09:45');
+            time = timeResult.value;
 
-        timeResult = Time.parse('23:45');
-
-        assert.ok(timeResult.isSuccess);
-
-        time = timeResult.value;
-
-        assert.strictEqual(time.toString(), '23:45');
+            assert.strictEqual(time.toString(), output, message);
+        }
+        checkTimeString('9:45', '09:45');
+        checkTimeString('945', '09:45');
+        checkTimeString('0945', '09:45');
+        checkTimeString('23:45', '23:45');
+        checkTimeString('1200', '12:00');
     });
+
 }

@@ -1,4 +1,5 @@
 /// <reference path="result.ts" />
+/// <reference path="time.ts" />
 /// <reference path="dispatcher.ts" />
 
 interface EventHandler<T> {
@@ -63,7 +64,9 @@ class Store extends Publisher<StoreUpdate> {
 
     private validate(raw: RawEntry) : Result<RawEntry> {
         var prop: string,
-            errs: string[] = [];
+            errs: string[] = [],
+            time: Result<Time>,
+            date: Date;
 
         for (prop in raw) {
             if (raw.hasOwnProperty(prop)) {
@@ -73,14 +76,27 @@ class Store extends Publisher<StoreUpdate> {
             }
         }
 
-        if (!Time.parse(raw.start).isSuccess) {
+        time = Time.parse(raw.start);
+
+        if (!time.isSuccess) {
             errs.push('Invalid time');
         }
 
-        if (isNaN(Date.parse(raw.date))) {
+        date = new Date(raw.date);
+
+        if (!date) {
             errs.push('Invalid date');
         }
 
-        return errs.length > 0 ? Result.fail<RawEntry>(errs) : Result.success(raw);
+        if (errs.length > 0) {
+            return Result.fail<RawEntry>(errs);
+        }
+
+        return Result.success({
+            project: raw.project,
+            task: raw.task,
+            start: time.value.toString(),
+            date: date.toISOString()
+        });
     }
 }

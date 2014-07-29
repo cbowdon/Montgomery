@@ -19,6 +19,9 @@ class Time {
     constructor(public hour: number, public minute: number) {}
 
     toString() {
-        return (this.hour < 10 ? '0' : '') + this.hour + ':' + this.minute;
+        var hourStr = (this.hour < 10 ? '0' : '') + this.hour,
+            minuteStr = (this.minute < 10 ? '0' : '') + this.minute;
+
+        return hourStr + ':' + minuteStr;
     }
 }

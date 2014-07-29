@@ -1,11 +1,13 @@
 .PHONY:
 
+# s/tsc11/tsc/g when tsc 1.1 compiler finally released
+
 all: montgomery.ts *.ts
-	tsc $^ --noImplicitAny
+	tsc11 $^ --noImplicitAny
 	mv *.js dist/
 
 test: all test/*.ts
-	tsc test/*.ts --noImplicitAny
+	tsc11 test/*.ts --noImplicitAny
 	mv *.js dist
 	mv test/*.js test/dist/
 

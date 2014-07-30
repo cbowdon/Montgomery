@@ -4,9 +4,11 @@
 
 all: montgomery.ts *.ts
 	tsc11 $^ --noImplicitAny --out dist/montgomery.js
+	rm -f *.js
 
 test: all test/*.ts
 	tsc11 test/*.ts --noImplicitAny --out test/dist/montgomery.js
+	rm -f test/*.js
 
 clean:
 	rm -rf dist/*.js

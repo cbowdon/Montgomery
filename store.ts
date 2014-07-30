@@ -1,5 +1,6 @@
 /// <reference path="result.ts" />
 /// <reference path="time.ts" />
+/// <reference path="validator.ts" />
 /// <reference path="dispatcher.ts" />
 
 interface EventHandler<T> {
@@ -33,12 +34,14 @@ class Store extends Publisher<StoreUpdate> {
 
     private key = 'Montgomery';
 
+    private rawEntries: RawEntry[] = [];
+
+    private validator = new RawEntryValidator();
+
     constructor(private dispatcher: Dispatcher) {
         super();
         dispatcher.register('entry', data => this.addRawEntry(data));
     }
-
-    private rawEntries: RawEntry[] = [];
 
     load() {
         var rawEntries: RawEntry[] = JSON.parse(localStorage.getItem(this.key));
@@ -49,9 +52,9 @@ class Store extends Publisher<StoreUpdate> {
     }
 
     private addRawEntry(rawEntry: RawEntry) {
-        var result = this.validate(rawEntry);
+        var result = this.validator.validate(rawEntry);
         if (result.isSuccess) {
-            this.rawEntries.push(rawEntry);
+            this.rawEntries.push(result.value);
             this.save();
         }
         this.dispatchEvent({ store: this, newEntry: result });
@@ -60,43 +63,5 @@ class Store extends Publisher<StoreUpdate> {
     private save() {
         var serialized = JSON.stringify(this.rawEntries);
         localStorage.setItem(this.key, serialized);
-    }
-
-    private validate(raw: RawEntry) : Result<RawEntry> {
-        var prop: string,
-            errs: string[] = [],
-            time: Result<Time>,
-            date: Date;
-
-        for (prop in raw) {
-            if (raw.hasOwnProperty(prop)) {
-                if (!raw[prop]) {
-                    errs.push('Invalid ' + prop);
-                }
-            }
-        }
-
-        time = Time.parse(raw.start);
-
-        if (!time.isSuccess) {
-            errs.push('Invalid time');
-        }
-
-        date = new Date(raw.date);
-
-        if (!date) {
-            errs.push('Invalid date');
-        }
-
-        if (errs.length > 0) {
-            return Result.fail<RawEntry>(errs);
-        }
-
-        return Result.success({
-            project: raw.project,
-            task: raw.task,
-            start: time.value.toString(),
-            date: date.toISOString()
-        });
     }
 }

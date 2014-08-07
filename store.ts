@@ -18,7 +18,6 @@ class Publisher<T> {
 }
 
 interface RawEntry {
-    [id: string]: string;
     date: string;
     project: string;
     task: string;

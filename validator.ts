@@ -13,12 +13,12 @@ class RawEntryValidator implements Validator<RawEntry> {
             time: Result<Time>,
             date: Date;
 
-        for (prop in raw) {
-            if (raw.hasOwnProperty(prop)) {
-                if (!raw[prop]) {
-                    errs.push('Invalid ' + prop);
-                }
-            }
+        if (!raw.project) {
+            errs.push('Invalid project');
+        }
+
+        if (!raw.task) {
+            errs.push('Invalid task');
         }
 
         time = Time.parse(raw.start);

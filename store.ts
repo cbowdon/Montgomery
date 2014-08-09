@@ -1,3 +1,4 @@
+/// <reference path="typings/underscore/underscore.d.ts" />
 /// <reference path="result.ts" />
 /// <reference path="time.ts" />
 /// <reference path="validator.ts" />
@@ -25,42 +26,39 @@ interface RawEntry {
 }
 
 interface StoreUpdate {
-    store: Store;
-    newEntry: Result<RawEntry>;
+    validated: Result<RawEntry>[];
 }
 
 class Store extends Publisher<StoreUpdate> {
 
     private key = 'Montgomery';
 
-    private rawEntries: RawEntry[] = [];
-
     private validator = new RawEntryValidator();
 
     constructor(private dispatcher: Dispatcher) {
         super();
-        dispatcher.register('entry', data => this.addRawEntry(data));
+        dispatcher.register('entry', data => this.update(data));
     }
 
     load() {
         var rawEntries: RawEntry[] = JSON.parse(localStorage.getItem(this.key));
 
         if (rawEntries) {
-            rawEntries.forEach(e => this.addRawEntry(e));
+            this.update(rawEntries);
         }
     }
 
-    private addRawEntry(rawEntry: RawEntry) {
-        var result = this.validator.validate(rawEntry);
-        if (result.isSuccess) {
-            this.rawEntries.push(result.value);
-            this.save();
+    private update(rawEntries: RawEntry[]) {
+        var validated = _.map(rawEntries, re => this.validator.validate(re));
+
+        if (_.every(validated, v => v.isSuccess)) {
+            this.save(rawEntries);
         }
-        this.dispatchEvent({ store: this, newEntry: result });
+        this.dispatchEvent({ validated: validated });
     }
 
-    private save() {
-        var serialized = JSON.stringify(this.rawEntries);
+    private save(rawEntries: RawEntry[]) {
+        var serialized = JSON.stringify(rawEntries);
         localStorage.setItem(this.key, serialized);
     }
 }

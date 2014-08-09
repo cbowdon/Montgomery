@@ -30,9 +30,13 @@ class EntryCollection {
 
     constructor(store: Store) {
         store.addEventHandler(su => {
+            /*
             if (su.newEntry.isSuccess) {
                 this.addEntry(su.newEntry.value)
             }
+            */
+            // TODO
+            console.error('not yet implemented');
         });
     }
 

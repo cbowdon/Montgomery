@@ -1,3 +1,4 @@
+/// <reference path="typings/underscore/underscore.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 /// <reference path="store.ts" />
 
@@ -17,15 +18,22 @@ class ViewController {
     }
 
     private sync(evt: StoreUpdate) {
-        var entriesOnPage = $('.entry-row').length - 1; // minus template
+        var entriesOnPage = $('#entry-container .entry-row').length;
 
-        if (evt.newEntry.isSuccess) {
-            this.clearErrors(entriesOnPage - 1);
-            this.fillRow(entriesOnPage - 1, evt.newEntry.value);
-            this.addBlankRow(entriesOnPage);
-        } else {
-            this.addErrors(entriesOnPage - 1, evt.newEntry.errors);
-        }
+        var i = 0;
+        _.each(evt.validated, v => {
+            if (v.isSuccess) {
+                this.clearErrors(i);
+                this.fillRow(i, v.value);
+                console.log({ entriesOnPage: entriesOnPage, i: i });
+                if (i === entriesOnPage - 1) {
+                    this.addBlankRow(entriesOnPage);
+                }
+            } else {
+                this.addErrors(i, v.errors);
+            }
+            i += 1;
+        });
     }
 
     private addBlankRow(id: number) {

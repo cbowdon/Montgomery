@@ -1,3 +1,4 @@
+/// <reference path="typings/underscore/underscore.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 /// <reference path="dispatcher.ts" />
 
@@ -12,19 +13,13 @@ class Actions {
     }
 
     addEntry(evt: Event) {
-        var newRowIx  = $('.entry-row').length - 2,
-            newRow    = $('#entry-' + newRowIx),
-            data      = this.extractData(newRow);
-
-
-        console.log(newRow);
-        console.log(data);
+        var entries = $('#entry-container .entry-row'),
+            data    = entries.map((i, e) => this.extractData($(e)));
 
         this.dispatcher.dispatch('entry', data);
     }
 
     private extractData(entry: JQuery) {
-
         return {
             date: this.date.val(),
             project: entry.find('input.project').val(),

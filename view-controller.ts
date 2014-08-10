@@ -18,22 +18,23 @@ class ViewController {
     }
 
     private sync(evt: StoreUpdate) {
-        var entriesOnPage = $('#entry-container .entry-row').length;
+        var container = $('#entry-container'), i = 0;
 
-        var i = 0;
+        container.empty();
+
         _.each(evt.validated, v => {
+            this.addBlankRow(i);
             if (v.isSuccess) {
-                this.clearErrors(i);
                 this.fillRow(i, v.value);
-                console.log({ entriesOnPage: entriesOnPage, i: i });
-                if (i === entriesOnPage - 1) {
-                    this.addBlankRow(entriesOnPage);
-                }
             } else {
                 this.addErrors(i, v.errors);
             }
             i += 1;
         });
+
+        if (_.every(evt.validated, v => v.isSuccess)) {
+            this.addBlankRow(i);
+        }
     }
 
     private addBlankRow(id: number) {
@@ -41,6 +42,7 @@ class ViewController {
             newRow  = this.templates.find('#entry').clone();
 
         newRow.attr('id', 'entry-' + id);
+        // TODO don't need hidden add no more, single update button
         newRow.find('button.add').click(_ => this.hiddenAdd.click());
         entries.append(newRow);
     }

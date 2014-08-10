@@ -1,3 +1,5 @@
+/// <reference path="typings/underscore/underscore.d.ts" />
+/// <reference path="result.ts" />
 /// <reference path="time.ts" />
 /// <reference path="store.ts" />
 
@@ -29,15 +31,23 @@ class EntryCollection {
     private date = new Date();
 
     constructor(store: Store) {
-        store.addEventHandler(su => {
-            /*
-            if (su.newEntry.isSuccess) {
-                this.addEntry(su.newEntry.value)
-            }
-            */
-            // TODO
-            console.error('not yet implemented');
-        });
+        store.addEventHandler(su => this.update(su.validated));
+    }
+
+    private update(rawEntries: Result<RawEntry>[]) {
+        if (!_.every(rawEntries, r => r.isSuccess)) {
+            return;
+        }
+        var result = _.chain(rawEntries)
+            .map(v => v.value)
+            .map(r => { return { project: r.project, task: r.task, start: this.extractTime(r.start) } })
+            .groupBy(r => r.project);
+
+        console.log(result.value());
+        // group by project
+        // sort by start time
+        // calculate minutes
+        //throw new Error('not yet implemented');
     }
 
     private addEntry(raw: RawEntry) {

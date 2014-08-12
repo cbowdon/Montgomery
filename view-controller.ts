@@ -14,21 +14,24 @@ class ViewController {
     }
 
     private sync(evt: StoreUpdate) {
-        var container = $('#entry-container'), i = 0;
+        var container = $('#entry-container');
+
 
         container.empty();
 
-        _.each(evt.validated, v => {
+        _.each(evt.validated, (v, i) => {
             this.addBlankRow(i);
             this.fillRow(i, v.value);
             if (!v.isValid) {
                 this.addErrors(i, v.errors);
             }
-            i += 1;
         });
 
+        // put focus on first row with errors
+        container.find('.entry-row.has-error input:first').focus();
+
         if (_.every(evt.validated, v => v.isValid)) {
-            this.addBlankRow(i);
+            this.addBlankRow(evt.validated.length);
         }
     }
 

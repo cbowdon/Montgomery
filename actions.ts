@@ -7,11 +7,19 @@ class Actions {
     private date = $('#date');
 
     constructor(private dispatcher: Dispatcher) {
-        $('#updateEntries').click(evt => this.addEntry(evt));
+
+        $('#updateEntries').click(evt => this.updateEntries());
+
+        $(document).keyup(evt => {
+            if (evt.key === 'Enter') {
+                this.updateEntries();
+            }
+        });
+
         this.date.val(new Date().toISOString());
     }
 
-    addEntry(evt: Event) {
+    updateEntries() {
         var entries = $('#entry-container .entry-row'),
             data    = entries.map((i, e) => this.extractData($(e)));
 

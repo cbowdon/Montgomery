@@ -1,8 +1,25 @@
-/// <reference path="result.ts" />
 /// <reference path="time.ts" />
 
+class Validated<T> {
+
+    public isValid: boolean;
+
+    constructor(public value: T,
+                public errors?: string[]) {
+        this.isValid = !errors;
+    }
+
+    static valid<T>(val: T) {
+        return new Validated(val);
+    }
+
+    static invalid<T>(val: T, errs: string[]) {
+        return new Validated(val, errs);
+    }
+}
+
 interface Validator<T> {
-    validate(item: T): Result<T>;
+    validate(item: T): Validated<T>;
 }
 
 class RawEntryValidator implements Validator<RawEntry> {
@@ -34,10 +51,10 @@ class RawEntryValidator implements Validator<RawEntry> {
         }
 
         if (errs.length > 0) {
-            return Result.fail<RawEntry>(errs);
+            return Validated.invalid(raw, errs);
         }
 
-        return Result.success({
+        return Validated.valid({
             project: raw.project,
             task: raw.task,
             start: time.value.toString(),

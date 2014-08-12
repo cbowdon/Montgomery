@@ -35,22 +35,26 @@
           <div class="form-group">
             <input class="start form-control" placeholder="Start time" />
           </div>
-          <button type="submit" class="add btn btn-default">Update</button>
         </form>
         <ul id="errors" />
       </div>
     </div>
 
     <div id="input-container" class="panel panel-default">
-      <div id="date-container" class="panel-heading">
-        <form class="form-inline" role="form" action="">
-          <div class="form-group">
-            <input id="date" class="date form-control" placeholder="Date" />
-          </div>
-          <button type="submit" class="new-day btn btn-primary">New day</button>
-        </form>
+      <div class="panel-heading">
+        <div id="date-container">
+          <form class="form-inline" role="form" action="">
+            <div class="form-group">
+              <input id="date" class="date form-control" placeholder="Date" />
+            </div>
+            <button type="submit" class="new-day btn btn-primary">New day</button>
+          </form>
+        </div>
       </div>
-      <div id="entry-container" class="panel-body" />
+      <div class="panel-body">
+        <div id="entry-container"></div>
+        <button id="updateEntries" type="submit" class="add btn btn-default">Update</button>
+      </div>
     </div>
     <div id="sum-container" />
 

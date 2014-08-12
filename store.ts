@@ -1,5 +1,4 @@
 /// <reference path="typings/underscore/underscore.d.ts" />
-/// <reference path="result.ts" />
 /// <reference path="time.ts" />
 /// <reference path="validator.ts" />
 /// <reference path="dispatcher.ts" />
@@ -26,7 +25,7 @@ interface RawEntry {
 }
 
 interface StoreUpdate {
-    validated: Result<RawEntry>[];
+    validated: Validated<RawEntry>[];
 }
 
 class Store extends Publisher<StoreUpdate> {
@@ -51,7 +50,7 @@ class Store extends Publisher<StoreUpdate> {
     private update(rawEntries: RawEntry[]) {
         var validated = _.map(rawEntries, re => this.validator.validate(re));
 
-        if (_.every(validated, v => v.isSuccess)) {
+        if (_.every(validated, v => v.isValid)) {
             this.save(rawEntries);
         }
         this.dispatchEvent({ validated: validated });

@@ -4,11 +4,10 @@
 
 class Actions {
 
-    private templates = $('#templates');
     private date = $('#date');
 
     constructor(private dispatcher: Dispatcher) {
-        this.templates.find('#entry button.add').click(evt => this.addEntry(evt));
+        $('#updateEntries').click(evt => this.addEntry(evt));
         this.date.val(new Date().toISOString());
     }
 

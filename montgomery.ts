@@ -7,7 +7,7 @@
 var dispatcher = new Dispatcher();
 var actions = new Actions(dispatcher);
 var store = new Store(dispatcher);
-var entries = new EntryCollection(store);
+//var entries = new EntryCollection(store);
 var viewController = new ViewController(store);
 
 store.load();

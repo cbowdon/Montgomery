@@ -5,12 +5,8 @@
 class ViewController {
 
     private templates = $('#templates');
-    private hiddenAdd = this.templates.find('#entry button.add');
 
     constructor(private store: Store) {
-        var lastRow = $('#entry-container').last();
-
-        lastRow.find('button.add').click(_ => this.hiddenAdd.click());
 
         this.addBlankRow(0);
 
@@ -24,15 +20,14 @@ class ViewController {
 
         _.each(evt.validated, v => {
             this.addBlankRow(i);
-            if (v.isSuccess) {
-                this.fillRow(i, v.value);
-            } else {
+            this.fillRow(i, v.value);
+            if (!v.isValid) {
                 this.addErrors(i, v.errors);
             }
             i += 1;
         });
 
-        if (_.every(evt.validated, v => v.isSuccess)) {
+        if (_.every(evt.validated, v => v.isValid)) {
             this.addBlankRow(i);
         }
     }
@@ -42,8 +37,6 @@ class ViewController {
             newRow  = this.templates.find('#entry').clone();
 
         newRow.attr('id', 'entry-' + id);
-        // TODO don't need hidden add no more, single update button
-        newRow.find('button.add').click(_ => this.hiddenAdd.click());
         entries.append(newRow);
     }
 
@@ -53,7 +46,6 @@ class ViewController {
         row.find('input.project').val(values['project']);
         row.find('input.task').val(values['task']);
         row.find('input.start').val(values['start']);
-        row.find('button.add').hide();
         row.addClass('has-success');
     }
 

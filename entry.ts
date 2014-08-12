@@ -34,8 +34,8 @@ class EntryCollection {
         store.addEventHandler(su => this.update(su.validated));
     }
 
-    private update(rawEntries: Result<RawEntry>[]) {
-        if (!_.every(rawEntries, r => r.isSuccess)) {
+    private update(rawEntries: Validated<RawEntry>[]) {
+        if (!_.every(rawEntries, r => r.isValid)) {
             return;
         }
         var result = _.chain(rawEntries)

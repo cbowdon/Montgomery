@@ -28,7 +28,7 @@ class RawEntryValidator implements Validator<RawEntry> {
         var prop: string,
             errs: string[] = [],
             time: Result<Time>,
-            date: Date;
+            date: Result<ShortDate>;
 
         if (!raw.project) {
             errs.push('Invalid project');
@@ -44,9 +44,9 @@ class RawEntryValidator implements Validator<RawEntry> {
             errs.push('Invalid time');
         }
 
-        date = new Date(raw.date);
+        date = ShortDate.parse(raw.date);
 
-        if (!date) {
+        if (!date.isSuccess) {
             errs.push('Invalid date');
         }
 
@@ -58,7 +58,7 @@ class RawEntryValidator implements Validator<RawEntry> {
             project: raw.project,
             task: raw.task,
             start: time.value.toString(),
-            date: date.toISOString()
+            date: date.value.toISOString()
         });
     }
 }

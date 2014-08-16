@@ -38,14 +38,15 @@ class EntryCollection {
         if (!_.every(rawEntries, r => r.isValid)) {
             return;
         }
+
         var result = _.chain(rawEntries)
             .map(v => v.value)
             .map(r => { return { project: r.project, task: r.task, start: this.extractTime(r.start) } })
             .groupBy(r => r.project);
 
         console.log(result.value());
-        // group by project
         // sort by start time
+        // group by project
         // calculate minutes
         //throw new Error('not yet implemented');
     }
@@ -62,6 +63,10 @@ class EntryCollection {
         }
 
         this.entries.push(new Entry(project, task, start, new Date()));
+    }
+
+    private extractDate(rawDate: string) {
+        var date = new Date(rawDate);
     }
 
     private extractTime(rawStart: string) {

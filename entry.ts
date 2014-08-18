@@ -41,10 +41,11 @@ class EntryCollection {
                         date: dateRes.value,
                         time: <Time>undefined
                     },
+                    startMillis: dateRes.value.toMillis() + timeRes.value.toMillis(),
                     minutes: <number>undefined
                 };
             })
-            .sortBy(r => r.start.date.toMillis() + r.start.time.toMillis())
+            .sortBy('startMillis')
             .reduce((acc, r, i) => {
                 if (i === 0) {
                     return [r];
@@ -60,9 +61,14 @@ class EntryCollection {
 
                 return acc;
             }, [])
-            .filter(r => r.project.toLowerCase() !== 'home' && r.project.toLowerCase() !== 'lunch')
             .reduce((acc, r) => {
-                var existing = _.find(acc, a => a.project === r.project && a.task === r.task);
+                var existing: Entry;
+
+                if (r.project.toLowerCase() === 'home' || r.project.toLowerCase() === 'lunch') {
+                    return acc;
+                }
+
+                existing  = _.find(acc, a => a.project === r.project && a.task === r.task);
 
                 if (!existing) {
                     acc.push({ project: r.project, task: r.task, minutes: r.minutes });
@@ -73,9 +79,6 @@ class EntryCollection {
                 return acc;
             }, []);
 
-        // sort by start time
-        // group by project
-        // calculate minutes
         return result.value();
     }
 
@@ -86,6 +89,7 @@ class EntryCollection {
 
         var entries = EntryCollection.extractEntries(_.map(rawEntries, r => r.value));
 
+        _.map(entries, e => console.log(e));
         //throw new Error('not yet implemented');
     }
 }

@@ -1,3 +1,4 @@
+/// <reference path="shortdate.ts" />
 /// <reference path="time.ts" />
 
 class Validated<T> {
@@ -34,10 +35,6 @@ class RawEntryValidator implements Validator<RawEntry> {
             errs.push('Invalid project');
         }
 
-        if (!raw.task) {
-            errs.push('Invalid task');
-        }
-
         time = Time.parse(raw.start);
 
         if (!time.isSuccess) {
@@ -57,7 +54,7 @@ class RawEntryValidator implements Validator<RawEntry> {
         return Validated.valid({
             project: raw.project,
             task: raw.task,
-            start: time.value.toString(),
+            start: time.value.toISOString(),
             date: date.value.toISOString()
         });
     }

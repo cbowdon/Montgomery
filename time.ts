@@ -18,7 +18,11 @@ class Time {
 
     constructor(public hour: number, public minute: number) {}
 
-    toString() {
+    toMillis() {
+        return this.hour * 3600 * 1000 + this.minute * 60 * 1000;
+    }
+
+    toISOString() {
         var hourStr = (this.hour < 10 ? '0' : '') + this.hour,
             minuteStr = (this.minute < 10 ? '0' : '') + this.minute;
 

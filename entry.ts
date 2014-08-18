@@ -1,5 +1,6 @@
 /// <reference path="typings/underscore/underscore.d.ts" />
 /// <reference path="result.ts" />
+/// <reference path="shortdate.ts" />
 /// <reference path="time.ts" />
 /// <reference path="store.ts" />
 
@@ -40,8 +41,24 @@ class EntryCollection {
         }
 
         var result = _.chain(rawEntries)
-            .map(v => v.value)
-            .map(r => { return { project: r.project, task: r.task, start: this.extractTime(r.start) } })
+            .map(r => {
+                var dateRes = ShortDate.parse(r.value.date),
+                    timeRes = Time.parse(r.value.start);
+
+                if (!dateRes || !timeRes) {
+                    throw new Error('Invalid datetime.');
+                }
+
+                return {
+                    project: r.value.project,
+                    task: r.value.task,
+                    start: {
+                      date: dateRes.value,
+                      time: timeRes.value
+                    }
+                };
+            })
+            //.sortBy(r =>
             .groupBy(r => r.project);
 
         console.log(result.value());
@@ -49,40 +66,6 @@ class EntryCollection {
         // group by project
         // calculate minutes
         //throw new Error('not yet implemented');
-    }
-
-    private addEntry(raw: RawEntry) {
-
-        var project = new Project(raw.project),
-            task = raw.task,
-            start = this.extractTime(raw.start),
-            prev = last(this.entries);
-
-        if (prev) {
-            prev.end = start;
-        }
-
-        this.entries.push(new Entry(project, task, start, new Date()));
-    }
-
-    private extractDate(rawDate: string) {
-        var date = new Date(rawDate);
-    }
-
-    private extractTime(rawStart: string) {
-        var timeResult = Time.parse(rawStart),
-            year = this.date.getFullYear(),
-            month = this.date.getMonth(),
-            day = this.date.getDate(),
-            time: Time;
-
-        if (!timeResult.isSuccess) {
-            throw new TypeError('Cannot parse time: ' + rawStart);
-        }
-
-        time = timeResult.value;
-
-        return new Date(year, month, day, time.hour, time.minute);
     }
 }
 

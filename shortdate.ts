@@ -6,10 +6,14 @@ class ShortDate {
     public month: number;
     public day: number;
 
-    constructor (date: Date) {
+    constructor (date: Date = new Date()) {
         this.year = date.getFullYear();
-        this.month = date.getMonth();
+        this.month = date.getMonth() + 1;
         this.day = date.getDate();
+    }
+
+    toMillis() {
+        return new Date(this.year, this.month, this.day).getTime();
     }
 
     toISOString() {
@@ -28,7 +32,7 @@ class ShortDate {
     static parse(str: string) {
         var d = new Date(str);
 
-        return d ?
+        return d && d.getFullYear() && d.getMonth && d.getDate() ?
             Result.success(new ShortDate(d)) :
             Result.fail<ShortDate>([ 'Could not parse date: ' + str ]);
     }

@@ -5,7 +5,7 @@ module Test {
 
     QUnit.test('Validator happy path', assert => {
         var raw: RawEntry,
-            result: Result<RawEntry>;
+            result: Validated<RawEntry>;
 
         raw = {
             project: 'Some project',
@@ -16,19 +16,19 @@ module Test {
 
         result = new RawEntryValidator().validate(raw);
 
-        assert.ok(result.isSuccess);
+        assert.ok(result.isValid);
 
         assert.deepEqual(result.value, {
             project: raw.project,
             task: raw.task,
-            date: '2014-07-30T00:00:00.000Z',
+            date: '2014-07-30',
             start: '20:28'
         });
     });
 
     QUnit.test('Validator bad time', assert => {
         var raw: RawEntry,
-            result: Result<RawEntry>;
+            result: Validated<RawEntry>;
 
         raw = {
             project: 'Some project',
@@ -39,7 +39,7 @@ module Test {
 
         result = new RawEntryValidator().validate(raw);
 
-        assert.ok(!result.isSuccess);
+        assert.ok(!result.isValid);
 
         assert.deepEqual(result.errors, ['Invalid time']);
     });

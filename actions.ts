@@ -1,5 +1,6 @@
 /// <reference path="typings/underscore/underscore.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
+/// <reference path="shortdate.ts" />
 /// <reference path="dispatcher.ts" />
 
 class Actions {
@@ -16,7 +17,7 @@ class Actions {
             }
         });
 
-        this.date.val(new Date().toISOString());
+        this.date.val(new ShortDate().toISOString());
     }
 
     updateEntries() {

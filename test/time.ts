@@ -69,7 +69,7 @@ module Test {
         assert.ok(!Time.parse('20:65').isSuccess, 'past the hour');
     });
 
-    QUnit.test('To string', assert => {
+    QUnit.test('To ISO string', assert => {
         function checkTimeString(input: string, output: string, message?: string) {
             var timeResult = Time.parse(input),
                 time: Time;
@@ -78,7 +78,7 @@ module Test {
 
             time = timeResult.value;
 
-            assert.strictEqual(time.toString(), output, message);
+            assert.strictEqual(time.toISOString(), output, message);
         }
         checkTimeString('9:45', '09:45');
         checkTimeString('945', '09:45');
@@ -87,4 +87,8 @@ module Test {
         checkTimeString('1200', '12:00');
     });
 
+    QUnit.test('Millis', assert => {
+        assert.strictEqual(new Time(0, 1).toMillis(), 60000);
+        assert.strictEqual(new Time(1, 0).toMillis(), 3600000);
+    });
 }

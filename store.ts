@@ -20,7 +20,7 @@ class Publisher<T> {
 interface RawEntry {
     date: string;
     project: string;
-    task: string;
+    task?: string;
     start: string;
 }
 

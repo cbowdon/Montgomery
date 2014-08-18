@@ -27,12 +27,36 @@ function last<T>(arr: T[]) {
 
 class EntryCollection {
 
-    private entries: Entry[] = [];
-
-    private date = new Date();
-
     constructor(store: Store) {
         store.addEventHandler(su => this.update(su.validated));
+    }
+
+    static extractEntries(rawEntries: RawEntry[]) {
+        var result = _.chain(rawEntries)
+            .map(r => {
+                var dateRes = ShortDate.parse(r.date),
+                    timeRes = Time.parse(r.start);
+
+                if (!dateRes || !timeRes) {
+                    throw new Error('Invalid datetime.');
+                }
+
+                return {
+                    project: r.project,
+                    task: r.task,
+                    start: {
+                      date: dateRes.value,
+                      time: timeRes.value
+                    }
+                };
+            })
+            .sortBy(r => r.start.date.toMillis() + r.start.time.toMillis())
+            .groupBy(r => r.project);
+
+        // sort by start time
+        // group by project
+        // calculate minutes
+        return result.value();
     }
 
     private update(rawEntries: Validated<RawEntry>[]) {
@@ -40,31 +64,8 @@ class EntryCollection {
             return;
         }
 
-        var result = _.chain(rawEntries)
-            .map(r => {
-                var dateRes = ShortDate.parse(r.value.date),
-                    timeRes = Time.parse(r.value.start);
+        var entries = EntryCollection.extractEntries(_.map(rawEntries, r => r.value));
 
-                if (!dateRes || !timeRes) {
-                    throw new Error('Invalid datetime.');
-                }
-
-                return {
-                    project: r.value.project,
-                    task: r.value.task,
-                    start: {
-                      date: dateRes.value,
-                      time: timeRes.value
-                    }
-                };
-            })
-            //.sortBy(r =>
-            .groupBy(r => r.project);
-
-        console.log(result.value());
-        // sort by start time
-        // group by project
-        // calculate minutes
         //throw new Error('not yet implemented');
     }
 }

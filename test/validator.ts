@@ -2,6 +2,7 @@
 /// <reference path="../validator.ts" />
 
 module Test {
+    QUnit.module('Validator');
 
     QUnit.test('Validator happy path', assert => {
         var raw: RawEntry,

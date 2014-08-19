@@ -2,6 +2,7 @@
 /// <reference path="../time.ts" />
 
 module Test {
+    QUnit.module('Time');
 
     QUnit.test('Parse string: HH:mm', assert => {
         var timeResult = Time.parse('23:45'),

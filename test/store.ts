@@ -3,6 +3,7 @@
 /// <reference path="../entry.ts" />
 
 module Test {
+    QUnit.module('Store');
 
     QUnit.test('Store publishes updates', assert => {
     var dispatcher  = new Dispatcher(),

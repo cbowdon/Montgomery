@@ -2,6 +2,7 @@
 /// <reference path="../entry.ts" />
 
 module Test {
+    QUnit.module('Entry');
 
     function sd(str: string) {
         var dateRes = ShortDate.parse(str);

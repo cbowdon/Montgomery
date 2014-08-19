@@ -4,6 +4,8 @@
 /// <reference path="entry.ts" />
 /// <reference path="view-controller.ts" />
 
+'use strict';
+
 var dispatcher = new Dispatcher();
 var actions = new Actions(dispatcher);
 var store = new Store(dispatcher);

@@ -2,6 +2,7 @@
 /// <reference path="../time.ts" />
 
 module Test {
+    QUnit.module('ShortDate');
 
     function checkParse(name: string, input: string, shouldParse: boolean, message?: string) {
         QUnit.test(name, assert => {

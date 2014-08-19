@@ -8,6 +8,7 @@ interface Entry {
     project: string;
     task: string;
     minutes: number;
+    date: ShortDate;
 }
 
 function last<T>(arr: T[]) {
@@ -33,51 +34,53 @@ class EntryCollection {
                 return {
                     project: r.project,
                     task: r.task,
-                    start: {
-                        date: dateRes.value,
-                        time: timeRes.value
-                    },
-                    end: {
-                        date: dateRes.value,
-                        time: <Time>undefined
-                    },
+                    date: dateRes.value,
+                    start: timeRes.value,
+                    end: <Time>undefined,
                     startMillis: dateRes.value.toMillis() + timeRes.value.toMillis(),
                     minutes: <number>undefined
                 };
             })
-            .sortBy('startMillis')
-            .reduce((acc, r, i) => {
-                if (i === 0) {
-                    return [r];
-                }
+            .groupBy(r => r.date.toISOString())
+            .values()
+            .map(day => {
+                return _.chain(day)
+                    .sortBy(r => r.startMillis)
+                    .reduce((acc, r, i) => {
+                        if (i === 0) {
+                            return [r];
+                        }
 
-                acc[i - 1].end.time = r.start.time;
-                acc[i - 1].minutes = (acc[i - 1].end.time.toMillis() - acc[i - 1].start.time.toMillis()) / (60 * 1000);
+                        acc[i - 1].end = r.start;
+                        acc[i - 1].minutes = (acc[i - 1].end.toMillis() - acc[i - 1].start.toMillis()) / (60 * 1000);
 
-                if (i !== rawEntries.length - 1) {
-                    // TODO assert that this entry is 'home'
-                    acc.push(r);
-                }
+                        if (i !== rawEntries.length - 1) {
+                            // TODO assert that this entry is 'home'
+                            acc.push(r);
+                        }
 
-                return acc;
-            }, [])
-            .reduce((acc, r) => {
-                var existing: Entry;
+                        return acc;
+                    }, [])
+                    .reduce((acc, r) => {
+                        var existing: Entry;
 
-                if (r.project.toLowerCase() === 'home' || r.project.toLowerCase() === 'lunch') {
-                    return acc;
-                }
+                        if (r.project.toLowerCase() === 'home' || r.project.toLowerCase() === 'lunch') {
+                            return acc;
+                        }
 
-                existing  = _.find(acc, a => a.project === r.project && a.task === r.task);
+                        existing  = _.find(acc, a => a.project === r.project && a.task === r.task);
 
-                if (!existing) {
-                    acc.push({ project: r.project, task: r.task, minutes: r.minutes });
-                    return acc;
-                }
+                        if (!existing) {
+                            acc.push({ project: r.project, task: r.task, minutes: r.minutes, date: r.date });
+                            return acc;
+                        }
 
-                existing.minutes += r.minutes;
-                return acc;
-            }, []);
+                        existing.minutes += r.minutes;
+                        return acc;
+                    }, [])
+                    .value();
+            })
+            .flatten();
 
         return result.value();
     }

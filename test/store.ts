@@ -11,7 +11,7 @@ module Test {
         rawEntry    = { project: 'Test', task: 'Does it?', start: '20:30', date: '2014-07-29' },
         didPublish = false;
 
-        store.addEventHandler(evt => didPublish = !!evt.validated);
+        store.subscribe(evt => didPublish = !!evt.validated);
 
         dispatcher.dispatch('entry', rawEntry);
 

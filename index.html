@@ -38,6 +38,14 @@
         </form>
         <ul id="errors" />
       </div>
+      <table id="sum-container-template">
+        <tr id="sum" class="sum-row">
+          <td class="date"></td>
+          <td class="project"></td>
+          <td class="task"></td>
+          <td class="minutes"></td>
+        </tr>
+      </table>
     </div>
 
     <div id="input-container" class="panel panel-default">
@@ -56,7 +64,21 @@
         <button id="updateEntries" type="submit" class="add btn btn-default">Update</button>
       </div>
     </div>
-    <div id="sum-container" />
+    <div id="vis-container">
+      <table id="sum-table" class="table table-striped table-condensed">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Project</th>
+            <th>Task</th>
+            <th>Minutes</th>
+          </tr>
+        </thead>
+        <tbody id="sum-container">
+        </tbody>
+      </table>
+      <div id="graph-container" />
+    </div>
 
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>

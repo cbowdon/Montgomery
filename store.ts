@@ -1,21 +1,8 @@
 /// <reference path="typings/underscore/underscore.d.ts" />
+/// <reference path="publisher.ts" />
 /// <reference path="time.ts" />
 /// <reference path="validator.ts" />
 /// <reference path="dispatcher.ts" />
-
-interface EventHandler<T> {
-    (evt: T): void;
-}
-
-class Publisher<T> {
-    private handlers: EventHandler<T>[] = [];
-    addEventHandler(handler: EventHandler<T>) {
-        this.handlers.push(handler);
-    }
-    dispatchEvent(t: T) {
-        this.handlers.forEach(h => h(t));
-    }
-}
 
 interface RawEntry {
     date: string;
@@ -53,7 +40,7 @@ class Store extends Publisher<StoreUpdate> {
         if (_.every(validated, v => v.isValid)) {
             this.save(rawEntries);
         }
-        this.dispatchEvent({ validated: validated });
+        this.publish({ validated: validated });
     }
 
     private save(rawEntries: RawEntry[]) {

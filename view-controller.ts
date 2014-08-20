@@ -10,7 +10,7 @@ class ViewController {
 
         this.addBlankRow(0);
 
-        store.addEventHandler(evt => this.sync(evt));
+        store.subscribe(evt => this.sync(evt));
     }
 
     private sync(evt: StoreUpdate) {

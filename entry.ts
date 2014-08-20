@@ -11,14 +11,15 @@ interface Entry {
     date: ShortDate;
 }
 
-function last<T>(arr: T[]) {
-    var lastIx = arr.length - 1;
-    return arr[lastIx];
+interface EntryUpdate {
+    entries: Entry[];
 }
-class EntryCollection {
+
+class EntryCollection extends Publisher<EntryUpdate> {
 
     constructor(store: Store) {
-        store.addEventHandler(su => this.update(su.validated));
+        super();
+        store.subscribe(su => this.update(su.validated));
     }
 
     static extractEntries(rawEntries: RawEntry[]) {
@@ -86,14 +87,13 @@ class EntryCollection {
     }
 
     private update(rawEntries: Validated<RawEntry>[]) {
-        if (!_.every(rawEntries, r => r.isValid)) {
+        if (rawEntries.length < 2 || !_.every(rawEntries, r => r.isValid)) {
             return;
         }
 
         var entries = EntryCollection.extractEntries(_.map(rawEntries, r => r.value));
 
-        _.map(entries, e => console.log(e));
-        //throw new Error('not yet implemented');
+        this.publish({ entries: entries });
     }
 }
 

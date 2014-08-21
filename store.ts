@@ -35,7 +35,10 @@ class Store extends Publisher<StoreUpdate> {
     }
 
     private update(rawEntries: RawEntry[]) {
-        var validated = _.map(rawEntries, re => this.validator.validate(re));
+        var validated = _.chain(rawEntries)
+            .filter(re => _.some(_.values(re)))
+            .map(re => this.validator.validate(re))
+            .value();
 
         if (_.every(validated, v => v.isValid)) {
             this.save(rawEntries);

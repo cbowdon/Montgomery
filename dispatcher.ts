@@ -1,3 +1,5 @@
+/// <reference path="typings/underscore/underscore.d.ts" />
+
 interface Callback {
     (payload: any): void;
 }
@@ -19,7 +21,7 @@ class Dispatcher {
 
     dispatch(name: string, payload: any): void {
         if (this.events[name]) {
-            this.events[name].forEach(cb => cb(payload));
+            _.each(this.events[name], cb => cb(payload));
         }
     }
 }

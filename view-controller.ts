@@ -51,6 +51,10 @@ class ViewController {
         row.find('input.task').val(values['task']);
         row.find('input.start').val(values['start']);
         row.addClass('has-success');
+
+        row.find('button.clear-row')
+            .removeClass('hidden')
+            .click(evt => row.find('input').val(null));
     }
 
     private addErrors(id: number, messages: string[]) {

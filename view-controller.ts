@@ -46,6 +46,7 @@ class ViewController {
     private fillRow(id: number, values: RawEntry) {
         var row = $('#entry-' + id);
 
+        row.find('input.date').val(values['date']);
         row.find('input.project').val(values['project']);
         row.find('input.task').val(values['task']);
         row.find('input.start').val(values['start']);

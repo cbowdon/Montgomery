@@ -5,8 +5,6 @@
 
 class Actions {
 
-    private date = $('#date');
-
     constructor(private dispatcher: Dispatcher) {
 
         $('#updateEntries').click(evt => this.updateEntries());
@@ -16,11 +14,9 @@ class Actions {
                 this.updateEntries();
             }
         });
-
-        this.date.val(new ShortDate().toISOString());
     }
 
-    updateEntries() {
+    private updateEntries() {
         var entries = $('#entry-container .entry-row'),
             data    = entries.map((i, e) => this.extractData($(e)));
 
@@ -29,7 +25,7 @@ class Actions {
 
     private extractData(entry: JQuery) {
         return {
-            date: this.date.val(),
+            date: entry.find('input.date').val(),
             project: entry.find('input.project').val(),
             task: entry.find('input.task').val(),
             start: entry.find('input.start').val(),

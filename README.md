@@ -31,8 +31,8 @@ I'm going to tackle the targets in order, so v0.0 will be target 1, etc..
 #### Progress status:
 * v0.0 *Input* - done
 * v0.1 *Sums* - done
-* v0.3 *Multi-device*
-* v0.4 *Keyboard shortcuts*
+* v0.3 *Multi-device layout* - in progress
+* v0.4 *Keyboard shortcuts* - not a high priority, since using the awesome Vimperator anyway
 * v0.5 *Prettification*
 * v0.6 *Unnecessary cool visualizations*
 
@@ -45,5 +45,4 @@ I'm going to tackle the targets in order, so v0.0 will be target 1, etc..
 * Blanket - not sure this is going to get complex enough to require code coverage, but if it does.
 
 ## License
-
 GPLv3 baby

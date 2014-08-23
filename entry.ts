@@ -1,4 +1,4 @@
-/// <reference path="typings/underscore/underscore.d.ts" />
+/// <reference path="typings/tsd.d.ts" />
 /// <reference path="result.ts" />
 /// <reference path="shortdate.ts" />
 /// <reference path="time.ts" />

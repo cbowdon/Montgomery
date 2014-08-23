@@ -1,5 +1,4 @@
-/// <reference path="typings/underscore/underscore.d.ts" />
-/// <reference path="typings/jquery/jquery.d.ts" />
+/// <reference path="typings/tsd.d.ts" />
 /// <reference path="store.ts" />
 
 class ViewController {

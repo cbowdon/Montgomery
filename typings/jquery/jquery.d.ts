@@ -1,6 +1,6 @@
 // Type definitions for jQuery 1.10.x / 2.0.x
 // Project: http://jquery.com/
-// Definitions by: Boris Yankov <https://github.com/borisyankov/>, Christian Hoffmeister <https://github.com/choffmeister>, Steve Fenton <https://github.com/Steve-Fenton>, Diullei Gomes <https://github.com/Diullei>, Tass Iliopoulos <https://github.com/tasoili>, Jason Swearingen <https://github.com/jasons-novaleaf>, Sean Hill <https://github.com/seanski>, Guus Goossens <https://github.com/Guuz>, Kelly Summerlin <https://github.com/ksummerlin>, Basarat Ali Syed <https://github.com/basarat>, Nicholas Wolverson <https://github.com/nwolverson>, Derek Cicerone <https://github.com/derekcicerone>, Andrew Gaspar <https://github.com/AndrewGaspar>, James Harrison Fisher <https://github.com/jameshfisher>, Seikichi Kondo <https://github.com/seikichi>, Benjamin Jackman <https://github.com/benjaminjackman>, Poul Sorensen <https://github.com/s093294>, Josh Strobl <https://github.com/JoshStrobl>, John Reilly <https://github.com/johnnyreilly/>
+// Definitions by: Boris Yankov <https://github.com/borisyankov/>, Christian Hoffmeister <https://github.com/choffmeister>, Steve Fenton <https://github.com/Steve-Fenton>, Diullei Gomes <https://github.com/Diullei>, Tass Iliopoulos <https://github.com/tasoili>, Jason Swearingen <https://github.com/jasons-novaleaf>, Sean Hill <https://github.com/seanski>, Guus Goossens <https://github.com/Guuz>, Kelly Summerlin <https://github.com/ksummerlin>, Basarat Ali Syed <https://github.com/basarat>, Nicholas Wolverson <https://github.com/nwolverson>, Derek Cicerone <https://github.com/derekcicerone>, Andrew Gaspar <https://github.com/AndrewGaspar>, James Harrison Fisher <https://github.com/jameshfisher>, Seikichi Kondo <https://github.com/seikichi>, Benjamin Jackman <https://github.com/benjaminjackman>, Poul Sorensen <https://github.com/s093294>, Josh Strobl <https://github.com/JoshStrobl>, John Reilly <https://github.com/johnnyreilly/>, Dick van den Brink <https://github.com/DickvdBrink>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
 /* *****************************************************************************
@@ -167,7 +167,16 @@ interface JQueryXHR extends XMLHttpRequest, JQueryPromise<any> {
      * The .overrideMimeType() method may be used in the beforeSend() callback function, for example, to modify the response content-type header. As of jQuery 1.5.1, the jqXHR object also contains the overrideMimeType() method (it was available in jQuery 1.4.x, as well, but was temporarily removed in jQuery 1.5). 
      */
     overrideMimeType(mimeType: string): any;
+    /**
+     * Cancel the request. 
+     *
+     * @param statusText A string passed as the textStatus parameter for the done callback. Default value: "canceled"
+     */
     abort(statusText?: string): void;
+    /**
+     * Incorporates the functionality of the .done() and .fail() methods, allowing (as of jQuery 1.8) the underlying Promise to be manipulated. Refer to deferred.then() for implementation details.
+     */
+    then(doneCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => void, failCallback?: (jqXHR: JQueryXHR, textStatus: string, errorThrown: any) => void): JQueryPromise<any>;
     /**
      * Property containing the parsed response if the response Content-Type is json
      */
@@ -355,6 +364,11 @@ interface JQueryPromise<T> {
      */
     progress(...progressCallbacks: any[]): JQueryPromise<T>;
 
+    /**
+     * Determine the current state of a Deferred object.
+     */
+    state(): string;
+
     // Deprecated - given no typings
     pipe(doneFilter?: (x: any) => any, failFilter?: (x: any) => any, progressFilter?: (x: any) => any): JQueryPromise<any>;
 
@@ -511,10 +525,6 @@ interface JQueryDeferred<T> extends JQueryPromise<T> {
      * @param args An optional array of arguments that are passed to the doneCallbacks.
      */
     resolveWith(context: any, ...args: any[]): JQueryDeferred<T>;
-    /**
-     * Determine the current state of a Deferred object.
-     */
-    state(): string;
 
     /**
      * Return a Deferred's Promise object.
@@ -531,9 +541,10 @@ interface BaseJQueryEventObject extends Event {
     data: any;
     delegateTarget: Element;
     isDefaultPrevented(): boolean;
-    isImmediatePropogationStopped(): boolean;
+    isImmediatePropagationStopped(): boolean;
     isPropagationStopped(): boolean;
     namespace: string;
+    originalEvent: Event;
     preventDefault(): any;
     relatedTarget: Element;
     result: any;
@@ -571,11 +582,7 @@ interface JQueryKeyEventObject extends JQueryInputEventObject {
     keyCode: number;
 }
 
-interface JQueryPopStateEventObject extends BaseJQueryEventObject {
-    originalEvent: PopStateEvent;
-}
-
-interface JQueryEventObject extends BaseJQueryEventObject, JQueryInputEventObject, JQueryMouseEventObject, JQueryKeyEventObject, JQueryPopStateEventObject {
+interface JQueryEventObject extends BaseJQueryEventObject, JQueryInputEventObject, JQueryMouseEventObject, JQueryKeyEventObject{
 }
 
 /*
@@ -3641,7 +3648,7 @@ interface JQuery {
      * 
      * @param func A function used as a test for each element in the set. this is the current DOM element.
      */
-    filter(func: (index: number) => any): JQuery;
+    filter(func: (index: number, element: Element) => any): JQuery;
     /**
      * Reduce the set of matched elements to those that match the selector or pass the function's test.
      * 

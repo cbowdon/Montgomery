@@ -1,4 +1,4 @@
-/// <reference path="typings/underscore/underscore.d.ts" />
+/// <reference path="typings/tsd.d.ts" />
 /// <reference path="publisher.ts" />
 /// <reference path="time.ts" />
 /// <reference path="validator.ts" />

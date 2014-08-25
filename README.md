@@ -31,10 +31,10 @@ I'm going to tackle the targets in order, so v0.0 will be target 1, etc..
 #### Progress status:
 * v0.0 *Input* - done
 * v0.1 *Sums* - done
-* v0.3 *Multi-device layout* - in progress
-* v0.4 *Keyboard shortcuts* - not a high priority, since using the awesome Vimperator anyway
-* v0.5 *Prettification*
-* v0.6 *Unnecessary cool visualizations*
+* v0.3 *Multi-device layout* - done
+* v0.4 *Power-user-friendly* - done
+* v0.5 *Prettification* - done, if you like default colors
+* v0.6 *Unnecessary cool visualizations* - got one
 
 ### Technical choices
 * Bower seems to be THE package manager for a web app.

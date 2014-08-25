@@ -36,9 +36,9 @@
             <input type="time" class="start form-control" placeholder="Start" />
           </div>
           <button type="reset" class="btn btn-default hidden clear-row" disabled>Clear</button>
-          <hr />
         </form>
         <ul id="errors" />
+        <hr class="hidden">
       </div>
       <table id="sum-container-template">
         <tr id="sum" class="sum-row">
@@ -53,7 +53,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12 bg-info">
-          <a href="#" onclick="localStorage.clear()">Clear local storage</a>
+          <a href="#" onclick="localStorage.clear()">Clear task history</a>
         </div>
       </div>
     </div>
@@ -73,6 +73,8 @@
           <div id="input-container" class="panel panel-default">
             <div class="panel-body">
               <div id="entry-container"></div>
+            </div>
+            <div class="panel-footer">
               <button id="update-entries" type="submit" class="add btn btn-default">Update</button>
             </div>
           </div>
@@ -95,6 +97,14 @@
           <div id="chart-container" />
         </div>
       </div>
+      <div id="page-footer" class="row">
+        <div class="col-md-12">
+          <hr>
+          <h5>
+            <span class="small pull-right">© Chris Bowdon 2014</span>
+          </h5>
+        </div>
+      </div>
     </div>
 
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -104,4 +114,3 @@
     <script src="dist/montgomery.js"></script>
   </body>
 </html>
-

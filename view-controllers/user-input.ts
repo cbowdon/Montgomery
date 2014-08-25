@@ -57,6 +57,8 @@ module ViewController {
             row.find('input.start').val(values['start']);
             row.addClass('has-success');
 
+            row.find('hr').removeClass('hidden');
+
             row.find('button.clear-row')
                 .removeClass('hidden')
                 .removeAttr('disabled')

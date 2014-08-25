@@ -20,3 +20,11 @@ div.row.page-header {
   margin-right: auto;
   padding: 1em
 }
+
+.entry-row hr {
+  margin: 0.5em auto;
+}
+
+#page-footer span {
+  padding: 1em;
+}

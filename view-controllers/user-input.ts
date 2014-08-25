@@ -32,6 +32,11 @@ module ViewController {
 
             if (_.every(evt.validated, v => v.isValid)) {
                 this.addBlankRow(evt.validated.length);
+                // put focus on the first input in the new blank row
+                container.find('.entry-row input.date:last').focus();
+            } else {
+                // put focus on first row with errors
+                container.find('.entry-row.has-error input:first').focus();
             }
         }
 

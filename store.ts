@@ -41,7 +41,7 @@ class Store extends Publisher<StoreUpdate> {
             .value();
 
         if (_.every(validated, v => v.isValid)) {
-            this.save(rawEntries);
+            this.save(_.map(validated, v => v.value));
         }
         this.publish({ validated: validated });
     }

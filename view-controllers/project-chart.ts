@@ -9,9 +9,26 @@ module ViewController {
             ec.subscribe(e => this.update(e.entries));
         }
 
+        private sumByProject(entries: Entry[]) {
+            return _.chain(entries)
+                .reduce((acc, e) => {
+                    var existing = _.find(acc, a => a.project === e.project);
+
+                    if (!existing) {
+                        acc.push({ project: e.project, minutes: e.minutes });
+                        return acc;
+                    }
+
+                    existing.minutes += e.minutes;
+                    return acc;
+                }, [])
+                .value();
+        }
+
         private update(entries: Entry[]) {
             var rad = 100,
                 len = 300,
+                data = this.sumByProject(entries),
                 vis: D3.Selection,
                 arc: D3.Svg.Arc,
                 pie: D3.Layout.PieLayout,
@@ -21,11 +38,9 @@ module ViewController {
             // TODO use d3's enter/exit/update functionality rather than redrawing
             $('#chart-container').empty();
 
-            // TODO group by projects
-
             vis = d3.select('#chart-container')
                 .append('svg:svg')
-                .data([entries])
+                .data([data])
                 .attr('width', len)
                 .attr('height', len)
                 .append('svg:g')
@@ -54,7 +69,7 @@ module ViewController {
                     return 'translate(' + arc.centroid(d) + ')';
                 })
                 .attr('text-anchor', 'middle')
-                .text((d: any, i: number)  => entries[i].project + ': ' + entries[i].minutes);
+                .text((d: any, i: number)  => data[i].project + ': ' + data[i].minutes);
         }
     }
 }

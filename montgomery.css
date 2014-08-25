@@ -13,3 +13,10 @@ input.project.form-control, input.task.form-control, td.project, td.task {
 td.minutes {
   width: 4em
 }
+
+div.row.page-header {
+  margin-top: 0;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1em
+}

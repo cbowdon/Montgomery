@@ -17,7 +17,6 @@ module ViewController {
         private sync(evt: StoreUpdate) {
             var container = $('#entry-container');
 
-
             container.empty();
 
             _.each(evt.validated, (v, i) => {
@@ -55,6 +54,7 @@ module ViewController {
 
             row.find('button.clear-row')
                 .removeClass('hidden')
+                .removeAttr('disabled')
                 .click(evt => row.find('input').val(null));
         }
 

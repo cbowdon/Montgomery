@@ -17,6 +17,10 @@ module ViewController {
 
             container.empty();
 
+            if (entries.length === 0) {
+                return;
+            }
+
             _.chain(entries)
                 .sortBy(e => e.task)
                 .sortBy(e => e.project)

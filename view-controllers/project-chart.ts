@@ -38,6 +38,10 @@ module ViewController {
             // TODO use d3's enter/exit/update functionality rather than redrawing
             $('#chart-container').empty();
 
+            if (entries.length === 0) {
+                return;
+            }
+
             vis = d3.select('#chart-container')
                 .append('svg:svg')
                 .data([data])

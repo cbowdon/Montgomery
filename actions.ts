@@ -6,13 +6,25 @@ class Actions {
 
     constructor(private dispatcher: Dispatcher) {
 
-        $('#updateEntries').click(evt => this.updateEntries());
+        $('#update-entries').click(evt => this.updateEntries());
 
-        $(document).keyup(evt => {
-            if (evt.key === 'Enter') {
+        $('#entry-container').keyup(evt => {
+
+            evt.stopPropagation();
+            evt.preventDefault();
+
+            if (Actions.isEnter(evt)) {
                 this.updateEntries();
             }
         });
+    }
+
+    private static isEnter(evt: JQueryKeyEventObject) {
+        return evt.keyCode === 13 &&
+            !evt.shiftKey &&
+            !evt.ctrlKey &&
+            !evt.metaKey &&
+            !evt.altKey;
     }
 
     private updateEntries() {

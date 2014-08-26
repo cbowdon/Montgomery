@@ -1,9 +1,9 @@
 input.date.form-control, td.date {
-  width: 10em;
+  width: 12em;
 }
 
 input.start.form-control {
-  width: 5em;
+  width: 9em;
 }
 
 input.project.form-control, input.task.form-control, td.project, td.task {

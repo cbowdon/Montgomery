@@ -44,5 +44,8 @@ I'm going to tackle the targets in order, so v0.0 will be target 1, etc..
 * QUnit - not likely to need much testing, mind.
 * Blanket - not sure this is going to get complex enough to require code coverage, but if it does.
 
+### Post completion review
+TODO
+
 ## License
 GPLv3 baby

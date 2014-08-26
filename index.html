@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" manifest="manifest.appcache">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -35,7 +35,7 @@
           <div class="form-group">
             <input type="time" class="start form-control" placeholder="Start" />
           </div>
-          <button type="reset" class="btn btn-default hidden clear-row" disabled>Clear</button>
+          <button type="reset" class="btn btn-default hidden clear-row" disabled><span class="glyphicon glyphicon-remove"></span> Clear</button>
         </form>
         <ul id="errors" />
         <hr class="hidden">
@@ -53,7 +53,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12 bg-info">
-          <a href="#" onclick="localStorage.clear()">Clear task history</a>
+          <a href="#" onclick="localStorage.clear()"><span class="glyphicon glyphicon-remove"></span> Clear task history</a>
         </div>
       </div>
     </div>
@@ -75,7 +75,7 @@
               <div id="entry-container"></div>
             </div>
             <div class="panel-footer">
-              <button id="update-entries" type="submit" class="add btn btn-default">Update</button>
+              <button id="update-entries" type="submit" class="add btn btn-default"><span class="glyphicon glyphicon-save"></span> Update</button>
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
-    <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/d3/d3.min.js"></script>
     <script src="dist/montgomery.js"></script>
   </body>
 </html>

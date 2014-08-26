@@ -1,24 +1,25 @@
 input.date.form-control, td.date {
-  width: 10em
+  width: 10em;
 }
 
 input.start.form-control {
-  width: 5em
+  width: 5em;
 }
 
 input.project.form-control, input.task.form-control, td.project, td.task {
-  width: 12em
+  width: 12em;
 }
 
 td.minutes {
-  width: 4em
+  width: 4em;
 }
 
 div.row.page-header {
-  margin-top: 0;
+  margin-top: auto;
   margin-left: auto;
   margin-right: auto;
-  padding: 1em
+  margin-bottom: 1em;
+  padding: 1em;
 }
 
 .entry-row hr {
@@ -27,4 +28,13 @@ div.row.page-header {
 
 #page-footer span {
   padding: 1em;
+}
+
+body {
+  background-image: -o-linear-gradient(bottom, rgb(200,230,255) 24%, rgb(255,255,255) 62%);
+  background-image: -moz-linear-gradient(bottom, rgb(200,230,255) 24%, rgb(255,255,255) 62%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-sbottom(0.24, rgb(200,230,255)), color-sbottom(0.62, rgb(255,255,255)));
+  background-image: -webkit-linear-gradient(bottom, rgb(200,230,255) 24%, rgb(255,255,255) 62%);
+  background-image: -ms-linear-gradient(bottom, rgb(200,230,255) 24%, rgb(255,255,255) 62%);
+  background-image: linear-gradient(bottom, rgb(200,230,255) 24%, rgb(255,255,255) 62%);
 }

@@ -16,6 +16,9 @@
     },
     "d3/d3.d.ts": {
       "commit": "c2694483f0fd038f3e769fa59498f230752b8100"
+    },
+    "moment/moment.d.ts": {
+      "commit": "560434941b80be13ec9a68e68f6978ae76af3d94"
     }
   }
 }

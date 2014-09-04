@@ -1,5 +1,4 @@
-/// <reference path="shortdate.ts" />
-/// <reference path="time.ts" />
+/// <reference path="typings/tsd.d.ts" />
 
 class Validated<T> {
 
@@ -28,22 +27,22 @@ class RawEntryValidator implements Validator<RawEntry> {
     validate(raw: RawEntry) {
         var prop: string,
             errs: string[] = [],
-            time: Result<Time>,
-            date: Result<ShortDate>;
+            time: Moment,
+            date: Moment;
 
         if (!raw.project) {
             errs.push('Invalid project');
         }
 
-        time = Time.parse(raw.start);
+        time = moment(raw.start, [ 'HH:mm', 'HHmm', 'hh:mm a' ]);
 
-        if (!time.isSuccess) {
+        if (!time.isValid()) {
             errs.push('Invalid time');
         }
 
-        date = ShortDate.parse(raw.date);
+        date = moment(raw.date, 'YYYY-MM-DD');
 
-        if (!date.isSuccess) {
+        if (!date.isValid()) {
             errs.push('Invalid date');
         }
 
@@ -54,8 +53,8 @@ class RawEntryValidator implements Validator<RawEntry> {
         return Validated.valid({
             project: raw.project,
             task: raw.task,
-            start: time.value.toISOString(),
-            date: date.value.toISOString()
+            start: time.format('HH:mm'),
+            date: date.format('YYYY-MM-DD')
         });
     }
 }

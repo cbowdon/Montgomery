@@ -46,9 +46,13 @@ module ViewController {
 
         private addBlankRow(id: number) {
             var entries = $('#entry-container'),
-                newRow  = this.templates.find('#entry').clone();
+                newRow  = this.templates.find('#entry').clone(),
+                defDate = moment().format(PREFERRED_DATE_FORMAT);
 
             newRow.attr('id', 'entry-' + id);
+
+            newRow.find('input.date').val(defDate);
+
             entries.append(newRow);
         }
 

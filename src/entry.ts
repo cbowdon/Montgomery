@@ -22,8 +22,8 @@ class EntryCollection extends Publisher<EntryUpdate> {
     static extractEntries(rawEntries: RawEntry[]) {
         var result = _.chain(rawEntries)
             .map(r => {
-                var dateRes = moment(r.date, 'YYYY-MM-DD', true),
-                    timeRes = moment(r.start, 'HH:mm', true);
+                var dateRes = moment(r.date, PREFERRED_DATE_FORMAT, true),
+                timeRes = moment(r.start, PREFERRED_TIME_FORMAT, true);
 
                 if (!dateRes.isValid() || !timeRes.isValid()) {
                     throw new Error('Invalid datetime.');
@@ -42,7 +42,7 @@ class EntryCollection extends Publisher<EntryUpdate> {
                     minutes: <number>undefined
                 };
             })
-            .groupBy(r => r.date.format('YYYY-MM-DD'))
+            .groupBy(r => r.date.format(PREFERRED_DATE_FORMAT))
             .values()
             .map(day => {
                 return _.chain(day)

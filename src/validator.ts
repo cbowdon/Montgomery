@@ -1,5 +1,11 @@
 /// <reference path="../typings/tsd.d.ts" />
 
+VALID_TIME_FORMATS = [ 'HH:mm', 'HHmm', 'hh:mm a' ];
+VALID_DATE_FORMATS = [ 'YYYY-MM-DD' ];
+
+PREFERRED_TIME_FORMAT = 'HH:mm';
+PREFERRED_DATE_FORMAT = 'YYYY-MM-DD';
+
 class Validated<T> {
 
     public isValid: boolean;
@@ -34,13 +40,13 @@ class RawEntryValidator implements Validator<RawEntry> {
             errs.push('Invalid project');
         }
 
-        time = moment(raw.start, [ 'HH:mm', 'HHmm', 'hh:mm a' ], true);
+        time = moment(raw.start, VALID_TIME_FORMATS, true);
 
         if (!time.isValid()) {
             errs.push('Invalid time');
         }
 
-        date = moment(raw.date, 'YYYY-MM-DD', true);
+        date = moment(raw.date, VALID_DATE_FORMATS, true);
 
         if (!date.isValid()) {
             errs.push('Invalid date');
@@ -53,8 +59,8 @@ class RawEntryValidator implements Validator<RawEntry> {
         return Validated.valid({
             project: raw.project,
             task: raw.task,
-            start: time.format('HH:mm'),
-            date: date.format('YYYY-MM-DD')
+            start: time.format(PREFERRED_TIME_FORMAT),
+            date: date.format(PREFERRED_DATE_FORMAT)
         });
     }
 }

@@ -15,7 +15,8 @@ module ViewController {
         }
 
         private sync(evt: StoreUpdate) {
-            var container = $('#entry-container');
+            var numEvents = evt.validated.length,
+                container = $('#entry-container');
 
             container.empty();
 
@@ -31,7 +32,10 @@ module ViewController {
             container.find('.entry-row.has-error input:first').focus();
 
             if (_.every(evt.validated, v => v.isValid)) {
-                this.addBlankRow(evt.validated.length);
+                this.addBlankRow(numEvents);
+                if (numEvents > 0) {
+                    this.autoFillDate(numEvents, evt.validated[numEvents - 1].value.date);
+                }
                 // put focus on the first input in the new blank row
                 container.find('.entry-row input.date:last').focus();
             } else {
@@ -51,10 +55,10 @@ module ViewController {
         private fillRow(id: number, values: RawEntry) {
             var row = $('#entry-' + id);
 
-            row.find('input.date').val(values['date']);
-            row.find('input.project').val(values['project']);
-            row.find('input.task').val(values['task']);
-            row.find('input.start').val(values['start']);
+            row.find('input.date').val(values.date);
+            row.find('input.project').val(values.project);
+            row.find('input.task').val(values.task);
+            row.find('input.start').val(values.start);
             row.addClass('has-success');
 
             row.find('hr').removeClass('hidden');
@@ -63,6 +67,12 @@ module ViewController {
                 .removeClass('hidden')
                 .removeAttr('disabled')
                 .click(evt => row.find('input').val(null));
+        }
+
+        private autoFillDate(id: number, date: string) {
+            var row = $('#entry-' + id);
+
+            row.find('input.date').val(date);
         }
 
         private addErrors(id: number, messages: string[]) {

@@ -1,10 +1,10 @@
 /// <reference path="../typings/tsd.d.ts" />
 
-VALID_TIME_FORMATS = [ 'HH:mm', 'HHmm', 'hh:mm a' ];
-VALID_DATE_FORMATS = [ 'YYYY-MM-DD' ];
+var VALID_TIME_FORMATS = [ 'HH:mm', 'HHmm', 'hh:mm a' ];
+var VALID_DATE_FORMATS = [ 'YYYY-MM-DD' ];
 
-PREFERRED_TIME_FORMAT = 'HH:mm';
-PREFERRED_DATE_FORMAT = 'YYYY-MM-DD';
+var PREFERRED_TIME_FORMAT = 'HH:mm';
+var PREFERRED_DATE_FORMAT = 'YYYY-MM-DD';
 
 class Validated<T> {
 

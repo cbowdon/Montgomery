@@ -34,13 +34,13 @@ class RawEntryValidator implements Validator<RawEntry> {
             errs.push('Invalid project');
         }
 
-        time = moment(raw.start, [ 'HH:mm', 'HHmm', 'hh:mm a' ]);
+        time = moment(raw.start, [ 'HH:mm', 'HHmm', 'hh:mm a' ], true);
 
         if (!time.isValid()) {
             errs.push('Invalid time');
         }
 
-        date = moment(raw.date, 'YYYY-MM-DD');
+        date = moment(raw.date, 'YYYY-MM-DD', true);
 
         if (!date.isValid()) {
             errs.push('Invalid date');

@@ -29,7 +29,8 @@ module Test {
 
     QUnit.test('Validator bad date', assert => {
         var raw: RawEntry,
-            result: Validated<RawEntry>;
+            result: Validated<RawEntry>,
+            validator = new RawEntryValidator();
 
         raw = {
             project: 'Some project',
@@ -38,7 +39,7 @@ module Test {
             start: '2028'
         };
 
-        result = new RawEntryValidator().validate(raw);
+        result = validator.validate(raw);
 
         assert.ok(!result.isValid);
 
@@ -47,7 +48,8 @@ module Test {
 
     QUnit.test('Validator bad time', assert => {
         var raw: RawEntry,
-            result: Validated<RawEntry>;
+            result: Validated<RawEntry>,
+            validator = new RawEntryValidator();
 
         raw = {
             project: 'Some project',
@@ -56,7 +58,7 @@ module Test {
             start: '3028'
         };
 
-        result = new RawEntryValidator().validate(raw);
+        result = validator.validate(raw);
 
         assert.ok(!result.isValid);
 

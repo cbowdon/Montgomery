@@ -23,8 +23,8 @@ class EntryCollection extends Publisher<EntryUpdate> {
     static extractEntries(rawEntries: RawEntry[]) {
         var result = _.chain(rawEntries)
             .map(r => {
-                var dateRes = moment(r.date, 'YYYY-MM-DD'),
-                  timeRes = moment(r.start, 'HH:mm');
+                var dateRes = moment(r.date, 'YYYY-MM-DD', true),
+                    timeRes = moment(r.start, 'HH:mm', true);
 
                 if (!dateRes.isValid() || !timeRes.isValid()) {
                     throw new Error('Invalid datetime.');

@@ -1,5 +1,4 @@
 /// <reference path="typings/tsd.d.ts" />
-/// <reference path="shortdate.ts" />
 /// <reference path="dispatcher.ts" />
 
 class Actions {

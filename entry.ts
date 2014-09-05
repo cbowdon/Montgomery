@@ -1,5 +1,4 @@
 /// <reference path="typings/tsd.d.ts" />
-/// <reference path="result.ts" />
 /// <reference path="store.ts" />
 
 interface Entry {

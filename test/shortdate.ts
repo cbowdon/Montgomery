@@ -1,4 +1,5 @@
-/// <reference path="../typings/qunit/qunit.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../shortdate.ts" />
 /// <reference path="../time.ts" />
 
 module Test {

@@ -1,19 +1,18 @@
-/// <reference path="../typings/qunit/qunit.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 /// <reference path="../entry.ts" />
 
 module Test {
     QUnit.module('Entry');
 
-    function sd(str: string) {
-        var dateRes = ShortDate.parse(str);
-        if (!dateRes.isSuccess) {
-            throw new TypeError('Invalid short date in test.');
-        }
-        return dateRes.value;
+    interface TestEntry {
+        date: string;
+        project: string;
+        task: string;
+        minutes: number;
     }
 
     QUnit.test('Extract entries - single day', assert => {
-        var raw: RawEntry[], result: Entry[];
+        var raw: RawEntry[], result: TestEntry[];
 
          raw = [
             { project: 'P0', task: 'T0', date: '2014-08-18', start: '09:00' },
@@ -31,7 +30,7 @@ module Test {
         result = _.chain(EntryCollection.extractEntries(raw))
             .sortBy(r => r.task)
             .sortBy(r => r.project)
-            .each(r => r.date = r.date.toISOString())
+            .map(r => { return { date: r.date.format('YYYY-MM-DD'), project: r.project, task: r.task, minutes: r.minutes }; })
             .value();
 
         assert.deepEqual(result, [
@@ -44,7 +43,7 @@ module Test {
     });
 
     QUnit.test('Extract entries - multiple days', assert => {
-        var raw: RawEntry[], result: Entry[];
+        var raw: RawEntry[], result: TestEntry[];
 
          raw = [
             { project: 'P0', task: 'T0', date: '2014-08-18', start: '09:00' },
@@ -69,7 +68,7 @@ module Test {
         result = _.chain(EntryCollection.extractEntries(raw))
             .sortBy(r => r.task)
             .sortBy(r => r.project)
-            .each(r => r.date = r.date.toISOString())
+            .map(r => { return { date: r.date.format('YYYY-MM-DD'), project: r.project, task: r.task, minutes: r.minutes }; })
             .sortBy(r => r.date)
             .value();
 

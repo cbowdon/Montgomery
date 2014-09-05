@@ -1,14 +1,12 @@
 /// <reference path="typings/tsd.d.ts" />
 /// <reference path="result.ts" />
-/// <reference path="shortdate.ts" />
-/// <reference path="time.ts" />
 /// <reference path="store.ts" />
 
 interface Entry {
     project: string;
     task: string;
     minutes: number;
-    date: ShortDate;
+    date: Moment;
 }
 
 interface EntryUpdate {
@@ -25,35 +23,38 @@ class EntryCollection extends Publisher<EntryUpdate> {
     static extractEntries(rawEntries: RawEntry[]) {
         var result = _.chain(rawEntries)
             .map(r => {
-                var dateRes = ShortDate.parse(r.date),
-                    timeRes = Time.parse(r.start);
+                var dateRes = moment(r.date, 'YYYY-MM-DD'),
+                  timeRes = moment(r.start, 'HH:mm');
 
-                if (!dateRes || !timeRes) {
+                if (!dateRes.isValid() || !timeRes.isValid()) {
                     throw new Error('Invalid datetime.');
                 }
+
+                timeRes.year(dateRes.year());
+                timeRes.month(dateRes.month());
+                timeRes.date(dateRes.date());
 
                 return {
                     project: r.project,
                     task: r.task,
-                    date: dateRes.value,
-                    start: timeRes.value,
-                    end: <Time>undefined,
-                    startMillis: dateRes.value.toMillis() + timeRes.value.toMillis(),
+                    date: dateRes,
+                    start: timeRes,
+                    end: <Moment>undefined,
                     minutes: <number>undefined
                 };
             })
-            .groupBy(r => r.date.toISOString())
+            .groupBy(r => r.date.format('YYYY-MM-DD'))
             .values()
             .map(day => {
                 return _.chain(day)
-                    .sortBy(r => r.startMillis)
+                    .sortBy(r => r.start.format())
                     .reduce((acc, r, i) => {
                         if (i === 0) {
                             return [r];
                         }
 
                         acc[i - 1].end = r.start;
-                        acc[i - 1].minutes = (acc[i - 1].end.toMillis() - acc[i - 1].start.toMillis()) / (60 * 1000);
+                        acc[i - 1].minutes = acc[i - 1].end.diff(acc[i - 1].start) / (60 * 1000)
 
                         if (i !== rawEntries.length - 1) {
                             // TODO assert that this entry is 'home'

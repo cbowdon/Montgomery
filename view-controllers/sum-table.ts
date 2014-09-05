@@ -24,12 +24,12 @@ module ViewController {
             _.chain(entries)
                 .sortBy(e => e.task)
                 .sortBy(e => e.project)
-                .sortBy(e => e.date.toMillis())
+                .sortBy(e => e.date.milliseconds())
                 .each((e, i) => {
                     var newRow = templ.clone();
 
                     newRow.attr('id', 'sum-' + i);
-                    newRow.find('.date').html(e.date.toISOString());
+                    newRow.find('.date').html(e.date.format('YYYY-MM-DD'));
                     newRow.find('.project').html(e.project);
                     newRow.find('.task').html(e.task);
                     newRow.find('.minutes').html(e.minutes.toString());

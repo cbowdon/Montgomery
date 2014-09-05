@@ -27,6 +27,24 @@ module Test {
         });
     });
 
+    QUnit.test('Validator bad date', assert => {
+        var raw: RawEntry,
+            result: Validated<RawEntry>;
+
+        raw = {
+            project: 'Some project',
+            task: 'Some task',
+            date: '2014',
+            start: '2028'
+        };
+
+        result = new RawEntryValidator().validate(raw);
+
+        assert.ok(!result.isValid);
+
+        assert.deepEqual(result.errors, ['Invalid date']);
+    });
+
     QUnit.test('Validator bad time', assert => {
         var raw: RawEntry,
             result: Validated<RawEntry>;

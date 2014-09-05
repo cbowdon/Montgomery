@@ -2,15 +2,15 @@
 
 # s/tsc11/tsc/g when tsc 1.1 compiler finally released
 
-all: montgomery.ts *.ts
-	tsc11 $^ --noImplicitAny --out bin/montgomery.js
+all: src/montgomery.ts src/*.ts
+	tsc11 $^ --noImplicitAny --out build/montgomery.js
 	rm -f *.js
 
 deps:
 	tsd reinstall
 
 test: all test/*.ts
-	tsc11 test/*.ts --noImplicitAny --out test/bin/montgomery-test.js
+	tsc11 test/*.ts --noImplicitAny --out test/build/montgomery-test.js
 	rm -f test/*.js
 
 dist: all test
@@ -18,7 +18,7 @@ dist: all test
 	test/make_test_dist.sh
 
 clean:
-	rm -rf bin/*.js
-	rm -rf test/bin/*.js
+	rm -rf build/*.js
+	rm -rf test/build/*.js
 	rm -rf dist/*
 	rm -rf test/dist/*

@@ -1,5 +1,5 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../entry.ts" />
+/// <reference path="../src/entry.ts" />
 
 module Test {
     QUnit.module('Entry');

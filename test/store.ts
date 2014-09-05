@@ -1,6 +1,6 @@
 /// <reference path="../typings/qunit/qunit.d.ts" />
-/// <reference path="../store.ts" />
-/// <reference path="../entry.ts" />
+/// <reference path="../src/store.ts" />
+/// <reference path="../src/entry.ts" />
 
 module Test {
     QUnit.module('Store');

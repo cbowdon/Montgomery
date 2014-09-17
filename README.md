@@ -61,7 +61,7 @@ Okay, time to see how Montgomery holds up in daily use. I have it installed as a
     * Auto-populated date breaks updating old entries.
     * Auto-populated date should give today's date. [done]
 * Having time next to date would be more natural. [done]
-* Undefined data error when entries cross date boundaries.
+* Undefined data error when entries cross date boundaries. [done]
 * Tedious to correctly capitalize everything, should normalize on save.
 * Clear task history should clear page also. [done]
 * Code coverage < 100%.

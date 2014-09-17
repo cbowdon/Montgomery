@@ -8,8 +8,80 @@ interface Entry {
     date: Moment;
 }
 
+interface TimeEntry extends Entry {
+    start: Moment;
+    end: Moment;
+}
+
 interface EntryUpdate {
     entries: Entry[];
+}
+
+function toTimeEntry(r: RawEntry) {
+    var dateRes = moment(r.date, PREFERRED_DATE_FORMAT, true),
+    timeRes = moment(r.start, PREFERRED_TIME_FORMAT, true);
+
+    if (!dateRes.isValid() || !timeRes.isValid()) {
+        throw new Error('Invalid datetime.');
+    }
+
+    timeRes.year(dateRes.year());
+    timeRes.month(dateRes.month());
+    timeRes.date(dateRes.date());
+
+    return {
+        project: r.project,
+        task: r.task,
+        date: dateRes,
+        start: timeRes,
+        end: <Moment>undefined,
+        minutes: <number>undefined
+    };
+}
+
+function calculateMinutes(day: TimeEntry[]) : TimeEntry[] {
+
+    if (day.length < 2) {
+        return [];
+    }
+
+    return _.chain(day)
+        .sortBy(r => r.start.format())
+        .reduce((acc, r, i) => {
+            if (i === 0) {
+                return [r];
+            }
+
+            acc[i - 1].end = r.start;
+            acc[i - 1].minutes = acc[i - 1].end.diff(acc[i - 1].start) / (60 * 1000)
+
+            if (i !== day.length - 1) {
+                acc.push(r);
+            }
+
+            return acc;
+        }, [])
+        .value();
+}
+
+function sumMinutes(day: TimeEntry[]) {
+    return _.reduce(day, (acc: Entry[], r: TimeEntry) => {
+        var existing: Entry;
+
+        if (r.project.toLowerCase() === 'home' || r.project.toLowerCase() === 'lunch') {
+            return acc;
+        }
+
+        existing  = _.find(acc, a => a.project === r.project && a.task === r.task);
+
+        if (!existing) {
+            acc.push({ project: r.project, task: r.task, minutes: r.minutes, date: r.date });
+            return acc;
+        }
+
+        existing.minutes += r.minutes;
+        return acc;
+    }, []);
 }
 
 class EntryCollection extends Publisher<EntryUpdate> {
@@ -19,71 +91,14 @@ class EntryCollection extends Publisher<EntryUpdate> {
         store.subscribe(su => this.update(su.validated));
     }
 
-    static extractEntries(rawEntries: RawEntry[]) {
-        var result = _.chain(rawEntries)
-            .map(r => {
-                var dateRes = moment(r.date, PREFERRED_DATE_FORMAT, true),
-                timeRes = moment(r.start, PREFERRED_TIME_FORMAT, true);
+    static extractEntries(rawEntries: RawEntry[]) : Entry[] {
+        var timeEntries = _.map(rawEntries, toTimeEntry);
+        var days        = _.groupBy(timeEntries, r => r.date.format(PREFERRED_DATE_FORMAT));
+        var daysArray   = _.values(days);
+        var populated   = _.map(daysArray, calculateMinutes);
+        var summed      = _.map(populated, sumMinutes);
 
-                if (!dateRes.isValid() || !timeRes.isValid()) {
-                    throw new Error('Invalid datetime.');
-                }
-
-                timeRes.year(dateRes.year());
-                timeRes.month(dateRes.month());
-                timeRes.date(dateRes.date());
-
-                return {
-                    project: r.project,
-                    task: r.task,
-                    date: dateRes,
-                    start: timeRes,
-                    end: <Moment>undefined,
-                    minutes: <number>undefined
-                };
-            })
-            .groupBy(r => r.date.format(PREFERRED_DATE_FORMAT))
-            .values()
-            .map(day => {
-                return _.chain(day)
-                    .sortBy(r => r.start.format())
-                    .reduce((acc, r, i) => {
-                        if (i === 0) {
-                            return [r];
-                        }
-
-                        acc[i - 1].end = r.start;
-                        acc[i - 1].minutes = acc[i - 1].end.diff(acc[i - 1].start) / (60 * 1000)
-
-                        if (i !== rawEntries.length - 1) {
-                            // TODO assert that this entry is 'home'
-                            acc.push(r);
-                        }
-
-                        return acc;
-                    }, [])
-                    .reduce((acc, r) => {
-                        var existing: Entry;
-
-                        if (r.project.toLowerCase() === 'home' || r.project.toLowerCase() === 'lunch') {
-                            return acc;
-                        }
-
-                        existing  = _.find(acc, a => a.project === r.project && a.task === r.task);
-
-                        if (!existing) {
-                            acc.push({ project: r.project, task: r.task, minutes: r.minutes, date: r.date });
-                            return acc;
-                        }
-
-                        existing.minutes += r.minutes;
-                        return acc;
-                    }, [])
-                    .value();
-            })
-            .flatten();
-
-        return result.value();
+        return _.flatten(summed);
     }
 
     private update(rawEntries: Validated<RawEntry>[]) {

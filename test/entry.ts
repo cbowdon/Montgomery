@@ -85,4 +85,30 @@ module Test {
 
         assert.strictEqual(_.reduce(result, (acc: number, r: Entry) => acc + r.minutes, 0), 3 * 450, 'Expect three 7.5 hour days');
     });
+
+    QUnit.test('Extract entries - first entry of second day', assert => {
+        var raw: RawEntry[], result: TestEntry[];
+
+         raw = [
+            { project: 'P0', task: 'T0', date: '2014-08-18', start: '09:00' },
+            { project: 'lunch', date: '2014-08-18', start: '12:30' },
+            { project: 'P0', task: 'T0', date: '2014-08-18', start: '13:00' },
+            { project: 'Home', date: '2014-08-18', start: '17:00' },
+
+            { project: 'P0', task: 'T0', date: '2014-08-19', start: '09:00' },
+        ];
+
+        result = _.chain(EntryCollection.extractEntries(raw))
+            .sortBy(r => r.task)
+            .sortBy(r => r.project)
+            .map(r => { return { date: r.date.format('YYYY-MM-DD'), project: r.project, task: r.task, minutes: r.minutes }; })
+            .sortBy(r => r.date)
+            .value();
+
+        assert.deepEqual(result, [
+            { date: '2014-08-18', project: 'P0', task: 'T0', minutes: 450 },
+        ]);
+
+        assert.strictEqual(_.reduce(result, (acc: number, r: Entry) => acc + r.minutes, 0), 1 * 450, 'Expect one 7.5 hour days');
+    });
 }

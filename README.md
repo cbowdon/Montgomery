@@ -57,14 +57,15 @@ I'm going to tackle the targets in order, so v0.0 will be target 1, etc..
 Okay, time to see how Montgomery holds up in daily use. I have it installed as an offline web app on my phone, so in theory this should be a significant improvement over the pen + paper time tracking. We shall see...
 
 #### Issues from dogfooding
-* Tedious to write date, should be auto-populated [done]
-    * Auto-populated date breaks updating old entries
-    * Auto-populated date should give today's date [done]
-* Having time next to date would be more natural [done]
-* Undefined data when crossing date boundaries
-* Tedious to correctly capitalize everything, should normalize
-* Clear task history should clear page also
-* Code coverage < 100%
+* Tedious to write date, should be auto-populated. [done]
+    * Auto-populated date breaks updating old entries.
+    * Auto-populated date should give today's date. [done]
+* Having time next to date would be more natural. [done]
+* Undefined data error when entries cross date boundaries.
+* Tedious to correctly capitalize everything, should normalize on save.
+* Clear task history should clear page also. [done]
+* Code coverage < 100%.
+* Should namespace code.
 
 ## License
 GPLv3 baby

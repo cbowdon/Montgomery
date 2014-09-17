@@ -1,6 +1,14 @@
 /// <reference path="../typings/tsd.d.ts" />
 /// <reference path="dispatcher.ts" />
 
+function isEnter(evt: JQueryKeyEventObject) {
+    return evt.keyCode === 13 &&
+        !evt.shiftKey &&
+        !evt.ctrlKey &&
+        !evt.metaKey &&
+        !evt.altKey;
+}
+
 class Actions {
 
     constructor(private dispatcher: Dispatcher) {
@@ -12,18 +20,17 @@ class Actions {
             evt.stopPropagation();
             evt.preventDefault();
 
-            if (Actions.isEnter(evt)) {
+            if (isEnter(evt)) {
                 this.updateEntries();
             }
         });
+
+        $('#clear-tasks').click(evt => this.clearTasks());
     }
 
-    private static isEnter(evt: JQueryKeyEventObject) {
-        return evt.keyCode === 13 &&
-            !evt.shiftKey &&
-            !evt.ctrlKey &&
-            !evt.metaKey &&
-            !evt.altKey;
+    private clearTasks() {
+        localStorage.clear();
+        location.reload(false);
     }
 
     private updateEntries() {

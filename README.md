@@ -59,8 +59,8 @@ Okay, time to see how Montgomery holds up in daily use. I have it installed as a
 #### Issues from dogfooding
 * Tedious to write date, should be auto-populated [done]
     * Auto-populated date breaks updating old entries
-    * Auto-populated date should give today's date
-* Having time next to date would be more natural
+    * Auto-populated date should give today's date [done]
+* Having time next to date would be more natural [done]
 * Undefined data when crossing date boundaries
 * Tedious to correctly capitalize everything, should normalize
 * Clear task history should clear page also

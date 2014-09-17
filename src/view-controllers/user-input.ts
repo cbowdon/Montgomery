@@ -34,7 +34,7 @@ module ViewController {
             if (_.every(evt.validated, v => v.isValid)) {
                 this.addBlankRow(numEvents);
                 if (numEvents > 0) {
-                    this.autoFillDate(numEvents, evt.validated[numEvents - 1].value.date);
+                    this.autoFillDate(numEvents, moment().format(PREFERRED_DATE_FORMAT));
                 }
                 // put focus on the first input in the new blank row
                 container.find('.entry-row input.date:last').focus();

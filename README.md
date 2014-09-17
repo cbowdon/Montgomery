@@ -36,6 +36,8 @@ I'm going to tackle the targets in order, so v0.0 will be target 1, etc..
 * v0.5 *Prettification* - done, if you like default colors
 * v0.6 *Unnecessary cool visualizations* - got one
 * v1.0 (all of the above, plus manual testing) - done! Time to start using!
+* v1.1 *Issue fixes* - in progress
+
 
 ### Technical choices
 * Bower seems to be THE package manager for a web app.
@@ -53,6 +55,16 @@ I'm going to tackle the targets in order, so v0.0 will be target 1, etc..
 * TypeScript is a very tasteful augmentation of JavaScript. It pulls off the neat trick of being robust without being restrictive. I'm already using TypeScript on my other projects.
 * QUnit is simple, but does its job well.
 Okay, time to see how Montgomery holds up in daily use. I have it installed as an offline web app on my phone, so in theory this should be a significant improvement over the pen + paper time tracking. We shall see...
+
+#### Issues from dogfooding
+* Tedious to write date, should be auto-populated [done]
+    * Auto-populated date breaks updating old entries
+    * Auto-populated date should give today's date
+* Having time next to date would be more natural
+* Undefined data when crossing date boundaries
+* Tedious to correctly capitalize everything, should normalize
+* Clear task history should clear page also
+* Code coverage < 100%
 
 ## License
 GPLv3 baby

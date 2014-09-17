@@ -1,16 +1,15 @@
 .PHONY:
 
-# s/tsc11/tsc/g when tsc 1.1 compiler finally released
-
 all: src/montgomery.ts src/*.ts
-	tsc11 $^ --noImplicitAny --out build/montgomery.js
+	tsc $^ --noImplicitAny --out build/montgomery.js
 	rm -f *.js
 
 deps:
 	tsd reinstall
 
 test: all test/*.ts
-	tsc11 test/*.ts --noImplicitAny --out test/build/montgomery-test.js
+	tsc src/montgomery.ts --outDir test/build
+	tsc test/*.ts --noImplicitAny --out test/build/montgomery-test.js
 	rm -f test/*.js
 
 dist: all test

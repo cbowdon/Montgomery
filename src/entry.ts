@@ -84,6 +84,18 @@ function sumMinutes(day: TimeEntry[]) {
     }, []);
 }
 
+function extractEntries(rawEntries: RawEntry[]) {
+    var timeEntries = _.map(rawEntries, toTimeEntry);
+    var days        = _.groupBy(timeEntries, r => r.date.format(PREFERRED_DATE_FORMAT));
+    var daysArray   = _.values(days);
+    // tsc was inferring wrong types here, hence no chain
+    // it could be that underscore.d.ts is not right
+    var populated   = _.map(daysArray, calculateMinutes);
+    var summed      = _.map(populated, sumMinutes);
+
+    return _.flatten(summed);
+}
+
 class EntryCollection extends Publisher<EntryUpdate> {
 
     constructor(store: Store) {
@@ -91,22 +103,12 @@ class EntryCollection extends Publisher<EntryUpdate> {
         store.subscribe(su => this.update(su.validated));
     }
 
-    static extractEntries(rawEntries: RawEntry[]) : Entry[] {
-        var timeEntries = _.map(rawEntries, toTimeEntry);
-        var days        = _.groupBy(timeEntries, r => r.date.format(PREFERRED_DATE_FORMAT));
-        var daysArray   = _.values(days);
-        var populated   = _.map(daysArray, calculateMinutes);
-        var summed      = _.map(populated, sumMinutes);
-
-        return _.flatten(summed);
-    }
-
     private update(rawEntries: Validated<RawEntry>[]) {
         if (rawEntries.length < 2 || !_.every(rawEntries, r => r.isValid)) {
             return;
         }
 
-        var entries = EntryCollection.extractEntries(_.map(rawEntries, r => r.value));
+        var entries = extractEntries(_.map(rawEntries, r => r.value));
 
         this.publish({ entries: entries });
     }

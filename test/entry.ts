@@ -27,7 +27,7 @@ module Test {
             { project: 'Home', date: '2014-08-18', start: '17:00' }
         ];
 
-        result = _.chain(EntryCollection.extractEntries(raw))
+        result = _.chain(extractEntries(raw))
             .sortBy(r => r.task)
             .sortBy(r => r.project)
             .map(r => { return { date: r.date.format('YYYY-MM-DD'), project: r.project, task: r.task, minutes: r.minutes }; })
@@ -65,7 +65,7 @@ module Test {
             { project: 'Home', date: '2014-08-20', start: '17:00' }
         ];
 
-        result = _.chain(EntryCollection.extractEntries(raw))
+        result = _.chain(extractEntries(raw))
             .sortBy(r => r.task)
             .sortBy(r => r.project)
             .map(r => { return { date: r.date.format('YYYY-MM-DD'), project: r.project, task: r.task, minutes: r.minutes }; })
@@ -98,7 +98,7 @@ module Test {
             { project: 'P0', task: 'T0', date: '2014-08-19', start: '09:00' },
         ];
 
-        result = _.chain(EntryCollection.extractEntries(raw))
+        result = _.chain(extractEntries(raw))
             .sortBy(r => r.task)
             .sortBy(r => r.project)
             .map(r => { return { date: r.date.format('YYYY-MM-DD'), project: r.project, task: r.task, minutes: r.minutes }; })

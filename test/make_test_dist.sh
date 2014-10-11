@@ -1,5 +1,9 @@
 #!/bin/sh
 
+if [ ! -d test/dist ]; then 
+    mkdir test/dist 
+fi
+    
 cp  bower_components/jquery/dist/jquery.min.js \
     bower_components/jquery/dist/jquery.min.map \
     bower_components/underscore/underscore.js \

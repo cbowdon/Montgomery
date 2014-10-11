@@ -5,7 +5,11 @@ all: src/montgomery.ts src/*.ts
 	rm -f *.js
 
 deps:
-	tsd reinstall
+	npm install -g typescript
+	npm install -g tsd
+	npm install -g bower
+	tsd reinstall --save
+	bower install
 
 test: all test/*.ts
 	tsc src/montgomery.ts --outDir test/build --sourceMap

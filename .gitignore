@@ -4,3 +4,4 @@ test/dist/*
 typings/*
 build/*
 test/build/*
+.c9

@@ -66,6 +66,8 @@ Okay, time to see how Montgomery holds up in daily use. I have it installed as a
 * Clear task history should clear page also. [done]
 * Code coverage < 100%.
 * Should namespace code.
+* Bug: sum table randomly ordered [done]
+* Sum table should show hours not minutes [done]
 
 ## License
 GPLv3 baby

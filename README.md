@@ -23,6 +23,9 @@ The downsides are:
 - having to sum the times manually when a task is revisited
 - bits of dead tree everywhere
 
+## License
+GPLv3 baby
+
 ## Plans
 
 ### Roadmap
@@ -57,17 +60,21 @@ I'm going to tackle the targets in order, so v0.0 will be target 1, etc..
 Okay, time to see how Montgomery holds up in daily use. I have it installed as an offline web app on my phone, so in theory this should be a significant improvement over the pen + paper time tracking. We shall see...
 
 #### Issues from dogfooding
-* Tedious to write date, should be auto-populated. [done]
-    * Auto-populated date breaks updating old entries.
-    * Auto-populated date should give today's date. [done]
-* Having time next to date would be more natural. [done]
-* Undefined data error when entries cross date boundaries. [done]
-* Tedious to correctly capitalize everything, should normalize on save.
-* Clear task history should clear page also. [done]
-* Code coverage < 100%.
-* Should namespace code.
-* Bug: sum table randomly ordered [done]
-* Sum table should show hours not minutes [done]
 
-## License
-GPLv3 baby
+##### Closed
+* Tedious to write date, should be auto-populated.
+* Auto-populated date should give today's date.
+* Having time next to date would be more natural.
+* Undefined data error when entries cross date boundaries.
+* Clear task history should clear page also.
+* Bug: sum table randomly ordered.
+* Sum table should show hours not minutes.
+
+##### Open (roughly in priority order)
+* Auto-populated date breaks updating old entries.
+* Tedious to correctly capitalize everything, should normalize on save.
+* D3 is too OP for a simple pie chart. Replace?
+* Should automatically time-sort entries.
+* Should namespace code.
+* Strongly-typed views possible?
+* Code coverage < 100%.

@@ -5,3 +5,4 @@ typings/*
 build/*
 test/build/*
 .c9
+.idea

@@ -5,7 +5,14 @@ module ViewController {
 
     export class ProjectChart {
 
+        private canvas: HTMLCanvasElement;
+
+        private ctx: CanvasRenderingContext2D;
+
         constructor(ec: EntryCollection) {
+            this.canvas = <HTMLCanvasElement >document.getElementById('chart-container');
+            this.ctx = this.canvas.getContext('2d');
+
             ec.subscribe(e => this.update(e.entries));
         }
 
@@ -21,59 +28,71 @@ module ViewController {
 
                     existing.minutes += e.minutes;
                     return acc;
-                }, [])
-                .value();
+                }, []);
         }
 
         private update(entries: Entry[]) {
-            var rad = 100,
-                len = 300,
-                data = this.sumByProject(entries),
-                vis: D3.Selection,
-                arc: D3.Svg.Arc,
-                pie: D3.Layout.PieLayout,
-                color: D3.Scale.OrdinalScale,
-                arcs: D3.Selection;
+            var data: CircularChartData[],
+                options: PieChartOptions,
+                colGen: ColorGenerator;
 
-            // TODO use d3's enter/exit/update functionality rather than redrawing
-            $('#chart-container').empty();
+            colGen = new ColorGenerator();
 
-            if (entries.length === 0) {
-                return;
+            data = this.sumByProject(entries)
+                .map(s => {
+                    var col = colGen.next();
+                    return {
+                        color: col.toString(),
+                        highlight: col.highlight().toString(),
+                        label: s.project,
+                        value: s.minutes
+                    };
+                }).value();
+
+            options = {
+                showToolTips: true
+            };
+
+            new Chart(this.ctx).Pie(data, options);
+        }
+    }
+
+    class Color {
+        constructor(private red: number,
+                    private green: number,
+                    private blue: number) {}
+
+        public highlight() {
+            return new Color(
+                this.red + 50,
+                this.green + 50,
+                this.blue + 50);
+        }
+        public toString() {
+            return 'rgb(' + this.red + ', ' + this.green + ', ' + this.blue + ')';
+        }
+    }
+
+    class ColorGenerator {
+
+        private colors = [
+            new Color(0x66, 0, 0),
+            new Color(0x44, 0x44, 0),
+            new Color(0, 0x66, 0),
+            new Color(0, 0x44, 0x44),
+            new Color(0, 0, 0x66)
+        ];
+
+        private idx = 0;
+
+        public next() {
+            this.idx += 1;
+
+            if (this.idx >= this.colors.length) {
+                this.idx = 0;
             }
 
-            vis = d3.select('#chart-container')
-                .append('svg:svg')
-                .data([data])
-                .attr('width', len)
-                .attr('height', len)
-                .append('svg:g')
-                .attr('transform', 'translate(' + rad + ', ' + rad + ')');
-
-            arc = d3.svg.arc().outerRadius(rad);
-
-            pie = d3.layout.pie().value(e => e.minutes);
-
-            color = d3.scale.category20();
-
-            arcs = vis.selectAll('g.slice')
-                .data(pie)
-                .enter()
-                .append('svg:g')
-                .attr('class', 'slice');
-
-            arcs.append('svg:path')
-                .attr('fill', (d: any, i: number) => color(i))
-                .attr('d', arc);
-
-            arcs.append('svg:text')
-                .attr('transform', (d: any) => {
-                    d.innerRadius = 0;
-                    d.outerRadius = rad;
-                    return 'translate(' + arc.centroid(d) + ')';
-                })
-                .attr('text-anchor', 'middle')
-                .text((d: any, i: number)  => data[i].project + ': ' + data[i].minutes);
+            return this.colors[this.idx];
         }
     }
 }

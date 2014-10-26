@@ -69,11 +69,11 @@ Okay, time to see how Montgomery holds up in daily use. I have it installed as a
 * Clear task history should clear page also.
 * Bug: sum table randomly ordered.
 * Sum table should show hours not minutes.
+* D3 is too OP for a simple pie chart. Replace?
 
 ##### Open (roughly in priority order)
 * Auto-populated date breaks updating old entries.
 * Tedious to correctly capitalize everything, should normalize on save.
-* D3 is too OP for a simple pie chart. Replace?
 * Should automatically time-sort entries.
 * Should namespace code.
 * Strongly-typed views possible?

@@ -70,11 +70,13 @@ Okay, time to see how Montgomery holds up in daily use. I have it installed as a
 * Bug: sum table randomly ordered.
 * Sum table should show hours not minutes.
 * D3 is too OP for a simple pie chart. Replace?
+* Old charts not cleared properly.
 
 ##### Open (roughly in priority order)
-* Auto-populated date breaks updating old entries.
+* Auto-populated date breaks updating old entries (causes validation error)
 * Tedious to correctly capitalize everything, should normalize on save.
 * Should automatically time-sort entries.
-* Should namespace code.
+* Code style: explicit public, explicit return types.
 * Strongly-typed views possible?
+* Should namespace code.
 * Code coverage < 100%.

@@ -9,6 +9,8 @@ module ViewController {
 
         private ctx: CanvasRenderingContext2D;
 
+        private chart: CircularInstance;
+
         constructor(ec: EntryCollection) {
             this.canvas = <HTMLCanvasElement >document.getElementById('chart-container');
             this.ctx = this.canvas.getContext('2d');
@@ -50,10 +52,15 @@ module ViewController {
                 }).value();
 
             options = {
-                showToolTips: true
+                showToolTips: true,
+                animateRotate: true,
+                animateScale: true
             };
 
-            new Chart(this.ctx).Pie(data, options);
+            if (this.chart) {
+                this.chart.destroy();
+            }
+            this.chart = new Chart(this.ctx).Pie(data, options);
         }
     }
 

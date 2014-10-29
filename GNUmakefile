@@ -1,6 +1,7 @@
 .PHONY:
 
 all: src/montgomery.ts src/*.ts
+	ctags -R src/
 	tsc $^ --noImplicitAny --out build/montgomery.js --sourceMap
 	rm -f *.js
 
@@ -21,6 +22,7 @@ dist: all test
 	test/make_test_dist.sh
 
 clean:
+	rm tags
 	rm -rf build/*.js
 	rm -rf test/build/*.js
 	rm -rf dist/*

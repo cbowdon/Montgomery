@@ -1,6 +1,5 @@
 ///<reference path="../node_modules/mithril/mithril.d.ts" />
 import vm = require("./day-vm");
-
 class DayController {
     vm: vm.DayViewModel;
 }
@@ -8,6 +7,7 @@ class DayController {
 export var controller = DayController;
 
 export var view = function(ctrl: DayController) : MithrilVirtualElement {
+    console.log("viewed");
     return m("div", [
         m("input#start"),
         m("input#project"),

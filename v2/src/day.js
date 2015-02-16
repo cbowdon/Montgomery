@@ -5,6 +5,7 @@ var DayController = (function () {
 })();
 exports.controller = DayController;
 exports.view = function (ctrl) {
+    console.log("viewed");
     return m("div", [
         m("input#start"),
         m("input#project"),

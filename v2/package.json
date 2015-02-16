@@ -1,0 +1,26 @@
+{
+  "name": "Montgomery",
+  "version": "2.0.0",
+  "description": "Montgomery - time tracker =========================",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cbowdon/Montgomery.git"
+  },
+  "author": "",
+  "license": "GPL",
+  "bugs": {
+    "url": "https://github.com/cbowdon/Montgomery/issues"
+  },
+  "homepage": "https://github.com/cbowdon/Montgomery",
+  "dependencies": {
+    "moment": "^2.9.0",
+    "mithril": "git://github.com/cbowdon/mithril.js#typescript_stricter_defs"
+  }
+}

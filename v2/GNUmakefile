@@ -10,3 +10,8 @@ deps:
 	npm install -g tsd
 	npm install
 	tsd reinstall --save
+
+clean:
+	rm -rf src/*.js
+	rm -rf src/*.js.map
+	rm -rf bin/*

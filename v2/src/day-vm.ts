@@ -1,7 +1,7 @@
 ///<reference path="../typings/tsd.d.ts" />
 ///<reference path="../node_modules/mithril/mithril.d.ts" />
 
-import data = require("./data");
+import model = require("./model");
 
 const enum DayState { Minimized, Open }
 

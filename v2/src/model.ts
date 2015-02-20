@@ -11,3 +11,8 @@ export interface Day {
     add(entry: Entry): void;
     del(entry: Entry): void;
 }
+
+export class Store {
+    load(): Day[] { throw new Error("nyi"); }
+    save(day: Day[]): void { throw new Error("nyi"); }
+}

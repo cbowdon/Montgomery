@@ -20,7 +20,11 @@
   },
   "homepage": "https://github.com/cbowdon/Montgomery",
   "dependencies": {
+    "mithril": "git://github.com/cbowdon/mithril.js#typescript_stricter_defs",
     "moment": "^2.9.0",
-    "mithril": "git://github.com/cbowdon/mithril.js#typescript_stricter_defs"
+    "tsmonad": "git://github.com/cbowdon/tsmonad"
+  },
+  "devDependencies": {
+    "qunitjs": "~1.17.1"
   }
 }

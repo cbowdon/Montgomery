@@ -34,7 +34,7 @@ function viewBlankEntry(ctrl: DayController) {
         input("#start-blank[type=date]", entry.start),
         input("#project-blank", entry.project),
         input("#task-blank", entry.task),
-        m("input#add-blank[type=button]", { value: "+", onclick: _ => ctrl.add(entry) }),
+        m("input#add-blank[type=button]", { value: "+", onclick: (e:Event) => ctrl.add(entry) }),
     ]);
 }
 

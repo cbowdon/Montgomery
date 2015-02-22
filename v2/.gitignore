@@ -1,0 +1,6 @@
+*.js
+*.js.map
+bin/*
+node_modules
+typings
+

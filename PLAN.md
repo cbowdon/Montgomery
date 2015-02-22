@@ -88,11 +88,14 @@ _Always throw away the prototype_ - J. Atwood?
 #### Re-write
 Never re-write your code. Instead, declare your code a prototype and throw it away. Just kidding. But I am going to re-write. Conventional wisdom/Spolsky suggests that the existing codebase is battle-hardened, full of fixes to problems lost in the mists of time. But for a one-person project this isn't such a big deal.
 
+#### NPM
+I was wrong about Bower. It didn't offer me any advantages over NPM. I'm also about to chuck out a load of dependencies, so I might as well switch to the package manager I'm already familiar with.
+
 #### Mithril.js
 [Mithril.js](https://lhorie.github.io/mithril) looks fantastic. I've done some work on the .d.ts and I think it should allow me to do strongly-typed views. This may involve migrating to more of a MVC architecture rather than Flux.
 
 #### Data structure
-I've gone back on the idea that entries should be a flat list. Having a heirarchy where entries belong to a day makes more sense.
+I've gone back on the idea that entries should be a flat list. Having a heirarchy where entries belong to a day makes more sense. I'd also like to start using the command/event sourcing pattern; I found it very nice to work with in other projects.
 
 #### Foundations for storing data on server
 It would be good to open the door to storing the data on a server at some point (current all in local storage - a totally independant app). So all retrieved data should be treated as potentially asynchronous. Mithril's request function may help here.

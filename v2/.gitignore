@@ -1,6 +1,9 @@
 *.js
 *.js.map
 bin/*
+test/bin/*
 node_modules
 typings
-
+.vagrant
+Vagrantfile
+cookbooks

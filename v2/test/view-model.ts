@@ -10,6 +10,8 @@ function tests() {
     var chance = new Chance(),
         projects = chance.n(chance.string, 5);
 
+    mixinChanceTime();
+
     QUnit.module('view-model.Entry');
     QUnit.test('Components all valid => no errors', assert => {
         var entry = new vm.Entry(projects);

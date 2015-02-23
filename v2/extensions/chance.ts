@@ -6,10 +6,12 @@ declare module Chance {
     }
 }
 
-chance.mixin({
-    'time': () => {
-        var hr = chance.hour({ twentyfour: true }),
-            mn = chance.minute();
-        return `${hr}:${mn}`;
-    }
-});
+function mixinChanceTime() {
+    chance.mixin({
+        'time': () => {
+            var hr = chance.hour({ twentyfour: true }),
+                mn = chance.minute();
+            return `${hr}:${mn}`;
+        }
+    });
+}

@@ -1,6 +1,6 @@
 /// <reference path="../node_modules/mithril/mithril.d.ts" />
 import m = require('mithril');
-import field = require('field');
+import field = require('./field');
 
 export class Day {
     entries: Entry[];

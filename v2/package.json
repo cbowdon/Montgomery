@@ -25,6 +25,7 @@
     "tsmonad": "git://github.com/cbowdon/tsmonad"
   },
   "devDependencies": {
-    "qunitjs": "~1.17.1"
+    "qunitjs": "~1.17.1",
+    "chance": "~0.7.3"
   }
 }

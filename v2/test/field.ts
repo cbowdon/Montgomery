@@ -1,14 +1,17 @@
 /// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../typings/chance/chance.d.ts" />
 /// <reference path="../extensions/qunit.ts" />
+import Chance = require('chance');
 import field = require('../src/field');
-import arbitrary = require('./arbitrary');
 
 export = tests;
 function tests() {
+    var chance = new Chance();
+
     QUnit.module('field.Text');
     QUnit.test('Any string => no errors', assert => {
         var text = new field.Text();
-        text.value(arbitrary.string());
+        text.value(chance.string());
         text.validate();
         assert.empty(text.errors);
     });

@@ -1,25 +1,18 @@
+/// <reference path="../typings/tsd.d.ts" />
 /// <reference path="../node_modules/tsmonad/dist/tsmonad.d.ts" />
 /// <reference path="../node_modules/mithril/mithril.d.ts" />
 
 import m = require('mithril');
 import tsm = require('tsmonad');
+import moment = require('moment');
 
 type Validator = (str:string) => tsm.Either<string,string>;
 
-function isRightLength() : Validator {
-    return s =>
-        s.length === 3 || s.length === 2 ?
-            tsm.Either.right(s) :
-            tsm.Either.left(`${s} is not in the right format (Hmm or HHmm)`);
-}
-
 function isValidTime() : Validator {
     return s => {
-        var min = s.substring(-2),
-            hr = s.length === 3 ? s.substring(1) : s.substring(2),
-            h = parseInt(hr),
-            m = parseInt(min);
-        return h >= 0 && h < 24 && m >= 0 && m < 60 ?
+        var formats = [ 'HHmm', 'HH:mm' ],
+            time = moment(s, formats, true);
+        return time.isValid() ?
             tsm.Either.right(s) :
             tsm.Either.left(`${s} is not a valid time`);
     }
@@ -29,7 +22,7 @@ function isOneOf(options: string[]) : Validator {
     return s =>
         options.some(o => o === s) ?
             tsm.Either.right(s) :
-            tsm.Either.left(`${s} is not one of the options`)
+            tsm.Either.left(`"${s}" is not one of the options`)
 }
 
 export class Text {
@@ -54,7 +47,7 @@ export class Text {
 
 export class Time extends Text {
     constructor(validators: Validator[] = []) {
-        super(validators.concat([isRightLength(), isValidTime()]));
+        super(validators.concat([ isValidTime() ]));
     }
 }
 

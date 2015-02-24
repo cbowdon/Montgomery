@@ -12,8 +12,7 @@ function tests() {
     QUnit.test('Any string => no errors', assert => {
         var text = new field.Text();
         text.value(chance.string());
-        text.validate();
-        assert.empty(text.errors);
+        assert.empty(text.errors());
     });
 
     QUnit.module('field.Time');
@@ -29,8 +28,7 @@ function tests() {
         validTimes.forEach(t => {
             var time = new field.Time();
             time.value(t);
-            time.validate();
-            assert.empty(time.errors, t);
+            assert.empty(time.errors(), t);
         });
     });
     QUnit.test('Invalid time(s) => errors', assert => {
@@ -45,8 +43,7 @@ function tests() {
         invalidTimes.forEach(t => {
             var time = new field.Time();
             time.value(t);
-            time.validate();
-            assert.notEmpty(time.errors, t);
+            assert.notEmpty(time.errors(), t);
         });
     });
 
@@ -54,13 +51,11 @@ function tests() {
     QUnit.test('Any value => no errors', (assert: QUnitAssert) => {
         var text = new field.Select(['a', 'b', 'c']);
         text.value('a');
-        text.validate();
-        assert.empty(text.errors);
+        assert.empty(text.errors());
     });
     QUnit.test('No value => errors', assert => {
         var text = new field.Select(['a', 'b', 'c']);
         text.value('');
-        text.validate();
-        assert.notEmpty(text.errors);
+        assert.notEmpty(text.errors());
     });
 }

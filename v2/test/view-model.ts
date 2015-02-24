@@ -15,40 +15,35 @@ function tests() {
     QUnit.module('view-model.Entry');
     QUnit.test('Components all valid => no errors', assert => {
         var entry = new vm.Entry(projects);
-        entry.start.value(chance.time());
-        entry.project.value(projects[0]);
-        entry.task.value(chance.string());
-        entry.validate();
-        assert.empty(entry.errors);
+        entry.fields.start.value(chance.time());
+        entry.fields.project.value(projects[0]);
+        entry.fields.task.value(chance.string());
+        assert.empty(entry.errors());
     });
     QUnit.test('N invalid components => N errors', assert => {
         assert.expect(3);
         [ // add scope for each test case
             () => {
                 var entry = new vm.Entry(projects);
-                entry.start.value(chance.time());
-                entry.project.value('');
-                entry.task.value(chance.string());
-                return entry;
+                entry.fields.start.value(chance.time());
+                entry.fields.project.value('');
+                entry.fields.task.value(chance.string());
+                return entry.errors();
             },
             () => {
                 var entry = new vm.Entry(projects);
-                entry.start.value('3536');
-                entry.project.value('');
-                entry.task.value(chance.string());
-                return entry;
+                entry.fields.start.value('3536');
+                entry.fields.project.value('');
+                entry.fields.task.value(chance.string());
+                return entry.errors();
             },
             () => {
                 var entry = new vm.Entry(projects);
-                entry.start.value('');
-                entry.project.value(projects[0]);
-                entry.task.value(chance.string());
-                return entry;
+                entry.fields.start.value('');
+                entry.fields.project.value(projects[0]);
+                entry.fields.task.value(chance.string());
+                return entry.errors();
             }
-        ].forEach(testCase => {
-            var entry = testCase();
-            entry.validate();
-            assert.notEmpty(entry.errors);
-        });
+        ].forEach(testCase => assert.notEmpty(testCase()));
     });
 }

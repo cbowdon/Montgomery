@@ -4,55 +4,36 @@
 
 import m = require('mithril');
 import tsm = require('tsmonad');
-import moment = require('moment');
+import val = require('./validation');
 
-type Validator = (str:string) => tsm.Either<string,string>;
-
-function isValidTime() : Validator {
-    return s => {
-        var formats = [ 'HHmm', 'HH:mm' ],
-            time = moment(s, formats, true);
-        return time.isValid() ?
-            tsm.Either.right(s) :
-            tsm.Either.left(`${s} is not a valid time`);
-    }
-}
-
-function isOneOf(options: string[]) : Validator {
-    return s =>
-        options.some(o => o === s) ?
-            tsm.Either.right(s) :
-            tsm.Either.left(`"${s}" is not one of the options`)
-}
-
-export class Text {
+export class Text implements val.Validatable {
    value = m.prop('');
-   errors: string[] = [];
-   protected validators: Validator[];
-   constructor(validators: Validator[] = []) {
+   protected validators: val.Validator[];
+   constructor(validators: val.Validator[] = []) {
         this.validators = validators;
    }
-   validate() : void {
-       this.errors = this.validators
-        .reduce((acc, v) => {
-            v(this.value())
-                .caseOf({
-                    left: e => acc.push(e),
-                    right: s => 0
-                });
-            return acc;
-        }, []);
+   errors() : string[] {
+       var result = this.validators
+            .reduce((acc, v) => {
+                v(this.value())
+                    .caseOf({
+                        left: e => acc.push(e),
+                        right: s => 0
+                    });
+                return acc;
+            }, []);
+        return result;
    }
 }
 
 export class Time extends Text {
-    constructor(validators: Validator[] = []) {
-        super(validators.concat([ isValidTime() ]));
+    constructor(validators: val.Validator[] = []) {
+        super(validators.concat([ val.isValidTime() ]));
     }
 }
 
 export class Select extends Text {
-    constructor(options: string[], validators: Validator[] = []) {
-        super(validators.concat(isOneOf(options)));
+    constructor(options: string[], validators: val.Validator[] = []) {
+        super(validators.concat(val.isOneOf(options)));
     }
 }

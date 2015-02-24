@@ -1,6 +1,7 @@
 /// <reference path="../node_modules/mithril/mithril.d.ts" />
 import m = require('mithril');
 import field = require('./field');
+import val = require('./validation');
 
 export class Day {
     entries: Entry[];
@@ -9,15 +10,25 @@ export class Day {
     }
 }
 
-export class Entry {
-    start = new field.Time();
-    project: field.Select;
-    task = new field.Text();
-    errors: string[] = [];
+export class Entry implements val.Validatable {
+    fields: {
+        [id: string]: val.Validatable;
+        start: field.Time;
+        project: field.Select;
+        task: field.Text;
+    };
     constructor(projects: string[]) {
-        this.project = new field.Select(projects);
+        this.fields = {
+            start: new field.Time(),
+            project: new field.Select(projects),
+            task: new field.Text(),
+        };
     }
-    validate() : void {
-        throw new Error('nyi');
+    errors() : string[] {
+        return Object.keys(this.fields)
+            .reduce((acc, k) => {
+                var errs = this.fields[k].errors();
+                return acc.concat(errs);
+            }, []);
     }
 }

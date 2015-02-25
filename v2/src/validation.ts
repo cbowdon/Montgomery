@@ -7,9 +7,11 @@ export interface Validatable {
     errors(): string[];
 }
 
-export type Validator = (str:string) => tsm.Either<string,string>;
+export interface Criterion<T> {
+    (t: T): tsm.Either<string,T>;
+}
 
-export function isValidTime() : Validator {
+export function isValidTime() : Criterion<string> {
     return s => {
         var formats = [ 'HHmm', 'HH:mm' ],
             time = moment(s, formats, true);
@@ -19,7 +21,7 @@ export function isValidTime() : Validator {
     }
 }
 
-export function isOneOf(options: string[]) : Validator {
+export function isOneOf(options: string[]) : Criterion<string> {
     return s =>
         options.some(o => o === s) ?
             tsm.Either.right(s) :

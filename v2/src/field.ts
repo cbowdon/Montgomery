@@ -8,12 +8,12 @@ import val = require('./validation');
 
 export class Text implements val.Validatable {
    value = m.prop('');
-   protected validators: val.Validator[];
-   constructor(validators: val.Validator[] = []) {
-        this.validators = validators;
+   protected criteria: val.Criterion<string>[];
+   constructor(criteria: val.Criterion<string>[] = []) {
+        this.criteria = criteria;
    }
    errors() : string[] {
-       var result = this.validators
+       var result = this.criteria
             .reduce((acc, v) => {
                 v(this.value())
                     .caseOf({
@@ -27,13 +27,13 @@ export class Text implements val.Validatable {
 }
 
 export class Time extends Text {
-    constructor(validators: val.Validator[] = []) {
-        super(validators.concat([ val.isValidTime() ]));
+    constructor(criteria: val.Criterion<string>[] = []) {
+        super(criteria.concat([ val.isValidTime() ]));
     }
 }
 
 export class Select extends Text {
-    constructor(options: string[], validators: val.Validator[] = []) {
-        super(validators.concat(val.isOneOf(options)));
+    constructor(options: string[], criteria: val.Criterion<string>[] = []) {
+        super(criteria.concat(val.isOneOf(options)));
     }
 }

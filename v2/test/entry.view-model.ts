@@ -3,18 +3,19 @@
 /// <reference path="../extensions/qunit.ts" />
 /// <reference path="../extensions/chance.ts" />
 import Chance = require('chance');
-import vm = require('../src/view-model');
+import Entry = require('../src/entry.view-model');
 
 export = tests;
 function tests() {
     var chance = new Chance(),
-        projects = chance.n(chance.string, 5);
+        projects = chance.n(chance.string, 5),
+        entryFactory = Entry.makeFactory(projects);
 
     mixinChanceTime();
 
-    QUnit.module('view-model.Entry');
+    QUnit.module('entry.view-model');
     QUnit.test('Components all valid => no errors', assert => {
-        var entry = new vm.Entry(projects);
+        var entry = new Entry(projects);
         entry.fields.start.value(chance.time());
         entry.fields.project.value(projects[0]);
         entry.fields.task.value(chance.string());
@@ -24,21 +25,21 @@ function tests() {
         assert.expect(3);
         [ // add scope for each test case
             () => {
-                var entry = new vm.Entry(projects);
+                var entry = new Entry(projects);
                 entry.fields.start.value(chance.time());
                 entry.fields.project.value('');
                 entry.fields.task.value(chance.string());
                 return entry.errors();
             },
             () => {
-                var entry = new vm.Entry(projects);
+                var entry = new Entry(projects);
                 entry.fields.start.value('3536');
                 entry.fields.project.value('');
                 entry.fields.task.value(chance.string());
                 return entry.errors();
             },
             () => {
-                var entry = new vm.Entry(projects);
+                var entry = new Entry(projects);
                 entry.fields.start.value('');
                 entry.fields.project.value(projects[0]);
                 entry.fields.task.value(chance.string());

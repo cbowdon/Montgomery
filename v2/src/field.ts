@@ -33,7 +33,9 @@ export class Time extends Text {
 }
 
 export class Select extends Text {
+    options: MithrilProperty<string[]>;
     constructor(options: string[], criteria: val.Criterion<string>[] = []) {
         super(criteria.concat(val.isOneOf(options)));
+        this.options = m.prop(options);
     }
 }

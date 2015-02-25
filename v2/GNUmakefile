@@ -30,4 +30,4 @@ clean:
 	rm -rf extensions/*.js.map
 	rm -rf bin/*
 	rm -rf test/bin/*
-	rm npm-debug.log
+	rm -f npm-debug.log

@@ -1,6 +1,8 @@
 /// <reference path="../typings/tsd.d.ts" />
 import field = require('./field');
-import vm = require('./view-model');
+import entry = require('./entry.view-model');
+import day = require('./day.view-model');
 
 field();
-vm();
+entry();
+day();

@@ -7,7 +7,7 @@ import Day = require('../src/day.view-model');
 export = tests;
 function tests() {
     // TODO
-    QUnit.module('view-model.Day');
+    QUnit.module('day.view-model');
     QUnit.test('Valid day => no errors', assert => {
     });
     QUnit.test('Block day => no errors', assert => {

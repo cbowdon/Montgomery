@@ -11,7 +11,7 @@ function mixinChanceTime() {
         'time': () => {
             var hr = chance.hour({ twentyfour: true }),
                 mn = chance.minute();
-            return `${chance.pad(hr, 2)}:${mn}`;
+            return `${chance.pad(hr, 2)}:${chance.pad(mn, 2)}`;
         }
     });
 }

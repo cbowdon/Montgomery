@@ -14,37 +14,35 @@ function tests() {
     mixinChanceTime();
 
     QUnit.module('entry.view-model');
+
     QUnit.test('Components all valid => no errors', assert => {
-        var entry = new Entry(projects);
-        entry.start().value(chance.time());
-        entry.project().value(projects[0]);
-        entry.task().value(chance.string());
+        var entry = entryFactory({
+            start: chance.time(),
+            project: projects[0],
+            task: chance.string()
+        });
         assert.empty(entry.errors());
     });
+
     QUnit.test('N invalid components => N errors', assert => {
         assert.expect(3);
-        [ // add scope for each test case
-            () => {
-                var entry = new Entry(projects);
-                entry.start().value(chance.time());
-                entry.project().value('');
-                entry.task().value(chance.string());
-                return entry.errors();
-            },
-            () => {
-                var entry = new Entry(projects);
-                entry.start().value('3536');
-                entry.project().value('');
-                entry.task().value(chance.string());
-                return entry.errors();
-            },
-            () => {
-                var entry = new Entry(projects);
-                entry.start().value('');
-                entry.project().value(projects[0]);
-                entry.task().value(chance.string());
-                return entry.errors();
-            }
-        ].forEach(testCase => assert.notEmpty(testCase()));
+        var entries = [
+            entryFactory({
+                start: chance.time(),
+                project: '',
+                task: chance.string()
+            }),
+            entryFactory({
+                start: '3536',
+                project: '',
+                task: chance.string()
+            }),
+            entryFactory({
+                start: '',
+                project: projects[0],
+                task: chance.string()
+            }),
+        ];
+        entries.forEach(e => assert.notEmpty(e.errors()));
     });
 }

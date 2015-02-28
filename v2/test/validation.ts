@@ -3,17 +3,18 @@
 /// <reference path="../extensions/qunit.ts" />
 import Chance = require('chance');
 import val = require('../src/validation');
-import field = require('../src/field');
+import Entry = require('../src/entry.view-model');
 import func = require('../src/func');
 
 export = tests;
 function tests() {
-    var chance = new Chance();
+    var chance = new Chance(),
+        projects = chance.n(chance.string, 5),
+        factory = Entry.makeFactory(projects);
+
 
     QUnit.module('validation.Validatable');
-
     QUnit.test('No errors in components => no errors', assert => {
-        var v: val.Validatable = new field.Field();
 
     });
 
@@ -22,7 +23,7 @@ function tests() {
     });
 
     QUnit.test('Suppress errors on parent => components all suppressed', assert => {
-        var v: val.Validatable = new field.Field();
+        var v: val.Validatable = new Entry([]);
         var c = v.components();
 
         v.suppressErrors(true);

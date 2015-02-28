@@ -4,6 +4,7 @@
 import m = require('mithril');
 import moment = require('moment');
 import tsm = require('tsmonad');
+import func = require('./func');
 
 interface ComponentDictionary {
     [id: string]: Validatable;
@@ -25,19 +26,26 @@ export class Validatable {
     }
 
     errors() : string[] {
-       if (this.suppressErrors()) {
+
+        if (this.suppressErrors()) {
            return [];
-       }
-       var result = this.criteria()
-            .reduce((acc, v) => {
-                v(this.value())
+        }
+
+        var subResults = func.pairs(this.components())
+            .map(e => e[1].errors())
+            .reduce((acc, i) => acc.concat(i), []);
+
+        var result = this.criteria()
+            .reduce<string[]>((acc, crit) => {
+                var errs = crit(this.value())
                     .caseOf({
-                        just: (e:string) => acc.push(e),
-                        nothing: () => 0
+                        just: (e:string) => [e],
+                        nothing: () => []
                     });
-                return acc;
+                return acc.concat(errs);
             }, []);
-        return result;
+
+        return result.concat(subResults);
     }
 }
 

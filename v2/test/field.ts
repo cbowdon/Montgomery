@@ -55,6 +55,7 @@ function tests() {
     });
     QUnit.test('No value => errors', assert => {
         var text = new field.Select(['a', 'b', 'c']);
+        text.value('a'); // set once
         text.value('');
         assert.notEmpty(text.errors());
     });

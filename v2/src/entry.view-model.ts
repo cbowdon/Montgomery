@@ -5,26 +5,24 @@ import field = require('./field');
 import val = require('./validation');
 import list = require('./list');
 
-class Entry implements val.Validatable {
+class Entry extends val.Validatable {
+
     id = m.prop(0);
-    fields: {
-        [id: string]: val.Validatable;
-        start: field.Time;
-        project: field.Select;
-        task: field.Text;
-    };
+
     constructor(projects: string[]) {
-        this.fields = {
+        super();
+        console.log('entry ctor');
+        this.components({
             start: new field.Time(),
             project: new field.Select(projects),
             task: new field.Text(),
-        };
+        });
     }
-    errors() : string[] {
-        var errs = Object.keys(this.fields)
-            .map(k => this.fields[k].errors())
-        return list.flatten(errs);
-    }
+
+    // convenient accessors
+    start = () => <field.Time>this.components()['start'];
+    project = () => <field.Select>this.components()['project'];
+    task = () => <field.Text>this.components()['task'];
 
     static makeFactory(projects: string[]) {
         return (data: {
@@ -33,9 +31,9 @@ class Entry implements val.Validatable {
             task?: string;
         }) => {
             var entry = new Entry(projects);
-            entry.fields.start.value(data.start);
-            entry.fields.project.value(data.project);
-            entry.fields.task.value(data.task);
+            entry.components()['start'].value(data.start);
+            entry.components()['project'].value(data.project);
+            entry.components()['task'].value(data.task);
             return entry;
         }
     }

@@ -5,22 +5,30 @@ import moment = require('moment');
 import val = require('./validation');
 import Entry = require('./entry.view-model');
 import list = require('./list');
+import func = require('./func');
 import config = require('./config');
 
-class Day implements val.Validatable {
+class Day extends val.Validatable {
 
     private day = moment();
 
-    entries = m.prop([ new Entry(config.projects) ]);
+    constructor() {
+        super();
+        console.log('day ctor');
+    }
+
+    entries() : Entry[] {
+        return func.pairs(this.components())
+            .filter(pair => pair[1] instanceof Entry)
+            .map(pair => <Entry>pair[1]);
+    }
 
     date() : string {
         return this.day.format(config.date_format);
     }
 
     errors() : string[] {
-        var errs = this.entries()
-            .map(e => e.errors());
-        return list.flatten(errs);
+        throw new Error('nyi');
     }
 }
 

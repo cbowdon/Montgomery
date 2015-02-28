@@ -1,30 +1,63 @@
 /// <reference path="../typings/tsd.d.ts" />
 /// <reference path="../node_modules/tsmonad/dist/tsmonad.d.ts" />
-import tsm = require('tsmonad');
+/// <reference path="../node_modules/mithril/mithril.d.ts" />
+import m = require('mithril');
 import moment = require('moment');
+import tsm = require('tsmonad');
 
-export interface Validatable {
-    errors(): string[];
+interface ComponentDictionary {
+    [id: string]: Validatable;
 }
 
-export interface Criterion<T> {
-    (t: T): tsm.Either<string,T>;
+export class Validatable {
+
+    // abstract
+    value: <T>(val?: T) => T;
+
+    components = m.prop<ComponentDictionary>({});
+    criteria = m.prop([]);
+
+    private suppression = false;
+    suppressErrors = (bool?: boolean) : boolean => {
+        this.suppression = bool;
+        //this.components().forEach(c => c.suppressErrors(bool));
+        return this.suppression;
+    }
+
+    errors() : string[] {
+       if (this.suppressErrors()) {
+           return [];
+       }
+       var result = this.criteria()
+            .reduce((acc, v) => {
+                v(this.value())
+                    .caseOf({
+                        just: (e:string) => acc.push(e),
+                        nothing: () => 0
+                    });
+                return acc;
+            }, []);
+        return result;
+    }
 }
 
-export function isValidTime() : Criterion<string> {
+export interface Criterion {
+    (t: any): tsm.Maybe<string>;
+}
+
+export function isValidTime() : Criterion {
     return s => {
         var formats = [ 'HHmm', 'HH:mm' ],
             time = moment(s, formats, true);
         return time.isValid() ?
-            tsm.Either.right(s) :
-            tsm.Either.left(`${s} is not a valid time`);
+            tsm.Maybe.nothing() :
+            tsm.Maybe.just(`${s} is not a valid time`);
     }
 }
 
-export function isOneOf(options: string[]) : Criterion<string> {
+export function isOneOf(options: string[]) : Criterion {
     return s =>
         options.some(o => o === s) ?
-            tsm.Either.right(s) :
-            tsm.Either.left(`"${s}" is not one of the options`)
+            tsm.Maybe.nothing() :
+            tsm.Maybe.just(`"${s}" is not one of the options`)
 }
-

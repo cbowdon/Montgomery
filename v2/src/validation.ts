@@ -20,8 +20,11 @@ export class Validatable {
 
     private suppression = false;
     suppressErrors = (bool?: boolean) : boolean => {
-        this.suppression = bool;
-        //this.components().forEach(c => c.suppressErrors(bool));
+        if (bool) {
+            this.suppression = bool;
+            func.pairs(this.components())
+                .forEach(pair => pair[1].suppressErrors(bool));
+        }
         return this.suppression;
     }
 

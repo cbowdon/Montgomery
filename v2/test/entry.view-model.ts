@@ -45,4 +45,19 @@ function tests() {
         ];
         entries.forEach(e => assert.notEmpty(e.errors()));
     });
+
+    QUnit.test('Suppress errors on parent => components all suppressed', assert => {
+        var v = entryFactory({
+            start: chance.time(),
+            project: projects[0],
+            task: chance.string()
+        });
+
+        v.suppressErrors(true);
+
+        assert.ok(v.suppressErrors());
+        assert.ok(v.start().suppressErrors());
+        assert.ok(v.project().suppressErrors());
+        assert.ok(v.task().suppressErrors());
+    });
 }

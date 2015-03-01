@@ -9,14 +9,14 @@ class Entry extends val.Validatable {
 
     id = m.prop(0);
 
-    constructor(projects: string[]) {
+    constructor(projects: string[], suppressErrors = false) {
         super();
-        console.log('entry ctor');
         this.components({
             start: new field.Time(),
             project: new field.Select(projects),
             task: new field.Text(),
         });
+        this.suppressErrors(suppressErrors);
     }
 
     // convenient accessors

@@ -9,5 +9,5 @@ export function days() : Day[] {
 export function init() : void {
     // TODO this is temp test data
     console.log('init vm');
-    _days = [ new Day() ];
+    _days = [ new Day([]) ];
 }

@@ -26,8 +26,9 @@ export function view(ctrl: Controller) : MithrilVirtualElement {
 function viewDay(ctrl: Controller, day: Day) : MithrilVirtualElement {
     var header = [ m('div.date', day.date()) ];
     var entries = day.entries().map(e => viewEntry(ctrl, e));
+    var blank = [ viewEntry(ctrl, day.blank()) ];
     var submit = [ button(ctrl) ];
-    return m(`div#${day.date()}.day`, list.flatten([ header, entries, submit ]));
+    return m(`div#${day.date()}.day`, list.flatten([ header, entries, blank, submit ]));
 }
 
 function viewEntry(ctrl: Controller, e: Entry) : MithrilVirtualElement {
@@ -43,6 +44,7 @@ function changeHandler(field: field.Field) : ((e:MithrilEvent) => any) {
     return func.all(
         e => console.log('change handler'),
         e => field.suppressErrors(false),
+        e => console.log(field.errors()),
         m.withAttr('value', field.value));
 }
 

@@ -1,13 +1,13 @@
 .PHONY:
 
 all: src/main.ts src/*.ts
-	tsc $^ --noImplicitAny --sourceMap --module commonjs
-	browserify src/main.js -o bin/montgomery.js
+	tsc $^ --noImplicitAny --sourceMap --module commonjs --outDir bin
+	browserify bin/main.js -o bin/montgomery.js
 	cp src/index.html bin
 
 tests: test/main.ts test/*.ts src/*.ts
-	tsc $^ --noImplicitAny --sourceMap --module commonjs
-	browserify test/main.js -o test/bin/montgomery-tests.js
+	tsc $^ --noImplicitAny --sourceMap --module commonjs --outDir test/bin
+	browserify test/bin/main.js -o test/bin/montgomery-tests.js
 	cp test/index.html test/bin
 
 ext: extensions/*.ts

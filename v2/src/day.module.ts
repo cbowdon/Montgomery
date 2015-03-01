@@ -42,9 +42,7 @@ function viewEntry(ctrl: Controller, e: Entry) : MithrilVirtualElement {
 
 function changeHandler(field: field.Field) : ((e:MithrilEvent) => any) {
     return func.all(
-        e => console.log('change handler'),
         e => field.suppressErrors(false),
-        e => console.log(field.errors()),
         m.withAttr('value', field.value));
 }
 

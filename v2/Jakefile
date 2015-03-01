@@ -1,0 +1,95 @@
+// vi: set ft=javascript :
+
+function tsc(srcEntry, outDir) {
+    return [
+        'tsc ' + srcEntry,
+        '--noImplicitAny',
+        '--noEmitOnError',
+        '--module commonjs',
+        '--outDir ' + outDir
+    ].join(' ');
+}
+
+function npmInstallG(name) { return 'sudo npm install -g ' + name; }
+function browserify(entryPoint, output) { return 'browserify ' + entryPoint + ' -o ' + output; }
+
+var src = {
+        dir: 'src',
+        bin: 'bin',
+        obj: 'obj',
+        files: new jake.FileList().include('src/*.ts').toArray(),
+        main: 'src/main.ts',
+        index: 'src/index.html',
+        output: 'bin/montgomery.js',
+    },
+    test = {
+        dir: 'test',
+        bin: 'test/bin',
+        obj: 'test/obj',
+        files: new jake.FileList().include('test/*.ts').toArray(),
+        main: 'test/main.ts',
+        index: 'test/index.html',
+        output: 'test/bin/montgomery-tests.js',
+    };
+
+directory(src.bin);
+directory(src.obj);
+directory(test.bin);
+directory(test.obj);
+
+desc('Install dependencies');
+task('dependencies', function () {
+    jake.exec([
+        npmInstallG('typescript'),
+        npmInstallG('tsd'),
+        npmInstallG('typescript-tools'),
+        npmInstallG('browserify'),
+        'npm install',
+        'tsd reinstall --save',
+    ], {
+        printStdout: true,
+        printStderr: true
+    });
+});
+
+desc('Compile sources');
+file(src.output, [ src.bin, src.obj ].concat(src.files), { async: true }, function () {
+    jake.exec([
+        tsc(src.main, src.obj),
+        browserify(src.obj + '/main.js', src.output)
+    ], {
+        printStdout: true,
+        printStderr: true
+    }, complete);
+});
+
+desc('Build main application');
+task('default', [ src.output ], function () {
+    jake.cpR(src.index, src.bin);
+});
+
+desc('Compile tests');
+file(test.output, [ test.bin, test.obj ].concat(test.files), { async: true }, function () {
+    jake.exec([
+        tsc(test.main, test.obj),
+        browserify(test.obj + '/test/main.js', test.output)
+    ], {
+        printStdout: true,
+        printStderr: true
+    }, complete);
+});
+
+desc('Build QUnit tests')
+task('tests', [ test.output ], function () {
+    jake.cpR(test.index, test.bin);
+    jake.cpR(test.obj + '/extensions', test.bin);
+});
+
+desc('Clean')
+task('clean', function () {
+    jake.rmRf(src.bin);
+    jake.rmRf(src.obj);
+    jake.rmRf(test.bin);
+    jake.rmRf(test.obj);
+    jake.rmRf('npm-debug.log');
+});

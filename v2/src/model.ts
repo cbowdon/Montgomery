@@ -1,6 +1,7 @@
 /// <reference path="../typings/tsd.d.ts" />
 /// <reference path="../node_modules/mithril/mithril.d.ts" />
 /// <reference path="../node_modules/tsmonad/dist/tsmonad.d.ts" />
+import moment = require('moment');
 import tsm = require('tsmonad');
 import config = require('./config');
 
@@ -13,9 +14,7 @@ class Model {
     }
 
     update(raw: RawDay) : tsm.Either<string[], Day> {
-
-        console.dir(raw);
-        return tsm.Either.left([ 'not yet implemented' ]);
+        return tsm.Either.right(buildDay(raw));
     }
 }
 
@@ -68,7 +67,7 @@ function difference(m1: Moment, m2: Moment) : Duration {
 function buildDay(raw: RawDay) : Day {
     var initialEntries = raw.entries
         .map(buildEntry)
-        .sort((e1, e2) => e1.start.isBefore(e2.start) ? 1 : -1);
+        .sort((e1, e2) => e1.start.isBefore(e2.start) ? -1 : 1);
 
     var entries = initialEntries.map((e, i) => {
         var next = i + 1 < initialEntries.length ?

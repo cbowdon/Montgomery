@@ -77,9 +77,12 @@ task('default', [ src.output ], function () {
 desc('Compile tests');
 file(test.output, [ test.bin, test.obj ].concat(test.files), { async: true }, function () {
     jake.exec([
+        // qunit tests
         tsc(test.main, test.obj),
         browserify(test.obj + '/test/main.js', test.output),
+        // new tests
         tsc(test.dir + '/model.ts', test.obj),
+        tsc(test.dir + '/view-model.ts', test.obj),
     ], {
         printStdout: true,
         printStderr: true
@@ -95,6 +98,7 @@ task('qunit', [ test.output ], function () {
 desc('Run tests');
 testTask('application', [ test.output ], function () {
     this.testFiles.include(test.obj + '/test/model.js');
+    this.testFiles.include(test.obj + '/test/view-model.js');
     this.testName = 'Tests';
 });
 

@@ -14,6 +14,10 @@ class Day extends val.Validatable {
 
     private day = moment();
 
+    date = m.prop(moment().format(config.date_format));
+    // TODO
+    value = m.prop('');
+
     constructor(entries: Entry[]) {
         super();
         this.components({
@@ -32,12 +36,8 @@ class Day extends val.Validatable {
             .map(pair => <Entry>pair[1]);
     }
 
-    date() : string {
-        return this.day.format(config.date_format);
-    }
-
     errors() : string[] {
-        throw new Error('nyi');
+        return [];
     }
 }
 

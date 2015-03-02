@@ -7,8 +7,6 @@ import list = require('./list');
 
 class Entry extends val.Validatable {
 
-    id = m.prop(0);
-
     constructor(projects: string[], suppressErrors = false) {
         super();
         this.components({

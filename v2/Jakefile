@@ -13,6 +13,12 @@ function tsc(srcEntry, outDir) {
 function npmInstallG(name) { return 'sudo npm install -g ' + name; }
 function browserify(entryPoint, output) { return 'browserify ' + entryPoint + ' -o ' + output; }
 
+function removeJsInDir(dir) {
+    jake.readdirR(dir)
+        .filter(function (f) { return /\.js$/.test(f); })
+        .forEach(jake.rmRf);
+}
+
 var src = {
         dir: 'src',
         bin: 'bin',
@@ -72,17 +78,24 @@ desc('Compile tests');
 file(test.output, [ test.bin, test.obj ].concat(test.files), { async: true }, function () {
     jake.exec([
         tsc(test.main, test.obj),
-        browserify(test.obj + '/test/main.js', test.output)
+        browserify(test.obj + '/test/main.js', test.output),
+        tsc(test.dir + '/model.ts', test.obj),
     ], {
         printStdout: true,
         printStderr: true
     }, complete);
 });
 
-desc('Build QUnit tests')
-task('tests', [ test.output ], function () {
+desc('Build QUnit tests');
+task('qunit', [ test.output ], function () {
     jake.cpR(test.index, test.bin);
     jake.cpR(test.obj + '/extensions', test.bin);
+});
+
+desc('Run tests');
+testTask('application', [ test.output ], function () {
+    this.testFiles.include(test.obj + '/test/model.js');
+    this.testName = 'Tests';
 });
 
 desc('Clean')
@@ -92,4 +105,9 @@ task('clean', function () {
     jake.rmRf(test.bin);
     jake.rmRf(test.obj);
     jake.rmRf('npm-debug.log');
+});
+
+jake.addListener('complete', function () {
+    removeJsInDir(src.dir);
+    //removeJsInDir(test.dir);
 });

@@ -10,6 +10,9 @@
     },
     "qunit/qunit.d.ts": {
       "commit": "8e85bba87a8c95c7f357e78e3d5d1269c337741d"
+    },
+    "node/node.d.ts": {
+      "commit": "3882d337bb0808cde9fe4c08012508a48c135482"
     }
   }
 }

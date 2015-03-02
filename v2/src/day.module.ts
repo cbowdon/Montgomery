@@ -11,24 +11,24 @@ class Controller implements MithrilController {
     constructor() {
         vm.init();
     }
-    update() : void {
-        // passes vm.days to model.update
-        throw new Error('nyi');
+    update(day: Day) : void {
+        vm.update(day);
     }
 }
 
 export var controller = Controller;
 
 export function view(ctrl: Controller) : MithrilVirtualElement {
-    return m('div', vm.days().map(d => viewDay(ctrl, d)));
+    return m('div#days', vm.days().map(d => viewDay(ctrl, d)));
 }
 
 function viewDay(ctrl: Controller, day: Day) : MithrilVirtualElement {
     var header = [ m('div.date', day.date()) ];
     var entries = day.entries().map(e => viewEntry(ctrl, e));
     var blank = [ viewEntry(ctrl, day.blank()) ];
-    var submit = [ button(ctrl) ];
-    return m(`div#${day.date()}.day`, list.flatten([ header, entries, blank, submit ]));
+    var submit = [ button(ctrl, day) ];
+    var errors = [ listErrors(day) ];
+    return m(`div#${day.date()}.day`, list.flatten([ header, entries, blank, submit, errors ]));
 }
 
 function viewEntry(ctrl: Controller, e: Entry) : MithrilVirtualElement {
@@ -37,13 +37,13 @@ function viewEntry(ctrl: Controller, e: Entry) : MithrilVirtualElement {
         select('#project', e.project()),
         input('#task', e.task())
     ];
-    return m(`div.entry-${e.id()}`, inputs);
+    return m(`div#entry-${e.start().value()}`, inputs);
 }
 
-function changeHandler(field: field.Field) : ((e:MithrilEvent) => any) {
+function changeHandler(v: val.Validatable) : ((e:MithrilEvent) => any) {
     return func.all(
-        e => field.suppressErrors(false),
-        m.withAttr('value', field.value));
+        e => v.suppressErrors(false),
+        m.withAttr('value', v.value));
 }
 
 function input(css: string, field: field.Text) : MithrilVirtualElement {
@@ -67,9 +67,9 @@ function listErrors(field: val.Validatable) : MithrilVirtualElement {
     return m('ul', errs);
 }
 
-function button(ctrl: Controller) : MithrilVirtualElement {
+function button(ctrl: Controller, day: Day) : MithrilVirtualElement {
     return m('input[type=button]', {
         value: '+',
-        onclick: ctrl.update
+        onclick: func.all((e:MithrilEvent) => ctrl.update(day), changeHandler(day))
     });
 }

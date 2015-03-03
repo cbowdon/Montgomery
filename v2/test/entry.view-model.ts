@@ -1,31 +1,24 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../typings/chance/chance.d.ts" />
-/// <reference path="../extensions/qunit.ts" />
-/// <reference path="../extensions/chance.ts" />
-import Chance = require('chance');
+import assert = require('assert');
+import assertx = require('./assertx');
+import chance = require('./chancex');
 import Entry = require('../src/entry.view-model');
 
-export = tests;
-function tests() {
-    var chance = new Chance(),
-        projects = chance.n(chance.string, 5),
-        entryFactory = Entry.makeFactory(projects);
+var projects = chance.n(chance.string, 5),
+    entryFactory = Entry.makeFactory(projects);
 
-    mixinChanceTime();
+var tests = {
 
-    QUnit.module('entry.view-model');
-
-    QUnit.test('Components all valid => no errors', assert => {
+    'Components all valid => no errors': () => {
         var entry = entryFactory({
             start: chance.time(),
             project: projects[0],
             task: chance.string()
         });
-        assert.empty(entry.errors());
-    });
+        assertx.empty(entry.errors());
+    },
 
-    QUnit.test('N invalid components => N errors', assert => {
-        assert.expect(3);
+    'N invalid components => N errors': () => {
         var entries = [
             entryFactory({
                 start: chance.time(),
@@ -43,10 +36,10 @@ function tests() {
                 task: chance.string()
             }),
         ];
-        entries.forEach(e => assert.notEmpty(e.errors()));
-    });
+        entries.forEach(e => assertx.notEmpty(e.errors()));
+    },
 
-    QUnit.test('Suppress errors true => no errors', assert => {
+    'Suppress errors true => no errors': () => {
         var v = entryFactory({
             start: chance.string(),
             project: projects[0],
@@ -55,10 +48,10 @@ function tests() {
 
         v.suppressErrors(false);
         v.suppressErrors(true);
-        assert.empty(v.errors());
-    });
+        assertx.empty(v.errors());
+    },
 
-    QUnit.test('Suppress errors false => errors', assert => {
+    'Suppress errors false => errors': () => {
         var v = entryFactory({
             start: chance.string(),
             project: projects[0],
@@ -67,10 +60,10 @@ function tests() {
 
         v.suppressErrors(true);
         v.suppressErrors(false);
-        assert.notEmpty(v.errors());
-    });
+        assertx.notEmpty(v.errors());
+    },
 
-    QUnit.test('Suppress errors on parent => components all suppressed', assert => {
+    'Suppress errors on parent => components all suppressed': () => {
         var v = entryFactory({
             start: chance.time(),
             project: projects[0],
@@ -83,5 +76,6 @@ function tests() {
         assert.ok(v.start().suppressErrors());
         assert.ok(v.project().suppressErrors());
         assert.ok(v.task().suppressErrors());
-    });
+    },
 }
+export = tests;

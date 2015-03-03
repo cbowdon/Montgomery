@@ -1,5 +1,4 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../typings/chance/chance.d.ts" />
 import assert = require('assert');
 import Chance = require('chance');
 import moment = require('moment');

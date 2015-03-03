@@ -1,22 +1,17 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../typings/chance/chance.d.ts" />
-/// <reference path="../extensions/qunit.ts" />
-import Chance = require('chance');
+import assert = require('./assertx');
+import chance = require('./chancex');
 import field = require('../src/field');
 
-export = tests;
-function tests() {
-    var chance = new Chance();
+var tests = {
 
-    QUnit.module('field.Text');
-    QUnit.test('Any string => no errors', assert => {
+    'Any string => no errors': () => {
         var text = new field.Text();
         text.value(chance.string());
         assert.empty(text.errors());
-    });
+    },
 
-    QUnit.module('field.Time');
-    QUnit.test('Valid time(s) => no errors', assert => {
+    'Valid time(s) => no errors': () => {
         var validTimes = [
             '0000',
             '0123',
@@ -24,14 +19,14 @@ function tests() {
             '1234',
             '2359',
         ];
-        assert.expect(validTimes.length);
         validTimes.forEach(t => {
             var time = new field.Time();
             time.value(t);
             assert.empty(time.errors(), t);
         });
-    });
-    QUnit.test('Invalid time(s) => errors', assert => {
+    },
+
+    'Invalid time(s) => errors': () => {
         var invalidTimes = [
             '11111',
             '111',
@@ -39,24 +34,25 @@ function tests() {
             '1260',
             '2459'
         ];
-        assert.expect(invalidTimes.length);
         invalidTimes.forEach(t => {
             var time = new field.Time();
             time.value(t);
             assert.notEmpty(time.errors(), t);
         });
-    });
+    },
 
-    QUnit.module('field.Select');
-    QUnit.test('Any value => no errors', (assert: QUnitAssert) => {
+    'Any value => no errors': () => {
         var text = new field.Select(['a', 'b', 'c']);
         text.value('a');
         assert.empty(text.errors());
-    });
-    QUnit.test('No value => errors', assert => {
+    },
+
+    'No value => errors': () => {
         var text = new field.Select(['a', 'b', 'c']);
         text.value('a'); // set once
         text.value('');
         assert.notEmpty(text.errors());
-    });
-}
+    },
+};
+
+export = tests;

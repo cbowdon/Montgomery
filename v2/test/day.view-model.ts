@@ -1,23 +1,26 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../typings/chance/chance.d.ts" />
-/// <reference path="../extensions/qunit.ts" />
-/// <reference path="../extensions/chance.ts" />
+import assert = require('assert');
 import Day = require('../src/day.view-model');
 
-export = tests;
-function tests() {
+var tests = {
     // TODO
-    QUnit.module('day.view-model');
-    QUnit.test('Valid day => no errors', assert => {
-    });
-    QUnit.test('Block day => no errors', assert => {
-    });
-    QUnit.test('No lunch => expect error', assert => {
-    });
-    QUnit.test('No home => expect error', assert => {
-    });
-    QUnit.test('Less than expected => expect warning', assert => {
-    });
-    QUnit.test('More than expected => expect warning', assert => {
-    });
-}
+    'Valid day => no errors': () => {
+        assert.fail();
+    },
+    'Block day => no errors': () => {
+        assert.fail();
+    },
+    'No lunch => expect error': () => {
+        assert.fail();
+    },
+    'No home => expect error': () => {
+        assert.fail();
+    },
+    'Less than expected => expect warning': () => {
+        assert.fail();
+    },
+    'More than expected => expect warning': () => {
+        assert.fail();
+    },
+};
+export = tests;

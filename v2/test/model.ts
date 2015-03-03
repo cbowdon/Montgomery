@@ -46,8 +46,58 @@ var tests = {
                     var durations = d.entries.map(e => e.duration);
                     assert.strictEqual(45, getDuration(durations[0]));
                     assert.strictEqual(50, getDuration(durations[1]));
-                    assert.strictEqual(35, getDuration(durations[2]));
+                    assert.strictEqual(95, getDuration(durations[2]));
                     assert.strictEqual(0, getDuration(durations[3]));
+                }
+            });
+    },
+    'Valid view model => add day': () => {
+        var raw = {
+            date: '2013-09-09',
+            entries: [
+                { start: '1115', project: projects[0], task: chance.string() },
+                { start: '1200', project: projects[1], task: chance.string() },
+                { start: '1250', project: projects[2], task: chance.string() },
+                { start: '1425', project: projects[3], task: chance.string() },
+            ]
+        };
+        model.update(raw)
+            .caseOf({
+                left: e => assert.fail(e),
+                right: d => {
+                    assert.strictEqual(Object.keys(model.days()).length, 1);
+                }
+            });
+    },
+    'Valid view model => update day': () => {
+        var raw1 = {
+            date: '2013-09-09',
+            entries: [
+                { start: '1115', project: projects[0], task: chance.string() },
+                { start: '1200', project: projects[1], task: chance.string() },
+                { start: '1250', project: projects[2], task: chance.string() },
+                { start: '1425', project: projects[3], task: chance.string() },
+            ]
+        };
+        var raw2 = {
+            date: '2013-09-09',
+            entries: [
+                { start: '1115', project: projects[0], task: chance.string() },
+                { start: '1200', project: projects[1], task: chance.string() },
+                { start: '1250', project: projects[2], task: chance.string() },
+                { start: '1400', project: projects[3], task: chance.string() },
+                { start: '1450', project: projects[4], task: chance.string() },
+            ]
+        };
+        model.update(raw1);
+        model.update(raw2)
+            .caseOf({
+                left: e => assert.fail(e),
+                right: d => {
+                    assert.strictEqual(Object.keys(model.days()).length, 1);
+                    assert.strictEqual(d.entries.length, 5);
+                    assert.strictEqual(70, getDuration(d.entries[2].duration));
+                    assert.strictEqual(50, getDuration(d.entries[3].duration));
                 }
             });
     },
@@ -56,7 +106,7 @@ var tests = {
 function getDuration(dur: tsm.Maybe<Duration>) : number {
     return dur.caseOf({
         nothing: () => 0,
-        just: d => d.minutes()
+        just: d => 60 * d.hours() + d.minutes()
     });
 }
 

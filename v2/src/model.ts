@@ -14,7 +14,9 @@ class Model {
     }
 
     update(raw: RawDay) : tsm.Either<string[], Day> {
-        return tsm.Either.right(buildDay(raw));
+        var day = tsm.Either.right(buildDay(raw));
+        day.fmap(d => this._days[d.date.format()] = d);
+        return day;
     }
 }
 

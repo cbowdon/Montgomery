@@ -4,13 +4,15 @@ import assert = require('assert');
 import Chance = require('chance');
 import moment = require('moment');
 import tsm = require('tsmonad');
-import model = require('../src/model');
+import Model = require('../src/model');
+import config = require('../src/config');
 
 var chance = new Chance(),
     projects = chance.n(chance.string, 5);
 
 var tests = {
     'Valid view model => populated day': () => {
+        var model = new Model();
         var raw = {
             date: '2013-09-09',
             entries: [
@@ -30,6 +32,7 @@ var tests = {
             });
     },
     'Valid view model => durations calculated': () => {
+        var model = new Model();
         var raw = {
             date: '2013-09-09',
             entries: [
@@ -52,6 +55,7 @@ var tests = {
             });
     },
     'Valid view model => add day': () => {
+        var model = new Model();
         var raw = {
             date: '2013-09-09',
             entries: [
@@ -70,6 +74,7 @@ var tests = {
             });
     },
     'Valid view model => update day': () => {
+        var model = new Model();
         var raw1 = {
             date: '2013-09-09',
             entries: [
@@ -98,6 +103,46 @@ var tests = {
                     assert.strictEqual(d.entries.length, 5);
                     assert.strictEqual(70, getDuration(d.entries[2].duration));
                     assert.strictEqual(50, getDuration(d.entries[3].duration));
+                }
+            });
+    },
+    'Valid view model with lunch and home => new day': () => {
+        var model = new Model();
+        var raw = {
+            date: '2013-09-09',
+            entries: [
+                { start: '0800', project: projects[0], task: chance.string() },
+                { start: '1230', project: config.lunch, task: chance.string() },
+                { start: '1300', project: projects[1], task: chance.string() },
+                { start: '1600', project: config.home, task: chance.string() },
+            ]
+        };
+        model.update(raw)
+            .caseOf({
+                left: e => assert.fail(e),
+                right: d => {
+                    var today = moment().format(config.date_format);
+                    assert.strictEqual(Object.keys(model.days()).length, 2);
+                    assert.strictEqual(model.days()[today].entries.length, 0);
+                }
+            });
+    },
+    'Valid view model block day with home => new day': () => {
+        var model = new Model();
+        var raw = {
+            date: '2013-09-09',
+            entries: [
+                { start: '0800', project: projects[0], task: chance.string() },
+                { start: '1600', project: config.home, task: chance.string() },
+            ]
+        };
+        model.update(raw)
+            .caseOf({
+                left: e => assert.fail(e),
+                right: d => {
+                    var today = moment().format(config.date_format);
+                    assert.strictEqual(Object.keys(model.days()).length, 2);
+                    assert.strictEqual(model.days()[today].entries.length, 0);
                 }
             });
     },

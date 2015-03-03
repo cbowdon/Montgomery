@@ -1,11 +1,12 @@
 /// <reference path="../node_modules/mithril/mithril.d.ts" />
 import tsm = require('tsmonad');
-import model = require('./model');
+import Model = require('./model');
 import Day = require('./day.view-model');
 import Entry = require('./entry.view-model');
 
 class ViewModel {
     private _days: Day[] = [];
+    private _model = new Model();
 
     days() : Day[] {
         return this._days;
@@ -17,7 +18,7 @@ class ViewModel {
     }
 
     update(day: Day) : void {
-        model.update(toDayModel(day));
+        this._model.update(toDayModel(day));
     }
 }
 

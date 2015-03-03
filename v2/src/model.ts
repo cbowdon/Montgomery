@@ -15,13 +15,17 @@ class Model {
 
     update(raw: RawDay) : tsm.Either<string[], Day> {
         var day = tsm.Either.right(buildDay(raw));
-        day.fmap(d => this._days[d.date.format()] = d);
+        day.fmap(d => {
+            var key = d.date.format(config.date_format);
+            this._days[key] = d;
+            // if d has a home entry
+                // add a new day
+        });
         return day;
     }
 }
 
-var model = new Model();
-export = model;
+export = Model;
 
 interface Dictionary<T> { [id: string]: T }
 

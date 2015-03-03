@@ -71,7 +71,7 @@ task('default', [ src.output ], function () {
 });
 
 desc('Compile tests');
-file(test.canary, [ test.obj ].concat(test.files), { async: true }, function () {
+file(test.canary, [ test.obj ].concat(test.files).concat(src.files), { async: true }, function () {
     var cmds = test.files
         .map(function (f) {
             return tsc(f, test.obj);

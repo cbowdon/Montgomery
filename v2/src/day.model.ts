@@ -46,7 +46,9 @@ export function fromRaw(raw: RawDay) : Day {
 }
 
 export function hasHome(day: Day) : boolean {
-    throw new Error('sfagsdgs');
+    var homes = day.entries
+        .filter(e => e.project === config.home);
+    return homes.length > 0;
 }
 
 function difference(m1: Moment, m2: Moment) : Duration {

@@ -4,94 +4,30 @@
 import moment = require('moment');
 import tsm = require('tsmonad');
 import config = require('./config');
+import entry = require('./entry.model');
+import day = require('./day.model');
+import list = require('./list');
+
+type DayDictionary = list.Dictionary<day.Day>;
 
 class Model {
 
-    private _days: Dictionary<Day> = {};
+    private _days: DayDictionary = {};
 
-    days() : Dictionary<Day> {
+    days() : DayDictionary {
         return this._days;
     }
 
-    update(raw: RawDay) : tsm.Either<string[], Day> {
-        var day = tsm.Either.right(buildDay(raw));
-        day.fmap(d => {
+    update(raw: day.RawDay) : tsm.Either<string[], day.Day> {
+        var updatedDay = tsm.Either.right(day.fromRaw(raw));
+        updatedDay.fmap(d => {
             var key = d.date.format(config.date_format);
             this._days[key] = d;
             // if d has a home entry
                 // add a new day
         });
-        return day;
+        return updatedDay;
     }
 }
 
 export = Model;
-
-interface Dictionary<T> { [id: string]: T }
-
-interface RawEntry {
-    start: string;
-    project: string;
-    task: string;
-}
-
-interface RawDay {
-    date: string;
-    entries: RawEntry[];
-}
-
-interface Entry {
-    start: Moment;
-    project: string;
-    task: string;
-    duration: tsm.Maybe<Duration>;
-}
-
-interface Day {
-    date: Moment;
-    entries: Entry[];
-}
-
-class Store {
-    load(): MithrilPromise<Day[]> { throw new Error("nyi"); }
-    save(day: Day[]): void { throw new Error("nyi"); }
-}
-
-function buildEntry(raw: RawEntry) : Entry {
-    return {
-        start: moment(raw.start, [ 'HHmm', 'HH:mm' ], true),
-        project: raw.project,
-        task: raw.task,
-        duration: tsm.Maybe.nothing(),
-    };
-}
-
-function difference(m1: Moment, m2: Moment) : Duration {
-    return moment.duration(m2.valueOf() - m1.valueOf());
-}
-
-function buildDay(raw: RawDay) : Day {
-    var initialEntries = raw.entries
-        .map(buildEntry)
-        .sort((e1, e2) => e1.start.isBefore(e2.start) ? -1 : 1);
-
-    var entries = initialEntries.map((e, i) => {
-        var next = i + 1 < initialEntries.length ?
-            tsm.Maybe.just(initialEntries[i + 1]) :
-            tsm.Maybe.nothing<Entry>();
-
-        var duration = next.fmap(x => difference(e.start, x.start));
-
-        return {
-            start: e.start,
-            project: e.project,
-            task: e.task,
-            duration: duration,
-        };
-    });
-
-    return {
-        date: moment(raw.date, config.date_format, true),
-        entries: entries,
-    };
-}

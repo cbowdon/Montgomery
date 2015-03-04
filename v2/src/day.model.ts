@@ -45,6 +45,13 @@ export function fromRaw(raw: RawDay) : Day {
     };
 }
 
+export function toRaw(day: Day) : RawDay {
+    return {
+        date: day.date.format(config.date_format),
+        entries: day.entries.map(entry.toRaw),
+    };
+}
+
 export function nextWorkingDay(day: Day) : Moment {
     var weekday = day.date.isoWeekday();
     // behavior on sat/sun not defined, currently just increments

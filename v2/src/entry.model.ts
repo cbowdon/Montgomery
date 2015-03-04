@@ -20,9 +20,17 @@ export interface RawEntry {
 
 export function fromRaw(raw: RawEntry) : Entry {
     return {
-        start: moment(raw.start, [ 'HHmm', 'HH:mm' ], true),
+        start: moment(raw.start, [ 'HHmm', config.time_format ], true),
         project: raw.project,
         task: raw.task,
         duration: tsm.Maybe.nothing(),
+    };
+}
+
+export function toRaw(entry: Entry) : RawEntry {
+    return {
+        start: entry.start.format(config.time_format),
+        project: entry.project,
+        task: entry.task,
     };
 }

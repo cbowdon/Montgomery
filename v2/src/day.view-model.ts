@@ -12,14 +12,13 @@ var BLANK = 'BLANK';
 
 class Day extends val.Validatable {
 
-    private day = moment();
-
-    date = m.prop(moment().format(config.date_format));
+    date: MithrilProperty<string>;
     // TODO
     value = m.prop('');
 
-    constructor(entries: Entry[]) {
+    constructor(date: string, entries: Entry[]) {
         super();
+        this.date(date);
         this.components({
             BLANK: new Entry(config.projects, true)
         });

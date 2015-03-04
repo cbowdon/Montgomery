@@ -21,6 +21,19 @@ var tests = {
         var d = day.fromRaw(raw);
         assert.ok(d);
     },
+    'To raw => raw day': () => {
+        var raw = {
+            date: '2013-09-09',
+            entries: [{
+                start: '12:34',
+                project: projects[1],
+                task: chance.string()
+            }]
+        };
+        var d = day.fromRaw(raw);
+        var r = day.toRaw(d);
+        assert.deepEqual(r, raw);
+    },
     'Has Home => true': () => {
         var raw = {
             date: '2013-09-09',

@@ -3,22 +3,30 @@ import tsm = require('tsmonad');
 import Model = require('./model');
 import Day = require('./day.view-model');
 import Entry = require('./entry.view-model');
+import entry = require('./entry.model');
+import day = require('./day.model');
+import func = require('./func');
+import config = require('./config');
 
 class ViewModel {
-    private _days: Day[] = [];
-    private _model = new Model();
+    private model = new Model();
+    private entryFactory = Entry.makeFactory(config.projects);
 
     days() : Day[] {
-        return this._days;
+        return func.pairs(this.model.days())
+            .map(pair => pair[1])
+            .map(d => {
+                var raw = day.toRaw(d);
+                return new Day(raw.date, raw.entries.map(this.entryFactory));
+            });
     }
 
     init() : void {
         console.log('init vm');
-        this._days = [ new Day([]) ];
     }
 
     update(day: Day) : void {
-        this._model.update(toDayModel(day));
+        this.model.update(toDayModel(day));
     }
 }
 

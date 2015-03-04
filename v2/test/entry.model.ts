@@ -15,7 +15,17 @@ var tests = {
         };
         var e = entry.fromRaw(raw);
         assert.ok(e);
-    }
+    },
+    'To raw => raw entry': () => {
+        var raw = {
+            start: '12:34',
+            project: projects[1],
+            task: chance.string()
+        };
+        var e = entry.fromRaw(raw);
+        var r = entry.toRaw(e);
+        assert.deepEqual(r, raw);
+    },
 };
 
 export = tests;

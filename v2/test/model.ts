@@ -108,7 +108,7 @@ var tests = {
     'Valid view model with lunch and home => new day': () => {
         var model = new Model();
         var raw = {
-            date: '2013-09-09',
+            date: '2013-09-09', // a Monday
             entries: [
                 { start: '0800', project: projects[0], task: chance.string() },
                 { start: '1230', project: config.lunch, task: chance.string() },
@@ -120,9 +120,8 @@ var tests = {
             .caseOf({
                 left: e => assert.fail(e),
                 right: d => {
-                    var today = moment().format(config.date_format);
                     assert.strictEqual(Object.keys(model.days()).length, 2);
-                    assert.strictEqual(model.days()[today].entries.length, 0);
+                    assert.strictEqual(model.days()['2013-09-10'].entries.length, 0);
                 }
             });
     },
@@ -139,9 +138,8 @@ var tests = {
             .caseOf({
                 left: e => assert.fail(e),
                 right: d => {
-                    var today = moment().format(config.date_format);
                     assert.strictEqual(Object.keys(model.days()).length, 2);
-                    assert.strictEqual(model.days()[today].entries.length, 0);
+                    assert.strictEqual(model.days()['2013-09-10'].entries.length, 0);
                 }
             });
     },

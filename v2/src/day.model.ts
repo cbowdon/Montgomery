@@ -46,7 +46,9 @@ export function fromRaw(raw: RawDay) : Day {
 }
 
 export function nextWorkingDay(day: Day) : Moment {
-    return moment();
+    var weekday = day.date.isoWeekday();
+    // behavior on sat/sun not defined, currently just increments
+    return day.date.clone().add(weekday === 5 ? 3 : 1, 'days');
 }
 
 export function hasHome(day: Day) : boolean {

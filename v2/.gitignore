@@ -2,6 +2,7 @@
 *.js.map
 bin/*
 test/bin/*
+test/canary
 node_modules
 typings
 .vagrant

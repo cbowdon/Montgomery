@@ -23,8 +23,15 @@ class Model {
         updatedDay.fmap(d => {
             var key = d.date.format(config.date_format);
             this._days[key] = d;
-            // if d has a home entry
-                // add a new day
+            if (day.hasHome(d)) {
+                // TODO var move
+                var nextDay = day.nextWorkingDay(d),
+                    nextKey = nextDay.format(config.date_format);
+                this._days[nextKey] = {
+                    date: nextDay,
+                    entries: []
+                };
+            }
         });
         return updatedDay;
     }

@@ -2,7 +2,7 @@
 import assert = require('assert');
 
 export function empty<T>(array: T[], message?: string) : void {
-    assert.strictEqual(array, [], message);
+    assert.ok(array.length === 0, message);
 }
 
 export function notEmpty<T>(array: T[], message?: string) : void {

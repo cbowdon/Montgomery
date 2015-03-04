@@ -45,6 +45,10 @@ export function fromRaw(raw: RawDay) : Day {
     };
 }
 
+export function nextWorkingDay(day: Day) : Moment {
+    return moment();
+}
+
 export function hasHome(day: Day) : boolean {
     var homes = day.entries
         .filter(e => e.project === config.home);

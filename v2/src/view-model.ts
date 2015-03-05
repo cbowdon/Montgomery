@@ -10,6 +10,11 @@ import entry = require('./entry.model');
 import config = require('./config');
 
 class ViewModel {
+
+    constructor() {
+        this.sync();
+    }
+
     private model = new Model();
 
     // TODO will need to re-save everything if config changed
@@ -37,11 +42,6 @@ class ViewModel {
         var dayVms = this.model.days()
             .map(d => DayViewModel.fromDay(this.config(), d));
         return this.days(dayVms);
-    }
-
-
-    constructor() {
-        this.sync();
     }
 }
 

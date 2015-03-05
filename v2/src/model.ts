@@ -8,25 +8,37 @@ import config = require('./config');
 import entry = require('./entry.model');
 import day = require('./day.model');
 
+var KEY = 'Montgomery';
+
 class Model {
 
-    days = m.prop(new Array<day.Day>());
+    constructor() {
+        this.load();
+    }
+
+    // TODO replace array with ES6 map?
+    days: MithrilProperty<day.Day[]> = m.prop([]);
 
     private load() : day.Day[] {
-        // get from local storage
-        return this.days();
+        return tsm.maybe(localStorage.getItem(KEY))
+            .caseOf({
+                nothing: () => this.days([]),
+                just: d => this.days(JSON.parse(d))
+            });
     }
 
     save(day: day.Day) : void {
-        for (var d in this.days()) {
-            if (d.date.isSame(day.date)) {
-                d.entries = day.entries;
-                return;
-            }
-        }
-        this.days().push(day);
-    }
+        var existing = this.days()
+            .filter(d => d.date.isSame(day.date));
 
+        if (existing.length > 0) {
+            existing[0].entries = day.entries;
+        } else {
+            this.days().push(day);
+        }
+
+        localStorage.setItem(KEY, JSON.stringify(this.days()));
+    }
 }
 
 export = Model;

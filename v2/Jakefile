@@ -23,6 +23,7 @@ var src = {
         dir: 'src',
         bin: 'bin',
         obj: 'obj',
+        style: 'src/montgomery.css',
         files: new jake.FileList().include('src/*.ts').toArray(),
         main: 'src/main.ts',
         index: 'src/index.html',
@@ -68,6 +69,7 @@ file(src.output, [ src.bin, src.obj ].concat(src.files), { async: true }, functi
 desc('Build main application');
 task('default', [ src.output ], function () {
     jake.cpR(src.index, src.bin);
+    jake.cpR(src.style, src.bin);
 });
 
 desc('Compile tests');

@@ -2,4 +2,4 @@
 import m = require('mithril');
 import main = require('./main.module');
 
-m.module(document.body, main);
+m.module(document.getElementById('content-root'), main);

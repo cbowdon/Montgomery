@@ -17,13 +17,8 @@ class ViewModel {
 
     days = m.prop(new Array<DayViewModel>()); // { get; private set; }
 
-    blank = m.prop(DayViewModel.blank(this.config()));
-
-    private load() : DayViewModel[] {
-        var dayVms = this.model.days()
-            .map(d => DayViewModel.fromDay(this.config(), d))
-            .concat([ this.blank() ]);
-        return this.days(dayVms);
+    addDay() : void {
+        this.days().push(DayViewModel.blank(this.config()));
     }
 
     save(dayVM: DayViewModel) : void {
@@ -34,13 +29,19 @@ class ViewModel {
         var raw = dayVM.toRaw();
         console.log(raw);
         var dayModel = day.fromRaw(this.config(), dayVM.toRaw());
-        console.log(dayModel);
         this.model.save(dayModel);
-        this.load();
+        this.sync();
     }
 
+    private sync() : DayViewModel[] {
+        var dayVms = this.model.days()
+            .map(d => DayViewModel.fromDay(this.config(), d));
+        return this.days(dayVms);
+    }
+
+
     constructor() {
-        this.load();
+        this.sync();
     }
 }
 

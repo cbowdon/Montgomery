@@ -1,0 +1,10 @@
+.day {
+    margin: 3px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: 'black';
+}
+
+.table, .chart, .config {
+    background-color: 'gray';
+}

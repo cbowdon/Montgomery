@@ -1,33 +1,30 @@
 /// <reference path="../typings/tsd.d.ts" />
 /// <reference path="../node_modules/mithril/mithril.d.ts" />
 import m = require('mithril');
-import val = require('./validation');
 
-export class Field extends val.Validatable {
-    value = m.prop('');
-    constructor() {
-        super();
+export class Field {
+    value: MithrilProperty<string>;
+    constructor(value: string) {
+        this.value = m.prop(value);
     }
 }
 
 export class Text extends Field {
-   constructor(criteria: val.Criterion[] = []) {
-       super();
-       this.criteria(criteria);
+   constructor(text: string) {
+       super(text);
    }
 }
 
 export class Time extends Text {
-    constructor(criteria: val.Criterion[] = []) {
-        super(criteria.concat([ val.isValidTime() ]));
+    constructor(time: string) {
+        super(time);
     }
 }
 
 export class Select extends Field {
     options: MithrilProperty<string[]>;
-    constructor(options: string[], criteria: val.Criterion[] = []) {
-        super();
-        this.criteria([ val.isOneOf(options) ]);
-        this.options = m.prop(options);
+    constructor(options: string[], selection: string) {
+        super(selection);
+        this.options = m.prop([''].concat(options));
     }
 }

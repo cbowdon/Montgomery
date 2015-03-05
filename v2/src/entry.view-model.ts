@@ -1,40 +1,48 @@
 /// <reference path="../typings/tsd.d.ts" />
 /// <reference path="../node_modules/mithril/mithril.d.ts" />
 import m = require('mithril');
+import moment = require('moment');
+import tsm = require('tsmonad');
 import field = require('./field');
-import val = require('./validation');
-import list = require('./list');
+import entry = require('./entry.model');
+import config = require('./config');
 
-class Entry extends val.Validatable {
+class EntryViewModel {
 
-    constructor(projects: string[], suppressErrors = false) {
-        super();
-        this.components({
-            start: new field.Time(),
-            project: new field.Select(projects),
-            task: new field.Text(),
-        });
-        this.suppressErrors(suppressErrors);
+    id: MithrilProperty<string>;
+    start: MithrilProperty<field.Time>;
+    project: MithrilProperty<field.Select>;
+    task: MithrilProperty<field.Text>;
+    duration: MithrilProperty<tsm.Maybe<Duration>>;
+
+    toRaw() : entry.RawEntry {
+        return {
+            start: this.start().value(),
+            project: this.project().value(),
+            task: this.task().value(),
+        };
     }
 
-    // convenient accessors
-    start = () => <field.Time>this.components()['start'];
-    project = () => <field.Select>this.components()['project'];
-    task = () => <field.Text>this.components()['task'];
+    static blank(cfg: config.Config) : EntryViewModel {
+        var entryVM = new EntryViewModel();
+        entryVM.id = m.prop('blank');
+        entryVM.start = m.prop(new field.Time(''));
+        entryVM.project = m.prop(new field.Select(cfg.projects(), ''));
+        entryVM.task = m.prop(new field.Text(''));
+        entryVM.duration = m.prop(tsm.Maybe.nothing<Duration>());
+        return entryVM;
+    }
 
-    static makeFactory(projects: string[]) {
-        return (data: {
-            start: string;
-            project: string;
-            task?: string;
-        }) => {
-            var entry = new Entry(projects);
-            entry.components()['start'].value(data.start);
-            entry.components()['project'].value(data.project);
-            entry.components()['task'].value(data.task);
-            return entry;
-        }
+    static fromEntry(config: config.Config, entry: entry.Entry) : EntryViewModel {
+        var entryVM = new EntryViewModel(),
+            time = entry.start.format(config.format.time());
+        entryVM.id = m.prop(time);
+        entryVM.start = m.prop(new field.Time(time));
+        entryVM.project = m.prop(new field.Select(config.projects(), entry.project));
+        entryVM.task = m.prop(new field.Text(entry.task));
+        entryVM.duration = m.prop(entry.duration);
+        return entryVM;
     }
 }
 
-export = Entry;
+export = EntryViewModel;

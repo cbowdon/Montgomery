@@ -10,6 +10,7 @@ var chance = new Chance(),
     projects = chance.n(chance.string, 5);
 
 var tests = {
+    /*
     'Valid view model => populated day': () => {
         var model = new Model();
         var raw = {
@@ -143,6 +144,7 @@ var tests = {
                 }
             });
     },
+    */
 };
 
 function getDuration(dur: tsm.Maybe<Duration>) : number {

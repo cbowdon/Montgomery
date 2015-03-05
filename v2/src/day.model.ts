@@ -7,8 +7,6 @@ import config = require('./config');
 import entry = require('./entry.model');
 import list = require('./list');
 
-type EntryDictionary = list.Dictionary<entry.Entry>;
-
 export interface Day {
     date: Moment;
     entries: entry.Entry[];
@@ -19,9 +17,9 @@ export interface RawDay {
     entries: entry.RawEntry[];
 }
 
-export function fromRaw(raw: RawDay) : Day {
+export function fromRaw(config: config.Config, raw: RawDay) : Day {
     var initialEntries = raw.entries
-        .map(entry.fromRaw)
+        .map(e => entry.fromRaw(config, e))
         .sort((e1, e2) => e1.start.isBefore(e2.start) ? -1 : 1);
 
     var entries = initialEntries.map((e, i) => {
@@ -40,15 +38,8 @@ export function fromRaw(raw: RawDay) : Day {
     });
 
     return {
-        date: moment(raw.date, config.date_format, true),
+        date: moment(raw.date, config.format.date(), true),
         entries: entries,
-    };
-}
-
-export function toRaw(day: Day) : RawDay {
-    return {
-        date: day.date.format(config.date_format),
-        entries: day.entries.map(entry.toRaw),
     };
 }
 
@@ -58,9 +49,9 @@ export function nextWorkingDay(day: Day) : Moment {
     return day.date.clone().add(weekday === 5 ? 3 : 1, 'days');
 }
 
-export function hasHome(day: Day) : boolean {
+export function hasHome(config: config.Config, day: Day) : boolean {
     var homes = day.entries
-        .filter(e => e.project === config.home);
+        .filter(e => e.project === config.home());
     return homes.length > 0;
 }
 

@@ -1,40 +1,32 @@
 /// <reference path="../typings/tsd.d.ts" />
 /// <reference path="../node_modules/mithril/mithril.d.ts" />
 /// <reference path="../node_modules/tsmonad/dist/tsmonad.d.ts" />
+import m = require('mithril');
 import moment = require('moment');
 import tsm = require('tsmonad');
 import config = require('./config');
 import entry = require('./entry.model');
 import day = require('./day.model');
-import list = require('./list');
-
-type DayDictionary = list.Dictionary<day.Day>;
 
 class Model {
 
-    private _days: DayDictionary = {};
+    days = m.prop(new Array<day.Day>());
 
-    days() : DayDictionary {
-        return this._days;
+    private load() : day.Day[] {
+        // get from local storage
+        return this.days();
     }
 
-    update(raw: day.RawDay) : tsm.Either<string[], day.Day> {
-        var updatedDay = tsm.Either.right(day.fromRaw(raw));
-        updatedDay.fmap(d => {
-            var key = d.date.format(config.date_format);
-            this._days[key] = d;
-            if (day.hasHome(d)) {
-                // TODO var move
-                var nextDay = day.nextWorkingDay(d),
-                    nextKey = nextDay.format(config.date_format);
-                this._days[nextKey] = {
-                    date: nextDay,
-                    entries: []
-                };
+    save(day: day.Day) : void {
+        for (var d in this.days()) {
+            if (d.date.isSame(day.date)) {
+                d.entries = day.entries;
+                return;
             }
-        });
-        return updatedDay;
+        }
+        this.days().push(day);
     }
+
 }
 
 export = Model;

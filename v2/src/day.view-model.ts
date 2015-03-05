@@ -1,43 +1,35 @@
 /// <reference path="../typings/tsd.d.ts" />
 /// <reference path="../node_modules/mithril/mithril.d.ts" />
 import m = require('mithril');
-import moment = require('moment');
-import val = require('./validation');
-import Entry = require('./entry.view-model');
-import list = require('./list');
-import func = require('./func');
+import EntryViewModel = require('./entry.view-model');
+import day = require('./day.model');
 import config = require('./config');
 
-var BLANK = 'BLANK';
-
-class Day extends val.Validatable {
+class DayViewModel {
 
     date: MithrilProperty<string>;
-    // TODO
-    value = m.prop('');
+    entries: MithrilProperty<EntryViewModel[]>;
 
-    constructor(date: string, entries: Entry[]) {
-        super();
-        this.date(date);
-        this.components({
-            BLANK: new Entry(config.projects, true)
-        });
-        entries.forEach(e => this.components()[e.start().value()] = e);
+    toRaw() : day.RawDay {
+        return {
+            date: this.date(),
+            entries: this.entries().map(e => e.toRaw())
+        };
     }
 
-    blank() : Entry {
-        return <Entry>this.components()[BLANK];
+    static blank(cfg: config.Config) : DayViewModel {
+        var dayVM = new DayViewModel();
+        dayVM.date = m.prop('');
+        dayVM.entries = m.prop([ EntryViewModel.blank(cfg) ]);
+        return dayVM;
     }
 
-    entries() : Entry[] {
-        return func.pairs(this.components())
-            .filter(pair => pair[0] !== BLANK && pair[1] instanceof Entry)
-            .map(pair => <Entry>pair[1]);
-    }
-
-    errors() : string[] {
-        return [];
+    static fromDay(cfg: config.Config, day: day.Day) {
+        var dayVM = new DayViewModel();
+        dayVM.date = m.prop(day.date.format(cfg.format.time()));
+        dayVM.entries = m.prop(day.entries.map(e => EntryViewModel.fromEntry(cfg, e)));
+        return dayVM;
     }
 }
 
-export = Day;
+export = DayViewModel;

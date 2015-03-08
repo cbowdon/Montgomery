@@ -14,6 +14,7 @@ class EntryViewModel {
     project: MithrilProperty<field.Select>;
     task: MithrilProperty<field.Text>;
     duration: MithrilProperty<tsm.Maybe<Duration>>;
+    showErrors: MithrilProperty<boolean>;
 
     errors() : string[] {
         return this.start().errors()
@@ -37,6 +38,7 @@ class EntryViewModel {
         entryVM.project = m.prop(new field.Select(cfg.projects(), ''));
         entryVM.task = m.prop(new field.Text(''));
         entryVM.duration = m.prop(tsm.Maybe.nothing<Duration>());
+        entryVM.showErrors = m.prop(false);
         return entryVM;
     }
 
@@ -50,6 +52,7 @@ class EntryViewModel {
         entryVM.project = m.prop(new field.Select(cfg.projects(), entry.project));
         entryVM.task = m.prop(new field.Text(entry.task));
         entryVM.duration = m.prop(entry.duration);
+        entryVM.showErrors = m.prop(true);
         return entryVM;
     }
 }

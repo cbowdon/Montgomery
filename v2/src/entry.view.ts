@@ -4,12 +4,15 @@ import EntryViewModel = require('./entry.view-model');
 import field = require('./field');
 
 function view(entry: EntryViewModel) : MithrilVirtualElement {
-    return m(`div#${entry.id()}.entry`, [
-        input('.start', entry.start()),
-        select('.project', entry.project()),
-        input('.task', entry.task()),
-        list(entry.errors(), '.errors'),
-    ]);
+    var attrs = { onchange: (e:Event) => entry.showErrors(true) },
+        children = [
+            input('.start', entry.start()),
+            select('.project', entry.project()),
+            input('.task', entry.task()),
+            entry.showErrors() ? list(entry.errors(), '.errors') : '',
+        ];
+
+    return m(`div#${entry.id()}.entry`, attrs, children);
 }
 
 function input(css: string, field: field.Text) : MithrilVirtualElement {

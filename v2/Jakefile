@@ -89,6 +89,7 @@ file(test.canary, [ test.obj ].concat(test.files).concat(src.files), { async: tr
 desc('Run tests');
 testTask('main application', [ test.canary ], function () {
     this.testFiles.include(test.obj + '/test/*.js');
+    this.testFiles.include(test.obj + '/storage.js');
     this.testFiles.exclude(test.obj + '/test/*x.js');
     this.testFiles.exclude(test.obj + '/test/mock*.js');
 });

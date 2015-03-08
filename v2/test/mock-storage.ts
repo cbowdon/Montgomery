@@ -7,43 +7,46 @@ export function create(logger?: (s:any) => any) : Storage {
 
     Object.defineProperties(map, {
         length: {
-            get: () => {
+            get: () : number => {
                 log('Storage::keys');
-                Object.keys(map);
+                return Object.keys(map).length;
             },
         },
         clear: {
-            value: () => {
+            value: () : void => {
                 log('Storage::clear()');
-                map =Object.create(null);
+                Object.keys(map).forEach(k => delete map[k]);
             },
         },
         getItem: {
-            value: (key: string) => {
+            // in practice this will have type 'string',
+            // however TS_LIB defines it as 'any', probably because
+            // you can also use index to get/set
+            value: (key: string) : any => {
                 log(`Storage::getItem(${key})`);
-                map[key];
+                return map[key];
             },
         },
         setItem: {
-            value: (key: string, value: any) => {
+            value: (key: string, value: string) : void => {
                 log(`Storage::setItem(${key}, ${value})`);
-                map[key] = JSON.stringify(value);
+                map[key] = value;
             },
         },
         removeItem: {
-            value: (key: string) => {
+            value: (key: string) : void => {
                 log(`Storage::removeItem(${key})`);
                 delete map[key];
             },
         },
         key: {
-            value: (index: number) => {
+            value: (index: number) : string => {
                 log(`Storage::key(${index})`);
-                Object.keys(map)[index];
+                return Object.keys(map)[index];
             },
         },
         remainingSpace: {
-            get: () => {
+            get: () : number => {
                 log('Storage::remainingSpace');
                 return 99999;
             },

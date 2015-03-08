@@ -15,6 +15,12 @@ class EntryViewModel {
     task: MithrilProperty<field.Text>;
     duration: MithrilProperty<tsm.Maybe<Duration>>;
 
+    errors() : string[] {
+        return this.start().errors()
+            .concat(this.project().errors())
+            .concat(this.task().errors());
+    }
+
     toRaw() : entry.RawEntry {
         return {
             start: this.start().value(),
@@ -24,21 +30,24 @@ class EntryViewModel {
     }
 
     static blank(cfg: config.Config) : EntryViewModel {
-        var entryVM = new EntryViewModel();
+        var entryVM = new EntryViewModel(),
+            formats = cfg.format.acceptableTimes();
         entryVM.id = m.prop('blank');
-        entryVM.start = m.prop(new field.Time(''));
+        entryVM.start = m.prop(new field.Time(formats, ''));
         entryVM.project = m.prop(new field.Select(cfg.projects(), ''));
         entryVM.task = m.prop(new field.Text(''));
         entryVM.duration = m.prop(tsm.Maybe.nothing<Duration>());
         return entryVM;
     }
 
-    static fromEntry(config: config.Config, entry: entry.Entry) : EntryViewModel {
+    static fromEntry(cfg: config.Config, entry: entry.Entry) : EntryViewModel {
         var entryVM = new EntryViewModel(),
-            time = entry.start.format(config.format.time());
+            formats = cfg.format.acceptableTimes(),
+            time = entry.start instanceof Function ?
+                entry.start.format(cfg.format.time()) : '';
         entryVM.id = m.prop(time);
-        entryVM.start = m.prop(new field.Time(time));
-        entryVM.project = m.prop(new field.Select(config.projects(), entry.project));
+        entryVM.start = m.prop(new field.Time(formats, time));
+        entryVM.project = m.prop(new field.Select(cfg.projects(), entry.project));
         entryVM.task = m.prop(new field.Text(entry.task));
         entryVM.duration = m.prop(entry.duration);
         return entryVM;

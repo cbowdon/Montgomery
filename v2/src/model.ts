@@ -7,37 +7,59 @@ import tsm = require('tsmonad');
 import config = require('./config');
 import entry = require('./entry.model');
 import day = require('./day.model');
+import func = require('./func');
 
-var KEY = 'Montgomery';
+var STORAGE_KEY = 'Montgomery';
 
 class Model {
 
-    constructor() {
+    constructor(
+        private cfg: config.Config,
+        private storage: Storage) {
         this.load();
     }
 
-    // TODO replace array with ES6 map?
-    days: MithrilProperty<day.Day[]> = m.prop([]);
-
-    private load() : day.Day[] {
-        return tsm.maybe(localStorage.getItem(KEY))
+    private load() : void {
+        this.map = tsm.maybe<string>(this.storage.getItem(STORAGE_KEY))
             .caseOf({
-                nothing: () => this.days([]),
-                just: d => this.days(JSON.parse(d))
+                nothing: () => Object.create(null),
+                just: d => JSON.parse(d),
             });
     }
 
-    save(day: day.Day) : void {
-        var existing = this.days()
-            .filter(d => d.date.isSame(day.date));
+    private map: { [id: string]: day.Day } = Object.create(null);
 
-        if (existing.length > 0) {
-            existing[0].entries = day.entries;
-        } else {
-            this.days().push(day);
+    private set(d: day.Day) : void {
+        var key = d.date.format(this.cfg.format.date());
+        this.map[key] = d;
+    }
+
+    clear() : void {
+        this.storage.clear();
+        this.load();
+    }
+
+    days() : day.Day[] {
+        return func.pairs(this.map)
+            .map(p => p[1])
+            .sort((d1, d2) => d1.date.isBefore(d2.date) ? -1 : 1);
+    }
+
+    save(d: day.Day) : tsm.Either<string[],day.Day> {
+
+        this.set(d);
+
+        if (day.hasHome(this.cfg, d)) {
+            this.set({
+                date: day.nextWorkingDay(d),
+                entries: [],
+            });
         }
 
-        localStorage.setItem(KEY, JSON.stringify(this.days()));
+        this.storage.setItem(STORAGE_KEY, JSON.stringify(this.map));
+
+        // currently no validation to do
+        return tsm.Either.right(d);
     }
 }
 

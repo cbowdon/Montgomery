@@ -29,6 +29,11 @@ class Controller {
         console.log('save');
         this.vm.save(day);
     }
+
+    clear() : void {
+        console.log('clear');
+        this.vm.clear();
+    }
 }
 
 export var controller = Controller;
@@ -43,6 +48,7 @@ export function view(ctrl: Controller) : MithrilVirtualElement {
         m('div#table', viewTable(ctrl.days())),
         m('div#chart', viewChart(ctrl.days())),
         m('div#config', viewConfig(ctrl, ctrl.config())),
+        button('clear all', e => ctrl.clear()),
     ]);
 }
 

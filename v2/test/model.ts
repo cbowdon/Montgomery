@@ -4,37 +4,31 @@ import Chance = require('chance');
 import moment = require('moment');
 import tsm = require('tsmonad');
 import Model = require('../src/model');
+import day = require('../src/day.model');
 import config = require('../src/config');
 
 var chance = new Chance(),
-    projects = chance.n(chance.string, 5);
+    projects = chance.n(chance.string, 5),
+    map = Object.create(null),
+    mockStorage = <Storage>{
+        clear: () => map = Object.create(null),
+        getItem: (k) => map[k],
+        setItem: (k, v) => map[k] = JSON.stringify(v),
+        removeItem: (k) => null,
+        length: 1,
+        key: (k) => null,
+        remainingSpace: null,
+    };
 
 var tests = {
 
-    /*
-    'Valid view model => populated day': () => {
-        var model = new Model();
-        var raw = {
-            date: '2013-09-09',
-            entries: [
-                { start: '12:34', project: projects[0], task: chance.string() },
-                { start: '12:35', project: projects[1], task: chance.string() },
-                { start: '12:36', project: projects[2], task: chance.string() },
-                { start: '12:37', project: projects[3], task: chance.string() },
-            ]
-        };
-        model.update(raw)
-            .caseOf({
-                left: e => assert.fail(e),
-                right: d => {
-                    assert.ok(moment(raw.date).isSame(d.date));
-                    assert.strictEqual(raw.entries.length, Object.keys(d.entries).length);
-                }
-            });
+    'Save an invalid day => errors': () => {
+        // at this stage there is nothing to validate
     },
-    'Valid view model => durations calculated': () => {
-        var model = new Model();
-        var raw = {
+
+    'Save valid model => add day': () => {
+        var model = new Model(config.defaults(), mockStorage);
+        var dayModel = day.fromRaw(config.defaults(), {
             date: '2013-09-09',
             entries: [
                 { start: '1115', project: projects[0], task: chance.string() },
@@ -42,31 +36,8 @@ var tests = {
                 { start: '1250', project: projects[2], task: chance.string() },
                 { start: '1425', project: projects[3], task: chance.string() },
             ]
-        };
-        model.update(raw)
-            .caseOf({
-                left: e => assert.fail(e),
-                right: d => {
-                    var durations = d.entries.map(e => e.duration);
-                    assert.strictEqual(45, getDuration(durations[0]));
-                    assert.strictEqual(50, getDuration(durations[1]));
-                    assert.strictEqual(95, getDuration(durations[2]));
-                    assert.strictEqual(0, getDuration(durations[3]));
-                }
-            });
-    },
-    'Valid view model => add day': () => {
-        var model = new Model();
-        var raw = {
-            date: '2013-09-09',
-            entries: [
-                { start: '1115', project: projects[0], task: chance.string() },
-                { start: '1200', project: projects[1], task: chance.string() },
-                { start: '1250', project: projects[2], task: chance.string() },
-                { start: '1425', project: projects[3], task: chance.string() },
-            ]
-        };
-        model.update(raw)
+        });
+        model.save(dayModel)
             .caseOf({
                 left: e => assert.fail(e),
                 right: d => {
@@ -74,9 +45,55 @@ var tests = {
                 }
             });
     },
-    'Valid view model => update day': () => {
-        var model = new Model();
-        var raw1 = {
+
+    'Save valid model => populated day': () => {
+        var model = new Model(config.defaults(), mockStorage);
+        var dayModel = day.fromRaw(config.defaults(), {
+            date: '2013-09-09',
+            entries: [
+                { start: '12:34', project: projects[0], task: chance.string() },
+                { start: '12:35', project: projects[1], task: chance.string() },
+                { start: '12:36', project: projects[2], task: chance.string() },
+                { start: '12:37', project: projects[3], task: chance.string() },
+            ]
+        });
+        model.save(dayModel)
+            .caseOf({
+                left: e => assert.fail(e),
+                right: d => {
+                    assert.ok(moment(dayModel.date).isSame(d.date));
+                    assert.strictEqual(dayModel.entries.length, Object.keys(d.entries).length);
+                }
+            });
+    },
+
+    'Save valid model => durations calculated': () => {
+        var model = new Model(config.defaults(), mockStorage),
+            dayModel = day.fromRaw(config.defaults(), {
+                date: '2013-09-09',
+                entries: [
+                    { start: '1115', project: projects[0], task: chance.string() },
+                    { start: '1200', project: projects[1], task: chance.string() },
+                    { start: '1250', project: projects[2], task: chance.string() },
+                    { start: '1425', project: projects[3], task: chance.string() },
+                ]
+            });
+        var result = model.save(dayModel);
+        result.caseOf({
+            left: e => assert.fail(e.join(' ')),
+            right: d => {
+                var durations = d.entries.map(e => e.duration);
+                assert.strictEqual(45, getDuration(durations[0]));
+                assert.strictEqual(50, getDuration(durations[1]));
+                assert.strictEqual(95, getDuration(durations[2]));
+                assert.strictEqual(0, getDuration(durations[3]));
+            }
+        });
+    },
+
+    'Save valid model with new entry => update day': () => {
+        var model = new Model(config.defaults(), mockStorage);
+        var dm1 = day.fromRaw(config.defaults(), {
             date: '2013-09-09',
             entries: [
                 { start: '1115', project: projects[0], task: chance.string() },
@@ -84,8 +101,8 @@ var tests = {
                 { start: '1250', project: projects[2], task: chance.string() },
                 { start: '1425', project: projects[3], task: chance.string() },
             ]
-        };
-        var raw2 = {
+        });
+        var dm2 = day.fromRaw(config.defaults(), {
             date: '2013-09-09',
             entries: [
                 { start: '1115', project: projects[0], task: chance.string() },
@@ -94,9 +111,9 @@ var tests = {
                 { start: '1400', project: projects[3], task: chance.string() },
                 { start: '1450', project: projects[4], task: chance.string() },
             ]
-        };
-        model.update(raw1);
-        model.update(raw2)
+        });
+        model.save(dm1); // first result tested elsewhere
+        model.save(dm2)
             .caseOf({
                 left: e => assert.fail(e),
                 right: d => {
@@ -107,51 +124,95 @@ var tests = {
                 }
             });
     },
-    'Valid view model with lunch and home => new day': () => {
-        var model = new Model();
-        var raw = {
+
+    'Save valid model with lunch and home => new day': () => {
+        var model = new Model(config.defaults(), mockStorage);
+        var dm = day.fromRaw(config.defaults(), {
             date: '2013-09-09', // a Monday
             entries: [
                 { start: '0800', project: projects[0], task: chance.string() },
-                { start: '1230', project: config.lunch, task: chance.string() },
+                { start: '1230', project: config.defaults().lunch(), task: chance.string() },
                 { start: '1300', project: projects[1], task: chance.string() },
-                { start: '1600', project: config.home, task: chance.string() },
+                { start: '1600', project: config.defaults().home(), task: chance.string() },
             ]
-        };
-        model.update(raw)
+        });
+        model.save(dm)
             .caseOf({
                 left: e => assert.fail(e),
                 right: d => {
                     assert.strictEqual(Object.keys(model.days()).length, 2);
-                    assert.strictEqual(model.days()['2013-09-10'].entries.length, 0);
+                    assert.strictEqual(model.days()[1].entries.length, 0);
                 }
             });
     },
-    'Valid view model block day with home => new day': () => {
-        var model = new Model();
-        var raw = {
+
+    'Save valid model block day with home => new day': () => {
+        var model = new Model(config.defaults(), mockStorage);
+        var dm = day.fromRaw(config.defaults(), {
             date: '2013-09-09',
             entries: [
                 { start: '0800', project: projects[0], task: chance.string() },
-                { start: '1600', project: config.home, task: chance.string() },
+                { start: '1600', project: config.defaults().home(), task: chance.string() },
             ]
-        };
-        model.update(raw)
+        });
+        model.save(dm)
             .caseOf({
                 left: e => assert.fail(e),
                 right: d => {
                     assert.strictEqual(Object.keys(model.days()).length, 2);
-                    assert.strictEqual(model.days()['2013-09-10'].entries.length, 0);
+                    assert.strictEqual(model.days()[1].entries.length, 0);
                 }
             });
     },
-    */
+
+    'Clear storage => success': () => {
+        var model = new Model(config.defaults(), mockStorage);
+        var dm = day.fromRaw(config.defaults(), {
+            date: '2015-09-09',
+            entries: [
+                { start: '0800', project: projects[0], task: chance.string() },
+                { start: '1600', project: config.defaults().home(), task: chance.string() },
+            ]
+        });
+        model.save(dm);
+
+        model.clear();
+        assert.ok(model.days().length === 0);
+    },
+
+    'Load from storage => success': () => {
+        var model = new Model(config.defaults(), mockStorage);
+        var dm = day.fromRaw(config.defaults(), {
+            date: '2015-09-09',
+            entries: [
+                { start: '0800', project: projects[0], task: chance.string() },
+                { start: '1600', project: config.defaults().home(), task: chance.string() },
+            ]
+        });
+        model.save(dm);
+
+        var result = model.days();
+        assert.strictEqual(result.length, 1, '1 day');
+        assert.strictEqual(result[0].entries.length, 2, '2 entries');
+        assert.ok(moment('08:00', 'HH:mm', true)
+            .isSame(result[0].entries[0].start), 'Same time (e0)');
+        assert.ok(moment('16:00', 'HH:mm', true)
+            .isSame(result[0].entries[1].start), 'Same time (e1)');
+    },
+
 };
 
 function getDuration(dur: tsm.Maybe<Duration>) : number {
     return dur.caseOf({
         nothing: () => 0,
         just: d => 60 * d.hours() + d.minutes()
+    });
+}
+
+function isJust<T>(maybe: tsm.Maybe<T>) : boolean {
+    return maybe.caseOf({
+        nothing: () => false,
+        just: t => true
     });
 }
 

@@ -7,7 +7,8 @@ function view(entry: EntryViewModel) : MithrilVirtualElement {
     return m(`div#${entry.id()}.entry`, [
         input('.start', entry.start()),
         select('.project', entry.project()),
-        input('.task', entry.task())
+        input('.task', entry.task()),
+        list(entry.errors(), '.errors'),
     ]);
 }
 
@@ -19,11 +20,15 @@ function input(css: string, field: field.Text) : MithrilVirtualElement {
 }
 
 function select(css: string, field: field.Select) : MithrilVirtualElement {
-    var options = field.options().map(o => m('option', o));
-    return m(`select${css}`, options, {
-        value: field.value,
-        onchange: m.withAttr('value', field.value),
-    });
+    var options = [''].concat(field.options())
+        .map(o => m('option', o));
+    return m(`select${css}`,
+        { value: field.value, onchange: m.withAttr('value', field.value) },
+        options);
+}
+
+function list(items: string[], css = '') {
+    return m(`ul${css}`, items.map(i => m('li', i)));
 }
 
 export = view;

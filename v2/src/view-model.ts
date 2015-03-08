@@ -12,36 +12,43 @@ import config = require('./config');
 class ViewModel {
 
     constructor() {
-        this.sync();
+        this.load();
     }
 
-    private model = new Model();
+    private model = new Model(config.defaults(), localStorage);
 
     // TODO will need to re-save everything if config changed
     config = m.prop(config.defaults());
 
-    days = m.prop(new Array<DayViewModel>()); // { get; private set; }
+    days: MithrilProperty<DayViewModel[]> = m.prop([]);
 
     addDay() : void {
         this.days().push(DayViewModel.blank(this.config()));
     }
 
-    save(dayVM: DayViewModel) : void {
-        // validate view model
-        // convert to model
-        // validate model (call save)
-        // if success then reload else set errors
-        var raw = dayVM.toRaw();
-        console.log(raw);
-        var dayModel = day.fromRaw(this.config(), dayVM.toRaw());
-        this.model.save(dayModel);
-        this.sync();
+    clear() : void {
+        this.model.clear();
+        this.load();
     }
 
-    private sync() : DayViewModel[] {
-        var dayVms = this.model.days()
+    save(dayVM: DayViewModel) : void {
+
+        console.log('vm save');
+
+        dayVM.entries().push(EntryViewModel.blank(this.config()));
+
+        var raw = dayVM.toRaw();
+        var dayModel = day.fromRaw(this.config(), dayVM.toRaw());
+        this.model.save(dayModel);
+        // TODO sync with model
+        //this.load();
+    }
+
+    load() : DayViewModel[] {
+         var vms = this.model.days()
             .map(d => DayViewModel.fromDay(this.config(), d));
-        return this.days(dayVms);
+
+        return this.days(vms);
     }
 }
 

@@ -7,6 +7,7 @@ export interface Config {
     format: {
         date: MithrilProperty<string>;
         time: MithrilProperty<string>;
+        acceptableTimes: MithrilProperty<string[]>;
     };
     projects: MithrilProperty<string[]>;
 }
@@ -18,6 +19,7 @@ export function defaults() : Config {
         format: {
             date: m.prop('YYYY-MM-DD'),
             time: m.prop('HH:mm'),
+            acceptableTimes: m.prop([ 'HH:mm', 'HHmm' ]),
         },
         projects: m.prop([ 'Apples', 'Bananas', 'Cherries' ]),
     };

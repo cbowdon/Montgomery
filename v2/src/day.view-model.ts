@@ -17,6 +17,13 @@ class DayViewModel {
         };
     }
 
+    errors() : string[] {
+        return this.entries()
+            .reduce((acc, e) => {
+                return acc.concat(e.errors());
+            }, []);
+    }
+
     static blank(cfg: config.Config) : DayViewModel {
         var dayVM = new DayViewModel();
         dayVM.date = m.prop('');
@@ -26,7 +33,8 @@ class DayViewModel {
 
     static fromDay(cfg: config.Config, day: day.Day) {
         var dayVM = new DayViewModel();
-        dayVM.date = m.prop(day.date.format(cfg.format.time()));
+        dayVM.date = m.prop(day.date instanceof Function ?
+            day.date.format(cfg.format.time()) : '');
         dayVM.entries = m.prop(day.entries.map(e => EntryViewModel.fromEntry(cfg, e)));
         return dayVM;
     }

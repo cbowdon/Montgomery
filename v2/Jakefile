@@ -6,6 +6,7 @@ function tsc(srcEntry, outDir) {
         '--noImplicitAny',
         '--noEmitOnError',
         '--module commonjs',
+        '--target ES5',
         '--outDir ' + outDir
     ].join(' ');
 }
@@ -89,6 +90,7 @@ desc('Run tests');
 testTask('main application', [ test.canary ], function () {
     this.testFiles.include(test.obj + '/test/*.js');
     this.testFiles.exclude(test.obj + '/test/*x.js');
+    this.testFiles.exclude(test.obj + '/test/mock*.js');
 });
 
 desc('Clean')

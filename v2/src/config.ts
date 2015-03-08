@@ -24,3 +24,7 @@ export function defaults() : Config {
         projects: m.prop([ 'Apples', 'Bananas', 'Cherries' ]),
     };
 }
+
+export function log(message: any) : void {
+    console.log(message);
+}

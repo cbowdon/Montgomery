@@ -2,6 +2,9 @@
 import assert = require('./assertx');
 import chance = require('./chancex');
 import field = require('../src/field');
+import config = require('../src/config');
+
+var formats = config.defaults().format.acceptableTimes();
 
 var tests = {
     // TODO
@@ -20,8 +23,8 @@ var tests = {
             '2359',
         ];
         validTimes.forEach(t => {
-            var time = new field.Time(t);
-            //assert.empty(time.errors(), t);
+            var time = new field.Time(formats, t);
+            assert.empty(time.errors(), t);
         });
     },
 
@@ -34,20 +37,20 @@ var tests = {
             '2459'
         ];
         invalidTimes.forEach(t => {
-            var time = new field.Time(t);
-            //assert.notEmpty(time.errors(), t);
+            var time = new field.Time(formats, t);
+            assert.notEmpty(time.errors(), t);
         });
     },
 
     'Any value => no errors': () => {
         var text = new field.Select(['a', 'b', 'c'], 'a');
-        //assert.empty(text.errors());
+        assert.empty(text.errors());
     },
 
     'No value => errors': () => {
         var text = new field.Select(['a', 'b', 'c'], 'a');
         text.value('');
-        //assert.notEmpty(text.errors());
+        assert.notEmpty(text.errors());
     },
 };
 

@@ -11,14 +11,18 @@ import config = require('./config');
 
 class ViewModel {
 
-    constructor() {
+    // TODO will need to re-save everything if config changed
+    constructor(cfg: config.Config, storage: Storage) {
+        this.storage = storage;
+        this.config = m.prop(cfg);
+        this.model = new Model(cfg, storage);
         this.load();
     }
 
-    private model = new Model(config.defaults(), localStorage);
+    private storage: Storage;
+    private model: Model;
 
-    // TODO will need to re-save everything if config changed
-    config = m.prop(config.defaults());
+    config: MithrilProperty<config.Config>;
 
     days: MithrilProperty<DayViewModel[]> = m.prop([]);
 

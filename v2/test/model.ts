@@ -6,19 +6,10 @@ import tsm = require('tsmonad');
 import Model = require('../src/model');
 import day = require('../src/day.model');
 import config = require('../src/config');
+import storage = require('./mock-storage');
 
 var chance = new Chance(),
-    projects = chance.n(chance.string, 5),
-    map = Object.create(null),
-    mockStorage = <Storage>{
-        clear: () => map = Object.create(null),
-        getItem: (k) => map[k],
-        setItem: (k, v) => map[k] = JSON.stringify(v),
-        removeItem: (k) => null,
-        length: 1,
-        key: (k) => null,
-        remainingSpace: null,
-    };
+    projects = chance.n(chance.string, 5);
 
 var tests = {
 
@@ -27,7 +18,7 @@ var tests = {
     },
 
     'Save valid model => add day': () => {
-        var model = new Model(config.defaults(), mockStorage);
+        var model = new Model(config.defaults(), storage.create());
         var dayModel = day.fromRaw(config.defaults(), {
             date: '2013-09-09',
             entries: [
@@ -47,7 +38,7 @@ var tests = {
     },
 
     'Save valid model => populated day': () => {
-        var model = new Model(config.defaults(), mockStorage);
+        var model = new Model(config.defaults(), storage.create());
         var dayModel = day.fromRaw(config.defaults(), {
             date: '2013-09-09',
             entries: [
@@ -68,7 +59,7 @@ var tests = {
     },
 
     'Save valid model => durations calculated': () => {
-        var model = new Model(config.defaults(), mockStorage),
+        var model = new Model(config.defaults(), storage.create()),
             dayModel = day.fromRaw(config.defaults(), {
                 date: '2013-09-09',
                 entries: [
@@ -92,7 +83,7 @@ var tests = {
     },
 
     'Save valid model with new entry => update day': () => {
-        var model = new Model(config.defaults(), mockStorage);
+        var model = new Model(config.defaults(), storage.create());
         var dm1 = day.fromRaw(config.defaults(), {
             date: '2013-09-09',
             entries: [
@@ -126,7 +117,7 @@ var tests = {
     },
 
     'Save valid model with lunch and home => new day': () => {
-        var model = new Model(config.defaults(), mockStorage);
+        var model = new Model(config.defaults(), storage.create());
         var dm = day.fromRaw(config.defaults(), {
             date: '2013-09-09', // a Monday
             entries: [
@@ -147,7 +138,7 @@ var tests = {
     },
 
     'Save valid model block day with home => new day': () => {
-        var model = new Model(config.defaults(), mockStorage);
+        var model = new Model(config.defaults(), storage.create());
         var dm = day.fromRaw(config.defaults(), {
             date: '2013-09-09',
             entries: [
@@ -166,7 +157,7 @@ var tests = {
     },
 
     'Clear storage => success': () => {
-        var model = new Model(config.defaults(), mockStorage);
+        var model = new Model(config.defaults(), storage.create());
         var dm = day.fromRaw(config.defaults(), {
             date: '2015-09-09',
             entries: [
@@ -181,22 +172,22 @@ var tests = {
     },
 
     'Load from storage => success': () => {
-        var model = new Model(config.defaults(), mockStorage);
+        var model = new Model(config.defaults(), storage.create());
         var dm = day.fromRaw(config.defaults(), {
             date: '2015-09-09',
             entries: [
                 { start: '0800', project: projects[0], task: chance.string() },
-                { start: '1600', project: config.defaults().home(), task: chance.string() },
+                { start: '0900', project: projects[1], task: chance.string() },
             ]
         });
         model.save(dm);
 
         var result = model.days();
-        assert.strictEqual(result.length, 1, '1 day');
-        assert.strictEqual(result[0].entries.length, 2, '2 entries');
+        assert.strictEqual(result.length, 1);
+        assert.strictEqual(result[0].entries.length, 2);
         assert.ok(moment('08:00', 'HH:mm', true)
             .isSame(result[0].entries[0].start), 'Same time (e0)');
-        assert.ok(moment('16:00', 'HH:mm', true)
+        assert.ok(moment('09:00', 'HH:mm', true)
             .isSame(result[0].entries[1].start), 'Same time (e1)');
     },
 

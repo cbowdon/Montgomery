@@ -11,7 +11,7 @@ class Controller {
 
     // controller only gets constructed once
     // so vm is effectively singleton
-    vm = new ViewModel();
+    vm = new ViewModel(config.defaults(), localStorage);
 
     config() : config.Config {
         return this.vm.config();

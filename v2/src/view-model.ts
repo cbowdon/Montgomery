@@ -27,7 +27,11 @@ class ViewModel {
     days: MithrilProperty<DayViewModel[]> = m.prop([]);
 
     addDay() : void {
-        this.days().push(DayViewModel.blank(this.config()));
+        console.log('vm add');
+        var newDay = this.model.newDay(),
+            newDayVM = DayViewModel.fromDay(this.config(), newDay);
+        this.days().push(newDayVM);
+        this.save(newDayVM);
     }
 
     clear() : void {

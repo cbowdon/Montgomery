@@ -1,6 +1,7 @@
 /// <reference path="../typings/tsd.d.ts" />
 /// <reference path="../node_modules/mithril/mithril.d.ts" />
 import m = require('mithril');
+import moment = require('moment');
 import EntryViewModel = require('./entry.view-model');
 import day = require('./day.model');
 import config = require('./config');
@@ -25,8 +26,9 @@ class DayViewModel {
     }
 
     static blank(cfg: config.Config) : DayViewModel {
-        var dayVM = new DayViewModel();
-        dayVM.date = m.prop('');
+        var dayVM = new DayViewModel(),
+            date = moment().format(cfg.format.date());
+        dayVM.date = m.prop(date);
         dayVM.entries = m.prop([ EntryViewModel.blank(cfg) ]);
         return dayVM;
     }

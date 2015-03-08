@@ -29,9 +29,10 @@ class Model {
 
     private map: { [id: string]: day.Day } = Object.create(null);
 
-    private set(d: day.Day) : void {
+    private set(d: day.Day) : day.Day {
         var key = d.date.format(this.cfg.format.date());
         this.map[key] = d;
+        return d;
     }
 
     clear() : void {
@@ -45,7 +46,22 @@ class Model {
             .sort((d1, d2) => d1.date.isBefore(d2.date) ? -1 : 1);
     }
 
+    newDay() : day.Day {
+        var dates = Object.keys(this.map).sort().reverse(),
+            latest = dates.length > 0 ?
+                day.nextWorkingDay(this.map[dates[0]]) :
+                moment();
+
+        return this.set({
+            date: latest,
+            entries: [],
+        });
+    }
+
     save(d: day.Day) : tsm.Either<string[],day.Day> {
+
+        // TODO should not accept adding new days here?
+        // force VM through newDay?
 
         this.set(d);
 

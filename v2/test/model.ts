@@ -13,6 +13,27 @@ var chance = new Chance(),
 
 var tests = {
 
+    'Add day (first) => date is today': () => {
+        var model = new Model(config.defaults(), storage.create());
+
+        var d = model.newDay();
+
+        assert.strictEqual(model.days().length, 1);
+        assert.equal(d, model.days()[0]);
+        assert.ok(moment().isSame(d.date, 'day'));
+    },
+
+    'Add day (not first) => date is next working day': () => {
+        var model = new Model(config.defaults(), storage.create());
+
+        var d0 = model.newDay();
+        var d1 = model.newDay();
+
+        assert.strictEqual(model.days().length, 2);
+        assert.ok(d0.date.isBefore(d1.date));
+        // actual next working day functionality tested elsewhere
+    },
+
     'Save an invalid day => errors': () => {
         // at this stage there is nothing to validate
     },

@@ -58,7 +58,10 @@ function viewDay(ctrl: Controller, day: DayViewModel) : MithrilVirtualElement {
     return m(`div#day-${ day.date() }.day`, [
         m('div#date', day.date()),
         day.entries().map(viewEntry),
-        button('+entry', e => ctrl.save(day)),
+        button('+entry', e => {
+            day.entries().map(entry => entry.showErrors(true));
+            ctrl.save(day);
+        }),
     ]);
 }
 

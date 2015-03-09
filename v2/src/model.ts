@@ -41,6 +41,7 @@ class Model {
     }
 
     days() : day.Day[] {
+        console.dir(this.map);
         return func.pairs(this.map)
             .map(p => p[1])
             .sort((d1, d2) => d1.date.isBefore(d2.date) ? -1 : 1);
@@ -52,6 +53,7 @@ class Model {
                 day.nextWorkingDay(this.map[dates[0]]) :
                 moment();
 
+        console.log(latest);
         return this.set({
             date: latest,
             entries: [],

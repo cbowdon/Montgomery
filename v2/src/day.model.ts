@@ -17,9 +17,9 @@ export interface RawDay {
     entries: entry.RawEntry[];
 }
 
-export function fromRaw(config: config.Config, raw: RawDay) : Day {
+export function fromRaw(raw: RawDay) : Day {
     var initialEntries = raw.entries
-        .map(e => entry.fromRaw(config, e))
+        .map(e => entry.fromRaw(e))
         .sort((e1, e2) => e1.start.isBefore(e2.start) ? -1 : 1);
 
     var entries = initialEntries.map((e, i) => {
@@ -38,7 +38,7 @@ export function fromRaw(config: config.Config, raw: RawDay) : Day {
     });
 
     return {
-        date: moment(raw.date, config.format.date(), true),
+        date: moment(raw.date),
         entries: entries,
     };
 }

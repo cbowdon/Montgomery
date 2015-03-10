@@ -50,7 +50,8 @@ class ViewModel {
         }
 
         var raw = dayVM.toRaw();
-        var dayModel = day.fromRaw(this.config(), dayVM.toRaw());
+        console.log(raw);
+        var dayModel = day.fromRaw(dayVM.toRaw());
         this.model.save(dayModel);
 
         dayVM.entries().push(EntryViewModel.blank(this.config()));

@@ -8,13 +8,17 @@ import config = require('./config');
 
 class DayViewModel {
 
+    constructor(private cfg: config.Config) {
+    }
+
     date: MithrilProperty<string>;
     entries: MithrilProperty<EntryViewModel[]>;
 
     toRaw() : day.RawDay {
+        var date = moment(this.date(), this.cfg.format.date(), true);
         return {
-            date: this.date(),
-            entries: this.entries().map(e => e.toRaw())
+            date: date.toISOString(),
+            entries: this.entries().map(e => e.toRaw(date)),
         };
     }
 
@@ -26,7 +30,7 @@ class DayViewModel {
     }
 
     static blank(cfg: config.Config) : DayViewModel {
-        var dayVM = new DayViewModel(),
+        var dayVM = new DayViewModel(cfg),
             date = moment().format(cfg.format.date()),
             entries = [ EntryViewModel.blank(cfg) ];
 
@@ -36,7 +40,7 @@ class DayViewModel {
     }
 
     static fromDay(cfg: config.Config, day: day.Day) {
-        var dayVM = new DayViewModel(),
+        var dayVM = new DayViewModel(cfg),
             date = day.date.format(cfg.format.date()),
             entries = day.entries.map(e => EntryViewModel.fromEntry(cfg, e));
 

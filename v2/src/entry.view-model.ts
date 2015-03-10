@@ -9,6 +9,9 @@ import config = require('./config');
 
 class EntryViewModel {
 
+    constructor(private cfg: config.Config) {
+    }
+
     id: MithrilProperty<string>;
     start: MithrilProperty<field.Time>;
     project: MithrilProperty<field.Select>;
@@ -22,37 +25,45 @@ class EntryViewModel {
             .concat(this.task().errors());
     }
 
-    toRaw() : entry.RawEntry {
+    toRaw(date: Moment) : entry.RawEntry {
+        var time = moment(this.start().value(), this.cfg.format.time(), true),
+            hr = time.hours(),
+            min = time.minutes(),
+            start = date.hours(hr).minutes(min);
+
         return {
-            start: this.start().value(),
+            start: start.toISOString(),
             project: this.project().value(),
             task: this.task().value(),
         };
     }
 
     static blank(cfg: config.Config) : EntryViewModel {
-        var entryVM = new EntryViewModel(),
+        var entryVM = new EntryViewModel(cfg),
             formats = cfg.format.acceptableTimes();
+
         entryVM.id = m.prop('blank');
         entryVM.start = m.prop(new field.Time(formats, ''));
         entryVM.project = m.prop(new field.Select(cfg.projects(), ''));
         entryVM.task = m.prop(new field.Text(''));
         entryVM.duration = m.prop(tsm.Maybe.nothing<Duration>());
         entryVM.showErrors = m.prop(false);
+
         return entryVM;
     }
 
     static fromEntry(cfg: config.Config, entry: entry.Entry) : EntryViewModel {
-        var entryVM = new EntryViewModel(),
+        var entryVM = new EntryViewModel(cfg),
             formats = cfg.format.acceptableTimes(),
-            time = entry.start instanceof Function ?
-                entry.start.format(cfg.format.time()) : '';
+            time = entry.start.format(cfg.format.time());
+
         entryVM.id = m.prop(time);
         entryVM.start = m.prop(new field.Time(formats, time));
         entryVM.project = m.prop(new field.Select(cfg.projects(), entry.project));
         entryVM.task = m.prop(new field.Text(entry.task));
         entryVM.duration = m.prop(entry.duration);
         entryVM.showErrors = m.prop(true);
+
         return entryVM;
     }
 }

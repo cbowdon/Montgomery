@@ -11,11 +11,11 @@ var chance = new Chance(),
 var tests = {
     'From raw => valid entry': () => {
         var raw = {
-            start: '1234',
+            start: '2013-09-09T12:34:00.000Z',
             project: projects[1],
             task: chance.string()
         };
-        var e = entry.fromRaw(cfg, raw);
+        var e = entry.fromRaw(raw);
         assert.ok(e);
     },
 };

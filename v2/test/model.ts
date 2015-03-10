@@ -40,13 +40,13 @@ var tests = {
 
     'Save valid model => add day': () => {
         var model = new Model(config.defaults(), storage.create());
-        var dayModel = day.fromRaw(config.defaults(), {
-            date: '2013-09-09',
+        var dayModel = day.fromRaw({
+            date: '2013-09-09T00:00:00.000Z',
             entries: [
-                { start: '1115', project: projects[0], task: chance.string() },
-                { start: '1200', project: projects[1], task: chance.string() },
-                { start: '1250', project: projects[2], task: chance.string() },
-                { start: '1425', project: projects[3], task: chance.string() },
+                { start: '2013-09-09T11:15:00.000Z', project: projects[0], task: chance.string() },
+                { start: '2013-09-09T12:00:00.000Z', project: projects[1], task: chance.string() },
+                { start: '2013-09-09T12:50:00.000Z', project: projects[2], task: chance.string() },
+                { start: '2013-09-09T14:25:00.000Z', project: projects[3], task: chance.string() },
             ]
         });
         model.save(dayModel)
@@ -60,13 +60,13 @@ var tests = {
 
     'Save valid model => populated day': () => {
         var model = new Model(config.defaults(), storage.create());
-        var dayModel = day.fromRaw(config.defaults(), {
-            date: '2013-09-09',
+        var dayModel = day.fromRaw({
+            date: '2013-09-09T00:00:00.000Z',
             entries: [
-                { start: '12:34', project: projects[0], task: chance.string() },
-                { start: '12:35', project: projects[1], task: chance.string() },
-                { start: '12:36', project: projects[2], task: chance.string() },
-                { start: '12:37', project: projects[3], task: chance.string() },
+                { start: '2013-09-09T12:34:00.000Z', project: projects[0], task: chance.string() },
+                { start: '2013-09-09T12:35:00.000Z', project: projects[1], task: chance.string() },
+                { start: '2013-09-09T12:36:00.000Z', project: projects[2], task: chance.string() },
+                { start: '2013-09-09T12:37:00.000Z', project: projects[3], task: chance.string() },
             ]
         });
         model.save(dayModel)
@@ -81,13 +81,13 @@ var tests = {
 
     'Save valid model => durations calculated': () => {
         var model = new Model(config.defaults(), storage.create()),
-            dayModel = day.fromRaw(config.defaults(), {
-                date: '2013-09-09',
+            dayModel = day.fromRaw({
+                date: '2013-09-09T00:00:00.000Z',
                 entries: [
-                    { start: '1115', project: projects[0], task: chance.string() },
-                    { start: '1200', project: projects[1], task: chance.string() },
-                    { start: '1250', project: projects[2], task: chance.string() },
-                    { start: '1425', project: projects[3], task: chance.string() },
+                    { start: '2013-09-09T11:15:00.000Z', project: projects[0], task: chance.string() },
+                    { start: '2013-09-09T12:00:00.000Z', project: projects[1], task: chance.string() },
+                    { start: '2013-09-09T12:50:00.000Z', project: projects[2], task: chance.string() },
+                    { start: '2013-09-09T14:25:00.000Z', project: projects[3], task: chance.string() },
                 ]
             });
         var result = model.save(dayModel);
@@ -105,23 +105,23 @@ var tests = {
 
     'Save valid model with new entry => update day': () => {
         var model = new Model(config.defaults(), storage.create());
-        var dm1 = day.fromRaw(config.defaults(), {
-            date: '2013-09-09',
+        var dm1 = day.fromRaw({
+            date: '2013-09-09T00:00:00.000Z',
             entries: [
-                { start: '1115', project: projects[0], task: chance.string() },
-                { start: '1200', project: projects[1], task: chance.string() },
-                { start: '1250', project: projects[2], task: chance.string() },
-                { start: '1425', project: projects[3], task: chance.string() },
+                { start: '2013-09-09T11:15:00.000Z', project: projects[0], task: chance.string() },
+                { start: '2013-09-09T12:00:00.000Z', project: projects[1], task: chance.string() },
+                { start: '2013-09-09T12:50:00.000Z', project: projects[2], task: chance.string() },
+                { start: '2013-09-09T14:25:00.000Z', project: projects[3], task: chance.string() },
             ]
         });
-        var dm2 = day.fromRaw(config.defaults(), {
-            date: '2013-09-09',
+        var dm2 = day.fromRaw({
+            date: '2013-09-09T00:00:00.000Z',
             entries: [
-                { start: '1115', project: projects[0], task: chance.string() },
-                { start: '1200', project: projects[1], task: chance.string() },
-                { start: '1250', project: projects[2], task: chance.string() },
-                { start: '1400', project: projects[3], task: chance.string() },
-                { start: '1450', project: projects[4], task: chance.string() },
+                { start: '2013-09-09T11:15:00.000Z', project: projects[0], task: chance.string() },
+                { start: '2013-09-09T12:00:00.000Z', project: projects[1], task: chance.string() },
+                { start: '2013-09-09T12:50:00.000Z', project: projects[2], task: chance.string() },
+                { start: '2013-09-09T14:00:00.000Z', project: projects[3], task: chance.string() },
+                { start: '2013-09-09T14:50:00.000Z', project: projects[4], task: chance.string() },
             ]
         });
         model.save(dm1); // first result tested elsewhere
@@ -139,13 +139,13 @@ var tests = {
 
     'Save valid model with lunch and home => new day': () => {
         var model = new Model(config.defaults(), storage.create());
-        var dm = day.fromRaw(config.defaults(), {
-            date: '2013-09-09', // a Monday
+        var dm = day.fromRaw({
+            date: '2013-09-09T00:00:00.000Z', // a Monday
             entries: [
-                { start: '0800', project: projects[0], task: chance.string() },
-                { start: '1230', project: config.defaults().lunch(), task: chance.string() },
-                { start: '1300', project: projects[1], task: chance.string() },
-                { start: '1600', project: config.defaults().home(), task: chance.string() },
+                { start: '2013-09-09T08:00:00.000Z', project: projects[0], task: chance.string() },
+                { start: '2013-09-09T12:30:00.000Z', project: config.defaults().lunch(), task: chance.string() },
+                { start: '2013-09-09T13:00:00.000Z', project: projects[1], task: chance.string() },
+                { start: '2013-09-09T16:00:00.000Z', project: config.defaults().home(), task: chance.string() },
             ]
         });
         model.save(dm)
@@ -160,11 +160,11 @@ var tests = {
 
     'Save valid model block day with home => new day': () => {
         var model = new Model(config.defaults(), storage.create());
-        var dm = day.fromRaw(config.defaults(), {
-            date: '2013-09-09',
+        var dm = day.fromRaw({
+            date: '2013-09-09T00:00:00.000Z',
             entries: [
-                { start: '0800', project: projects[0], task: chance.string() },
-                { start: '1600', project: config.defaults().home(), task: chance.string() },
+                { start: '2013-09-09T08:00:00.000Z', project: projects[0], task: chance.string() },
+                { start: '2013-09-09T16:00:00.000Z', project: config.defaults().home(), task: chance.string() },
             ]
         });
         model.save(dm)
@@ -179,11 +179,11 @@ var tests = {
 
     'Clear storage => success': () => {
         var model = new Model(config.defaults(), storage.create());
-        var dm = day.fromRaw(config.defaults(), {
-            date: '2015-09-09',
+        var dm = day.fromRaw({
+            date: '2013-09-09T00:00:00.000Z',
             entries: [
-                { start: '0800', project: projects[0], task: chance.string() },
-                { start: '1600', project: config.defaults().home(), task: chance.string() },
+                { start: '2013-09-09T08:00:00.000Z', project: projects[0], task: chance.string() },
+                { start: '2013-09-09T16:00:00.000Z', project: config.defaults().home(), task: chance.string() },
             ]
         });
         model.save(dm);
@@ -194,11 +194,11 @@ var tests = {
 
     'Load from storage => success': () => {
         var model = new Model(config.defaults(), storage.create());
-        var dm = day.fromRaw(config.defaults(), {
-            date: '2015-09-09',
+        var dm = day.fromRaw({
+            date: '2013-09-09T00:00:00.000Z',
             entries: [
-                { start: '0800', project: projects[0], task: chance.string() },
-                { start: '0900', project: projects[1], task: chance.string() },
+                { start: '2013-09-09T08:00:00.000Z', project: projects[0], task: chance.string() },
+                { start: '2013-09-09T09:00:00.000Z', project: projects[1], task: chance.string() },
             ]
         });
         model.save(dm);
@@ -206,9 +206,9 @@ var tests = {
         var result = model.days();
         assert.strictEqual(result.length, 1);
         assert.strictEqual(result[0].entries.length, 2);
-        assert.ok(moment('08:00', 'HH:mm', true)
+        assert.ok(moment('2013-09-09T08:00:00.000Z')
             .isSame(result[0].entries[0].start), 'Same time (e0)');
-        assert.ok(moment('09:00', 'HH:mm', true)
+        assert.ok(moment('2013-09-09T09:00:00.000Z')
             .isSame(result[0].entries[1].start), 'Same time (e1)');
     },
 

@@ -43,13 +43,17 @@ class ViewModel {
 
         console.log('vm save');
 
-        dayVM.entries().push(EntryViewModel.blank(this.config()));
+        if (dayVM.entries().length > 0 &&
+            dayVM.errors().some(x => true)) {
+            //dayVM.listErrors(true);
+            return;
+        }
 
         var raw = dayVM.toRaw();
         var dayModel = day.fromRaw(this.config(), dayVM.toRaw());
         this.model.save(dayModel);
-        // TODO sync with model
-        //this.load();
+
+        dayVM.entries().push(EntryViewModel.blank(this.config()));
     }
 
     load() : DayViewModel[] {

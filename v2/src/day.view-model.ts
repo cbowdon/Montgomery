@@ -27,17 +27,21 @@ class DayViewModel {
 
     static blank(cfg: config.Config) : DayViewModel {
         var dayVM = new DayViewModel(),
-            date = moment().format(cfg.format.date());
+            date = moment().format(cfg.format.date()),
+            entries = [ EntryViewModel.blank(cfg) ];
+
         dayVM.date = m.prop(date);
-        dayVM.entries = m.prop([ EntryViewModel.blank(cfg) ]);
+        dayVM.entries = m.prop(entries);
         return dayVM;
     }
 
     static fromDay(cfg: config.Config, day: day.Day) {
-        var dayVM = new DayViewModel();
-        dayVM.date = m.prop(day.date instanceof Function ?
-            day.date.format(cfg.format.time()) : '');
-        dayVM.entries = m.prop(day.entries.map(e => EntryViewModel.fromEntry(cfg, e)));
+        var dayVM = new DayViewModel(),
+            date = day.date.format(cfg.format.date()),
+            entries = day.entries.map(e => EntryViewModel.fromEntry(cfg, e));
+
+        dayVM.date = m.prop(date);
+        dayVM.entries = m.prop(entries);
         return dayVM;
     }
 }

@@ -9,6 +9,8 @@ import entry = require('./entry.model');
 import day = require('./day.model');
 import func = require('./func');
 
+type Dictionary = { [id: string]: day.Day };
+
 class Model {
 
     static STORAGE_KEY = 'Montgomery';
@@ -24,11 +26,13 @@ class Model {
         this.map = tsm.maybe<string>(this.storage.getItem(Model.STORAGE_KEY))
             .caseOf({
                 nothing: () => Object.create(null),
-                just: d => JSON.parse(d),
+                just: d => {
+                    JSON.parse(d, (key, value) => day.fromRaw(value))
+                },
             });
     }
 
-    private map: { [id: string]: day.Day } = Object.create(null);
+    private map: Dictionary = Object.create(null);
 
     private set(d: day.Day) : day.Day {
         var key = d.date.format(this.cfg.format.date());
@@ -53,10 +57,7 @@ class Model {
                 day.nextWorkingDay(this.map[dates[0]]) :
                 moment();
 
-        return this.set({
-            date: latest,
-            entries: [],
-        });
+        return this.set(new day.Day(latest, []));
     }
 
     save(d: day.Day) : tsm.Either<string[],day.Day> {
@@ -68,10 +69,7 @@ class Model {
 
         // TODO tokenize cfg.home before we get to Model
         if (day.hasHome(this.cfg, d)) {
-            this.set({
-                date: day.nextWorkingDay(d),
-                entries: [],
-            });
+            this.set(new day.Day(day.nextWorkingDay(d), []));
         }
 
         this.storage.setItem(Model.STORAGE_KEY, JSON.stringify(this.map));

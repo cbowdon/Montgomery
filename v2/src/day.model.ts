@@ -7,9 +7,19 @@ import config = require('./config');
 import entry = require('./entry.model');
 import list = require('./list');
 
-export interface Day {
-    date: Moment;
-    entries: entry.Entry[];
+export class Day {
+
+    constructor(
+        public date: Moment,
+        public entries: entry.Entry[]) {
+    }
+
+    toJSON() : string {
+        return JSON.stringify({
+            date: this.date.toISOString(),
+            entries: this.entries.map(JSON.stringify),
+        });
+    }
 }
 
 export interface RawDay {
@@ -29,18 +39,16 @@ export function fromRaw(raw: RawDay) : Day {
 
         var duration = next.fmap(x => difference(e.start, x.start));
 
-        return {
-            start: e.start,
-            project: e.project,
-            task: e.task,
-            duration: duration,
-        };
+        return new entry.Entry(
+            e.start,
+            e.project,
+            e.task,
+            duration);
     });
 
-    return {
-        date: moment(raw.date),
-        entries: entries,
-    };
+    return new Day(
+        moment(raw.date),
+        entries);
 }
 
 export function nextWorkingDay(day: Day) : Moment {

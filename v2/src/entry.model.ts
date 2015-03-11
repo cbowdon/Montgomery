@@ -4,11 +4,22 @@
 import moment = require('moment');
 import tsm = require('tsmonad');
 
-export interface Entry {
-    start: Moment;
-    project: string;
-    task: string;
-    duration: tsm.Maybe<Duration>;
+export class Entry {
+
+    constructor(
+        public start: Moment,
+        public project: string,
+        public task: string,
+        public duration: tsm.Maybe<Duration>) {
+    }
+
+    toJSON() : string {
+        return JSON.stringify({
+            start: this.start.toISOString(),
+            project: this.project,
+            task: this.task
+        });
+    }
 }
 
 export interface RawEntry {
@@ -17,11 +28,10 @@ export interface RawEntry {
     task: string;
 }
 
-export function fromRaw(raw: RawEntry) {
-    return {
-        start: moment(raw.start),
-        project: raw.project,
-        task: raw.task,
-        duration: tsm.Maybe.nothing(),
-    }
+export function fromRaw(raw: RawEntry) : Entry {
+    return new Entry(
+        moment(raw.start),
+        raw.project,
+        raw.task,
+        tsm.Maybe.nothing());
 }

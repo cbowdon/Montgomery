@@ -192,7 +192,7 @@ var tests = {
         assert.ok(model.days().length === 0);
     },
 
-    'Load from memory => success': () => {
+    'Load from memory => populated models': () => {
         var model = new Model(config.defaults(), storage.create()),
             dm = day.fromRaw({
                 date: '2013-09-09T00:00:00.000Z',
@@ -214,7 +214,7 @@ var tests = {
             .isSame(result[0].entries[1].start), 'Same time (e1)');
     },
 
-    'Load from storage => success': () => {
+    'Load from storage => populated models': () => {
         // Fixture setup
         var store = storage.create(),
             dm = day.fromRaw({

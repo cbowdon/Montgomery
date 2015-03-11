@@ -9,18 +9,19 @@ import entry = require('./entry.model');
 import day = require('./day.model');
 import func = require('./func');
 
-var STORAGE_KEY = 'Montgomery';
-
 class Model {
 
+    static STORAGE_KEY = 'Montgomery';
+
     constructor(
+        // TODO get rid of config here we don't need it
         private cfg: config.Config,
         private storage: Storage) {
         this.load();
     }
 
     private load() : void {
-        this.map = tsm.maybe<string>(this.storage.getItem(STORAGE_KEY))
+        this.map = tsm.maybe<string>(this.storage.getItem(Model.STORAGE_KEY))
             .caseOf({
                 nothing: () => Object.create(null),
                 just: d => JSON.parse(d),
@@ -65,6 +66,7 @@ class Model {
 
         this.set(d);
 
+        // TODO tokenize cfg.home before we get to Model
         if (day.hasHome(this.cfg, d)) {
             this.set({
                 date: day.nextWorkingDay(d),
@@ -72,7 +74,7 @@ class Model {
             });
         }
 
-        this.storage.setItem(STORAGE_KEY, JSON.stringify(this.map));
+        this.storage.setItem(Model.STORAGE_KEY, JSON.stringify(this.map));
 
         // currently no validation to do
         return tsm.Either.right(d);

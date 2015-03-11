@@ -192,24 +192,52 @@ var tests = {
         assert.ok(model.days().length === 0);
     },
 
-    'Load from storage => success': () => {
-        var model = new Model(config.defaults(), storage.create());
-        var dm = day.fromRaw({
-            date: '2013-09-09T00:00:00.000Z',
-            entries: [
-                { start: '2013-09-09T08:00:00.000Z', project: projects[0], task: chance.string() },
-                { start: '2013-09-09T09:00:00.000Z', project: projects[1], task: chance.string() },
-            ]
-        });
+    'Load from memory => success': () => {
+        var model = new Model(config.defaults(), storage.create()),
+            dm = day.fromRaw({
+                date: '2013-09-09T00:00:00.000Z',
+                entries: [
+                    { start: '2013-09-09T08:00:00.000Z', project: projects[0], task: chance.string() },
+                    { start: '2013-09-09T09:00:00.000Z', project: projects[1], task: chance.string() },
+                ]
+            });
         model.save(dm);
 
         var result = model.days();
         assert.strictEqual(result.length, 1);
+        assert.ok(dm.date
+            .isSame(result[0].date));
         assert.strictEqual(result[0].entries.length, 2);
         assert.ok(moment('2013-09-09T08:00:00.000Z')
             .isSame(result[0].entries[0].start), 'Same time (e0)');
         assert.ok(moment('2013-09-09T09:00:00.000Z')
             .isSame(result[0].entries[1].start), 'Same time (e1)');
+    },
+
+    'Load from storage => success': () => {
+        // Fixture setup
+        var store = storage.create(),
+            dm = day.fromRaw({
+                date: '2013-09-09T00:00:00.000Z',
+                entries: [
+                    { start: '2013-09-09T08:00:00.000Z', project: projects[0], task: chance.string() },
+                    { start: '2013-09-09T09:00:00.000Z', project: projects[1], task: chance.string() },
+                ]
+            }),
+            model: Model;
+
+        store.setItem(Model.STORAGE_KEY, JSON.stringify({ '2013-09-09': dm }));
+
+        // Exercise system
+        model = new Model(config.defaults(), store);
+        var result = model.days();
+
+        // Verify
+        assert.strictEqual(result.length, 1);
+        assert.strictEqual(result[0].date.toISOString(), dm.date.toISOString());
+        assert.strictEqual(result[0].entries.length, 2);
+        assert.strictEqual(result[0].entries[0].start.toISOString(), '2013-09-09T08:00:00.000Z');
+        assert.strictEqual(result[0].entries[1].start.toISOString(), '2013-09-09T09:00:00.000Z');
     },
 
 };

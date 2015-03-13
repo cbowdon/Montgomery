@@ -13,13 +13,11 @@ class ViewModel {
 
     // TODO will need to re-save everything if config changed
     constructor(cfg: config.Config, storage: Storage) {
-        this.storage = storage;
         this.config = m.prop(cfg);
-        this.model = new Model(cfg, storage);
+        this.model = new Model(storage);
         this.load();
     }
 
-    private storage: Storage;
     private model: Model;
 
     config: MithrilProperty<config.Config>;

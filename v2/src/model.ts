@@ -8,75 +8,53 @@ import config = require('./config');
 import entry = require('./entry.model');
 import day = require('./day.model');
 import func = require('./func');
+import DataMap = require('./data-map');
 
 type Dictionary = { [id: string]: day.Day };
 
 class Model {
 
-    static STORAGE_KEY = 'Montgomery';
+    private dm: DataMap<day.RawDay>;
 
-    constructor(
-        // TODO get rid of config here we don't need it
-        private cfg: config.Config,
-        private storage: Storage) {
-        this.load();
-    }
-
-    private load() : void {
-        this.map = tsm.maybe<string>(this.storage.getItem(Model.STORAGE_KEY))
-            .caseOf({
-                nothing: () => Object.create(null),
-                just: d => {
-                    JSON.parse(d, (key, value) => day.fromRaw(value))
-                },
-            });
-    }
-
-    private map: Dictionary = Object.create(null);
-
-    private set(d: day.Day) : day.Day {
-        var key = d.date.format(this.cfg.format.date());
-        this.map[key] = d;
-        return d;
-    }
-
-    clear() : void {
-        this.storage.clear();
-        this.load();
-    }
-
-    days() : day.Day[] {
-        return func.pairs(this.map)
-            .map(p => p[1])
-            .sort((d1, d2) => d1.date.isBefore(d2.date) ? -1 : 1);
+    constructor(storage: Storage) {
+        this.dm = new DataMap<day.RawDay>(storage);
     }
 
     newDay() : day.Day {
-        var dates = Object.keys(this.map).sort().reverse(),
-            latest = dates.length > 0 ?
-                day.nextWorkingDay(this.map[dates[0]]) :
-                moment();
-
-        return this.set(new day.Day(latest, []));
+        var date = this.dm.size() > 0 ?
+                day.nextWorkingDay(latest(this.dm.keys())) :
+                moment().toISOString(),
+            raw: day.RawDay = {
+                date: date,
+                entries: []
+            };
+        this.dm.insert(date, raw);
+        return day.fromRaw(raw);
     }
 
-    save(d: day.Day) : tsm.Either<string[],day.Day> {
+    clear() : void {
+        this.dm.clear();
+    }
 
-        // TODO should not accept adding new days here?
-        // force VM through newDay?
+    days() : day.Day[] {
+        return this.dm.elems().map(day.fromRaw);
+    }
 
-        this.set(d);
+    save(d: day.Day) : tsm.Either<string[], day.Day> {
 
-        // TODO tokenize cfg.home before we get to Model
-        if (day.hasHome(this.cfg, d)) {
-            this.set(new day.Day(day.nextWorkingDay(d), []));
+        this.dm.insert(d.date.toISOString(), d.toRaw());
+        console.log(d.toJSON());
+
+        if (day.hasHome(d)) {
+            this.newDay();
         }
 
-        this.storage.setItem(Model.STORAGE_KEY, JSON.stringify(this.map));
-
-        // currently no validation to do
         return tsm.Either.right(d);
     }
+}
+
+function latest(dates: string[]) : string {
+    return dates.sort().reverse()[0];
 }
 
 export = Model;

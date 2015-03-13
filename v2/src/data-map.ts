@@ -4,14 +4,20 @@ import tsm = require('tsmonad');
 import day = require('./day.model');
 
 // Storage with fluent API that emulates immutable functional map
-// but actually backed by same local-storage instance
-export class DataMap<T> {
+// but actually backed by same local-storage instance.
+// Will work seamlessly with any data that can be serialized with
+// JSON.stringify and deserialized transparently with JSON.parse.
+class DataMap<T> {
 
     constructor(private storage: Storage) {
     }
 
     clear() : void {
         this.storage.clear();
+    }
+
+    size() : number {
+        return this.storage.length;
     }
 
     empty<U>() : DataMap<U> {
@@ -35,8 +41,7 @@ export class DataMap<T> {
     }
 
     lookup(key: string) : tsm.Maybe<T> {
-        return tsm.maybe(this.storage.getItem(key))
-            .fmap(JSON.parse);
+        return tsm.maybe(this.unsafeGet(key));
     }
 
     keys() : string[] {
@@ -49,10 +54,21 @@ export class DataMap<T> {
         return result;
     }
 
+    elems() : T[] {
+        var result: T[] = [],
+            idx: number,
+            key: string;
+        for (idx = 0; idx < this.storage.length; idx += 1) {
+            key = this.storage.key(idx);
+            result.push(this.unsafeGet(key));
+        }
+        return result;
+    }
+
     reduce<U>(fun: (a: U, k: string, v: T) => U, seed: U) : U {
         return this.keys()
             .reduce(
-                (acc, key) => fun(acc, key, JSON.parse(this.storage.getItem(key))),
+                (acc, key) => fun(acc, key, this.unsafeGet(key)),
                 seed);
     }
 
@@ -67,4 +83,11 @@ export class DataMap<T> {
             (dm, key, value) => fun(key, value) ? dm.insert(key, value) : dm,
             this.empty<T>());
     }
+
+    // May return null
+    private unsafeGet(key: string) : T {
+        return JSON.parse(this.storage.getItem(key));
+    }
 }
+
+export = DataMap;

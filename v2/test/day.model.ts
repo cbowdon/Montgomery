@@ -3,6 +3,7 @@ import assert = require('assert');
 import moment = require('moment');
 import Chance = require('chance');
 import config = require('../src/config');
+import tokens = require('../src/tokens');
 import entry = require('../src/entry.model');
 import day = require('../src/day.model');
 
@@ -13,7 +14,7 @@ var chance = new Chance(),
 var tests = {
 
     'Raw day to JSON round trip => no data loss': () => {
-        var raw0 = {
+        var raw0: day.RawDay = {
                 date: '2013-09-09T00:00:00.000Z',
                 entries: [{
                     start: '2013-09-09T12:34:00.000Z',
@@ -24,6 +25,9 @@ var tests = {
             str = JSON.stringify(raw0),
             raw1 = JSON.parse(str);
 
+        console.log(str);
+        console.log(raw0);
+        console.log(raw1);
         assert.deepEqual(raw1, raw0);
     },
 
@@ -73,12 +77,12 @@ var tests = {
             date: '2013-09-09T00:00:00.000Z',
             entries: [{
                 start: '2013-09-09T12:34:00.000Z',
-                project: 'Home',
+                project: tokens.home,
                 task: chance.string()
             }]
         };
         var d = day.fromRaw(raw);
-        assert.ok(day.hasHome(cfg, d));
+        assert.ok(day.hasHome(d));
     },
 
     'Has no Home => false': () => {
@@ -91,20 +95,20 @@ var tests = {
             }]
         };
         var d = day.fromRaw(raw);
-        assert.ok(!day.hasHome(cfg, d));
+        assert.ok(!day.hasHome(d));
     },
 
     'Next working day is same week => correct day': () => {
         // 9th Sept 2013 was a Monday
-        var expected = moment('2013-09-10T00:00:00.000Z'),
-            d0 = day.fromRaw({ date: '2013-09-09T00:00:00.000Z', entries: [] });
-        assert.ok(day.nextWorkingDay(d0).isSame(expected));
+        var expected = '2013-09-10T00:00:00.000Z',
+            d0 = '2013-09-09T00:00:00.000Z';
+        assert.strictEqual(day.nextWorkingDay(d0), expected);
     },
 
     'Next working day is next week => correct day': () => {
-        var expected = moment('2013-09-09T00:00:00.000Z'),
-            d0 = day.fromRaw({ date: '2013-09-06T00:00:00.000Z', entries: [] });
-        assert.ok(day.nextWorkingDay(d0).isSame(expected));
+        var expected = '2013-09-09T00:00:00.000Z',
+            d0 = '2013-09-06T00:00:00.000Z';
+        assert.strictEqual(day.nextWorkingDay(d0), expected);
     },
 };
 

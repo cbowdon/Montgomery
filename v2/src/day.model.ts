@@ -3,7 +3,7 @@
 /// <reference path="../node_modules/tsmonad/dist/tsmonad.d.ts" />
 import moment = require('moment');
 import tsm = require('tsmonad');
-import config = require('./config');
+import tokens = require('./tokens');
 import entry = require('./entry.model');
 import list = require('./list');
 
@@ -19,6 +19,13 @@ export class Day {
             date: this.date.toISOString(),
             entries: this.entries.map(JSON.stringify),
         });
+    }
+
+    toRaw() : RawDay {
+        return {
+            date: this.date.toISOString(),
+            entries: this.entries.map(e => e.toRaw()),
+        };
     }
 }
 
@@ -51,15 +58,17 @@ export function fromRaw(raw: RawDay) : Day {
         entries);
 }
 
-export function nextWorkingDay(day: Day) : Moment {
-    var weekday = day.date.isoWeekday();
+export function nextWorkingDay(datetime: string) : string {
+    var dt = moment(datetime);
     // behavior on sat/sun not defined, currently just increments
-    return day.date.clone().add(weekday === 5 ? 3 : 1, 'days');
+    return dt.clone()
+        .add(dt.isoWeekday() === 5 ? 3 : 1, 'days')
+        .toISOString();
 }
 
-export function hasHome(config: config.Config, day: Day) : boolean {
+export function hasHome(day: Day) : boolean {
     var homes = day.entries
-        .filter(e => e.project === config.home());
+        .filter(e => e.project === tokens.home);
     return homes.length > 0;
 }
 

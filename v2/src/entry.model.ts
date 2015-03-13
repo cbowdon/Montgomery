@@ -20,6 +20,14 @@ export class Entry {
             task: this.task
         });
     }
+
+    toRaw() : RawEntry {
+        return {
+            start: this.start.toISOString(),
+            project: this.project,
+            task: this.task
+        };
+    }
 }
 
 export interface RawEntry {

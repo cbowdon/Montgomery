@@ -10,6 +10,18 @@ var chance = new Chance(),
 
 var tests = {
 
+    'Raw entry to JSON round trip => no data loss': () => {
+        var raw0 = {
+                start: '2013-09-09T12:34:00.000Z',
+                project: projects[1],
+                task: chance.string()
+            },
+            str = JSON.stringify(raw0),
+            raw1 = JSON.parse(str);
+
+        assert.deepEqual(raw1, raw0);
+    },
+
     'From raw => valid entry': () => {
         var raw = {
             start: '2013-09-09T12:34:00.000Z',

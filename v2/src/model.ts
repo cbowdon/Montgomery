@@ -10,8 +10,6 @@ import day = require('./day.model');
 import func = require('./func');
 import DataMap = require('./data-map');
 
-type Dictionary = { [id: string]: day.Day };
-
 class Model {
 
     private dm: DataMap<day.RawDay>;

@@ -3,15 +3,19 @@
 import m = require('mithril');
 import ViewModel = require('./view-model');
 import config = require('./config');
+import html = require('./html');
 import DayViewModel = require('./day.view-model');
 import EntryViewModel = require('./entry.view-model');
 import viewEntry = require('./entry.view');
+import day = require('./day.view');
 
 class Controller {
 
     // controller only gets constructed once
     // so vm is effectively singleton
     vm = new ViewModel(config.defaults(), localStorage);
+
+    dayCtrl = new day.controller(this.vm);
 
     config() : config.Config {
         return this.vm.config();
@@ -23,11 +27,6 @@ class Controller {
 
     addDay() : void {
         this.vm.addDay();
-    }
-
-    save(day: DayViewModel) : void {
-        console.log('save');
-        this.vm.save(day);
     }
 
     clear() : void {
@@ -42,35 +41,17 @@ export function view(ctrl: Controller) : MithrilVirtualElement {
     console.log('view');
     return m('div#montgomery', [
         m('div#inputs', [
-            ctrl.days().map(d => viewDay(ctrl, d)),
-            button('+day', e => ctrl.addDay()),
+            ctrl.days().map(d => day.view(ctrl.dayCtrl, d)),
+            html.button('+day', e => ctrl.addDay()),
         ]),
         m('div#table', viewTable(ctrl.days())),
         m('div#chart', viewChart(ctrl.days())),
         m('div#config', viewConfig(ctrl, ctrl.config())),
-        button('clear all', e => ctrl.clear()),
+        html.button('clear all', e => ctrl.clear()),
     ]);
 }
 
-// these will be shipped out into their own files when implemented
-function viewDay(ctrl: Controller, day: DayViewModel) : MithrilVirtualElement {
-    console.log('view day');
-    return m(`div#day-${ day.date() }.day`, {
-        key: day.date(),
-    }, [
-        m('div#date', day.date()),
-        day.entries().map(viewEntry),
-        button('+entry', e => {
-            day.entries().map(entry => entry.showErrors(true));
-            ctrl.save(day);
-        }),
-    ]);
-}
-
-function button(label: string, func: (e:Event) => any) {
-    return m('input[type=button]', { value: label, onclick: func });
-}
-
+// these will be shipped into their own files/modules when implemented
 function viewTable(days: DayViewModel[]) : MithrilVirtualElement {
     return m('div', 'todo - table');
 }

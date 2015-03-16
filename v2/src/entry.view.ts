@@ -1,39 +1,21 @@
 /// <reference path="../node_modules/mithril/mithril.d.ts" />
 import m = require('mithril');
 import EntryViewModel = require('./entry.view-model');
-import field = require('./field');
+import html = require('./html');
 
 function view(entry: EntryViewModel) : MithrilVirtualElement {
     var children = [
-            input('.start', entry.start()),
-            select('.project', entry.project()),
-            input('.task', entry.task()),
-            entry.showErrors() ? list(entry.errors(), '.errors') : '',
+            html.input('.start', entry.start()),
+            html.select('.project', entry.project()),
+            html.input('.task', entry.task()),
+            entry.duration().caseOf({
+                just: d => d.toString(),
+                nothing: () => 'in progress'
+            }),
+            entry.showErrors() ? html.list(entry.errors(), '.errors') : '',
         ];
 
     return m(`div#${entry.id()}.entry`, { key: entry.id() }, children);
-}
-
-function input(css: string, field: field.Text) : MithrilVirtualElement {
-    return m(`input${css}`, {
-        value: field.value(),
-        onchange: m.withAttr('value', field.value),
-    });
-}
-
-function select(css: string, field: field.Select) : MithrilVirtualElement {
-    var options = [''].concat(field.options()).map(o => m('option', o)),
-        attrs = {
-            value: field.value(),
-            onchange: m.withAttr('value', field.value),
-        };
-
-    console.log(`select ${field.value()}`);
-    return m(`select${css}`, attrs, options);
-}
-
-function list(items: string[], css = '') {
-    return m(`ul${css}`, items.map(i => m('li', i)));
 }
 
 export = view;

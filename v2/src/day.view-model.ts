@@ -29,20 +29,14 @@ class DayViewModel {
             }, []);
     }
 
-    static blank(cfg: config.Config) : DayViewModel {
-        var dayVM = new DayViewModel(cfg),
-            date = moment().format(cfg.format.date()),
-            entries = [ EntryViewModel.blank(cfg) ];
-
-        dayVM.date = m.prop(date);
-        dayVM.entries = m.prop(entries);
-        return dayVM;
-    }
-
     static fromDay(cfg: config.Config, day: day.Day) {
         var dayVM = new DayViewModel(cfg),
             date = day.date.format(cfg.format.date()),
             entries = day.entries.map(e => EntryViewModel.fromEntry(cfg, e));
+
+        if (entries.length === 0) {
+            entries.push(EntryViewModel.blank(cfg));
+        }
 
         dayVM.date = m.prop(date);
         dayVM.entries = m.prop(entries);

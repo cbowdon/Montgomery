@@ -11,7 +11,7 @@ var tests = {
         var cfg = config.defaults(),
             raw0: day.RawDay = {
                 date: '2013-09-09T00:00:00.000Z',
-                entries: [],
+                entries: [{ start: '2013-09-09T00:00:00.000Z', project: '', task: '' }],
             },
             dayVM = DayViewModel.fromDay(cfg, day.fromRaw(raw0));
 

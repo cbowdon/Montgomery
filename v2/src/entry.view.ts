@@ -11,7 +11,7 @@ function view(entry: EntryViewModel) : MithrilVirtualElement {
             entry.showErrors() ? list(entry.errors(), '.errors') : '',
         ];
 
-    return m(`div#${entry.id()}.entry`, children);
+    return m(`div#${entry.id()}.entry`, { key: entry.id() }, children);
 }
 
 function input(css: string, field: field.Text) : MithrilVirtualElement {

@@ -31,6 +31,7 @@ class DataMap<T> {
     }
 
     insert(key: string, value: T) : DataMap<T> {
+        console.log(`insert ${key}`);
         this.storage.setItem(key, JSON.stringify(value));
         return this;
     }
@@ -86,6 +87,7 @@ class DataMap<T> {
 
     // May return null
     private unsafeGet(key: string) : T {
+        console.log(`get ${key}`);
         return JSON.parse(this.storage.getItem(key));
     }
 }

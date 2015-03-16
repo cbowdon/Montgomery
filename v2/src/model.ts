@@ -37,13 +37,14 @@ class Model {
     }
 
     days() : day.Day[] {
-        return this.dm.elems().map(day.fromRaw);
+        return this.dm.elems()
+            .map(day.fromRaw)
+            .sort((d1, d2) => d1.date.isBefore(d2.date) ? -1 : 1);
     }
 
     save(d: day.Day) : tsm.Either<string[], day.Day> {
 
         this.dm.insert(d.date.toISOString(), d.toRaw());
-        console.log(d.toJSON());
 
         if (day.hasHome(d)) {
             this.newDay();

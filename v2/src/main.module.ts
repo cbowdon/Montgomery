@@ -55,7 +55,10 @@ export function view(ctrl: Controller) : MithrilVirtualElement {
 // these will be shipped out into their own files when implemented
 function viewDay(ctrl: Controller, day: DayViewModel) : MithrilVirtualElement {
     console.log('view day');
-    return m(`div#day-${ day.date() }.day`, [
+    console.log(day.date());
+    return m(`div#day-${ day.date() }.day`, {
+        key: day.date(),
+    }, [
         m('div#date', day.date()),
         day.entries().map(viewEntry),
         button('+entry', e => {

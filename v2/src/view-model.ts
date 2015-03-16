@@ -27,9 +27,8 @@ class ViewModel {
     addDay() : void {
         console.log('vm add');
         var newDay = this.model.newDay(),
-            newDayVM = DayViewModel.fromDay(this.config(), newDay);
-        this.days().push(newDayVM);
-        this.save(newDayVM);
+            dayVM = DayViewModel.fromDay(this.config(), newDay);
+        this.days().push(dayVM);
     }
 
     clear() : void {
@@ -48,7 +47,6 @@ class ViewModel {
         }
 
         var raw = dayVM.toRaw();
-        console.log(raw);
         var dayModel = day.fromRaw(dayVM.toRaw());
         this.model.save(dayModel);
 

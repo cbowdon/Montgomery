@@ -11,23 +11,22 @@ import config = require('./config');
 
 class ViewModel {
 
-    // TODO will need to re-save everything if config changed
     constructor(cfg: config.Config, storage: Storage) {
-        this.config = m.prop(cfg);
+        this.cfg = m.prop(cfg);
         this.model = new Model(storage);
         this.load();
     }
 
     private model: Model;
 
-    config: MithrilProperty<config.Config>;
+    cfg: MithrilProperty<config.Config>;
 
     days: MithrilProperty<DayViewModel[]> = m.prop([]);
 
     addDay() : void {
         console.log('vm add');
         var newDay = this.model.newDay(),
-            dayVM = DayViewModel.fromDay(this.config(), newDay);
+            dayVM = DayViewModel.fromDay(this.cfg(), newDay);
         this.days().push(dayVM);
     }
 
@@ -50,12 +49,12 @@ class ViewModel {
         var dayModel = day.fromRaw(dayVM.toRaw());
         this.model.save(dayModel);
 
-        dayVM.entries().push(EntryViewModel.blank(this.config()));
+        dayVM.entries().push(EntryViewModel.blank(this.cfg()));
     }
 
     load() : DayViewModel[] {
          var vms = this.model.days()
-            .map(d => DayViewModel.fromDay(this.config(), d));
+            .map(d => DayViewModel.fromDay(this.cfg(), d));
 
         return this.days(vms);
     }

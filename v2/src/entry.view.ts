@@ -22,11 +22,14 @@ function input(css: string, field: field.Text) : MithrilVirtualElement {
 }
 
 function select(css: string, field: field.Select) : MithrilVirtualElement {
-    var options = [''].concat(field.options())
-        .map(o => m('option', o));
-    return m(`select${css}`,
-        { value: field.value, onchange: m.withAttr('value', field.value) },
-        options);
+    var options = [''].concat(field.options()).map(o => m('option', o)),
+        attrs = {
+            value: field.value(),
+            onchange: m.withAttr('value', field.value),
+        };
+
+    console.log(`select ${field.value()}`);
+    return m(`select${css}`, attrs, options);
 }
 
 function list(items: string[], css = '') {

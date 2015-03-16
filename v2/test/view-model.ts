@@ -22,7 +22,7 @@ var tests = {
         assert.strictEqual(vm.days().length, 1);
         assert.strictEqual(vm.days()[0].date(), today);
         assert.strictEqual(vm.days()[0].entries().length, 1);
-        assert.strictEqual(vm.days()[0].entries()[0].id(), 'blank');
+        assert.strictEqual(vm.days()[0].entries()[0].id(), '');
     },
 
     'Save day with errors => not saved, no new entry': () => {

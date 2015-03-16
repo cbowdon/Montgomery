@@ -12,12 +12,15 @@ class EntryViewModel {
     constructor(private cfg: config.Config) {
     }
 
-    id: MithrilProperty<string>;
     start: MithrilProperty<field.Time>;
     project: MithrilProperty<field.Select>;
     task: MithrilProperty<field.Text>;
     duration: MithrilProperty<tsm.Maybe<Duration>>;
     showErrors: MithrilProperty<boolean>;
+
+    id() {
+        return this.start().value();
+    }
 
     errors() : string[] {
         return this.start().errors()
@@ -42,7 +45,6 @@ class EntryViewModel {
         var entryVM = new EntryViewModel(cfg),
             formats = cfg.format.acceptableTimes();
 
-        entryVM.id = m.prop('blank');
         entryVM.start = m.prop(new field.Time(formats, ''));
         entryVM.project = m.prop(new field.Select(cfg.projects(), ''));
         entryVM.task = m.prop(new field.Text(''));
@@ -57,7 +59,6 @@ class EntryViewModel {
             formats = cfg.format.acceptableTimes(),
             time = entry.start.format(cfg.format.time());
 
-        entryVM.id = m.prop(time);
         entryVM.start = m.prop(new field.Time(formats, time));
         entryVM.project = m.prop(new field.Select(cfg.projects(), entry.project));
         entryVM.task = m.prop(new field.Text(entry.task));
